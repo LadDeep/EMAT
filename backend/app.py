@@ -1,5 +1,5 @@
 from flask import Flask
-from users.usersAPI import users
+from modules.api.users.usersAPI import users
 from database.database import db
 
 
@@ -7,7 +7,7 @@ def create_app():
     app = Flask(__name__)
 
     app.config["MONGODB_SETTINGS"] = [
-        {"db": "EMAT", "host": "mongo"}
+        {"db": "EMAT", "host": "localhost"}
     ]
     app.debug = True
     db.init_app(app)
