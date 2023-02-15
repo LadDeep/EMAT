@@ -26,14 +26,17 @@ build-job:       # This job runs in the build stage, which runs first.
   script:
     - echo "Compiling the code..."
     - mkdir build/
-    - echo "backend file" > build/excutable-binary-file-v1
+    - echo "backend file" > build/executable-binary-file-v1
     - echo "Compile complete."
+  artifacts: 
+    path:
+      - build/executable-binary-file-v1
 
 unit-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   script:
     - echo "Running unit tests..."
-    - cat $CI_PROJECT_DIR/build/excutable-binary-file-v1
+    - cat $CI_PROJECT_DIR/build/executable-binary-file-v1
 
 lint-test-job:   # This job also runs in the test stage.
   stage: test    # It can run at the same time as unit-test-job (in parallel).
