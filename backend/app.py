@@ -1,6 +1,9 @@
 from flask import Flask
 from modules.api.users.usersAPI import users
 from database.database import db
+from modules.api.auth.routes import auth
+from flask_jwt_extended import JWTManager
+from flask_mail import Mail
 
 
 def create_app():
@@ -12,7 +15,19 @@ def create_app():
     app.debug = True
     db.init_app(app)
 
+    app.config["JWT_SECRET_KEY"] = "secret-key"  # need to change this key and export in the env
+    app.config["SMTP_SERVER"] = "smtp.gmail.com"
+    app.config["SMTP_USERNAME"] = "username@google.com"
+    app.config["SMTP_PASSWORD"] = "temppassword"
+    app.config["SMTP_PORT"] = 587
+    app.config["SMTP_TLS"] = True
+
+    jwt = JWTManager(app)
+    mail = Mail(app)
+    app.mail = mail
+
     app.register_blueprint(users,url_prefix='/users')
+    app.register_blueprint(auth, url_prefix'/auth')
     return app
 # def ping():
 #     return {"status": True, "response": 'pong'}
@@ -20,3 +35,4 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     app.run(host='172.17.2.41')
+    
