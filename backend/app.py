@@ -27,7 +27,7 @@ def create_app():
     app.mail = mail
 
     app.register_blueprint(users,url_prefix='/users')
-    app.register_blueprint(auth, url_prefix'/auth')
+    app.register_blueprint(auth, url_prefix='/auth')
     return app
 # def ping():
 #     return {"status": True, "response": 'pong'}

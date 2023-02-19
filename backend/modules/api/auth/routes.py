@@ -167,7 +167,6 @@ def resetPassword(reset_token):
         except (DecodeError, InvalidTokenError):
             return jsonify({"error": "Bad token"}), 403
         except Exception as e:
-            print(e.args)
             return jsonify({"error": str(e)}), 500
 
 
