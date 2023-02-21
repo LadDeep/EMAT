@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import logo from '../../../assets/download.jpeg'
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from "react-native";
 
 const SignUp = () => {
@@ -18,6 +20,8 @@ const SignUp = () => {
 
   return (
     <View style={styles.container}>
+    <Image style={styles.img} source={require('../../../assets/download.jpeg')} />
+    {/* <img src={logo} /> */}
       <Text style={styles.title}>Welcome to E-Mat</Text>
       <TextInput
         style={styles.input}
@@ -56,6 +60,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor:'F7F7F2',
+  },
+  img:{
+    width:90,
+    height:90,
+    marginBottom:40,
   },
   title: {
     fontSize: 24,

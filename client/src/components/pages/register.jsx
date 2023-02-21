@@ -1,16 +1,35 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import {CreateUser} from '../../api/api'
+
+// {"email":"curl@gmail.com","password":"1234567890","first_name":"curl","last_name":"Post"}
 
 const Form = () => {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [baseCurrency, setBaseCurrency] = useState("USD");
 
   const handleSubmit = () => {
-    // Perform submit logic here
+    let payload ={
+      email:email,
+    password:password,
+    first_name:firstName,
+    last_name:lastName
+  }
+  console.log("This is payload",payload)
+    CreateUser(
+      payload,
+      (res) => {
+       console.log("This is response of registered user",res)
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
   };
 
   return (
@@ -18,9 +37,15 @@ const Form = () => {
       <Text style={styles.title}>Register</Text>
       <TextInput
         style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={(text) => setName(text)}
+        placeholder="First Name"
+        value={firstName}
+        onChangeText={(text) => setFirstName(text)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        value={lastName}
+        onChangeText={(text) => setLastName(text)}
       />
       <TextInput
         style={styles.input}
