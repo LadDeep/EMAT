@@ -47,11 +47,12 @@ def register():
             first_name = data["first_name"]
             last_name = data["last_name"]
 
-            validate_email(email)
-            if not validate_password(password):
-                return jsonify({"error": "Password is not valid"}), 400
+            ## not needed email & password will be validated on the frontend
+            # validate_email(email)
+            # if not validate_password(password):
+            #     return jsonify({"error": "Password is not valid"}), 400
 
-            db_user = User.objects.get(email=email)
+            db_user = User.objects(email=email)
             # check if the user exists
             if db_user:
                 return jsonify({"error": "User with the email has already existed"}), 409
@@ -67,12 +68,12 @@ def register():
                 "message": "signup successfully"
             }), 200
 
-        except (EmailNotValidError, EmailSyntaxError):
-            return jsonify({"error": "Email is not valid"}), 400
+        # except (EmailNotValidError, EmailSyntaxError):
+        #     return jsonify({"error": "Email is not valid"}), 400
         except FieldDoesNotExist as e:
             return jsonify({"error": str(e)}), 400
-        except ValidationError as e:
-            return jsonify({"error": str(e)}), 400
+        # except ValidationError as e:
+        #     return jsonify({"error": str(e)}), 400
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
