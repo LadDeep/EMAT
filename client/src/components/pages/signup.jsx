@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from '../../../assets/download.jpeg'
+import { LoginUser } from "../../api/api";
 import {
   View,
   Text,
@@ -14,14 +14,25 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
 
   const handleSignUp = () => {
-    // Add your sign-up logic here
-    console.log(email, password);
+  let payload={
+    email:email,
+    password:password
+  }
+  console.log("This is my payload",payload);
+  LoginUser(
+    payload,
+    (res) => {
+     console.log("This is response of registered user",res)
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   };
 
   return (
     <View style={styles.container}>
     <Image style={styles.img} source={require('../../../assets/download.jpeg')} />
-    {/* <img src={logo} /> */}
       <Text style={styles.title}>Welcome to E-Mat</Text>
       <TextInput
         style={styles.input}

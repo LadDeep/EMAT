@@ -13,4 +13,15 @@ const CreateUser = async (data, onSuccess, onError) => {
       onError && onError(err);
     }
   };
-  export {CreateUser};
+const LoginUser =async(data,onSuccess,onError) =>{
+  try{
+    const res = await instance.post("/auth/login",data,{
+      headers:{"Content-Type":"application/json"},
+    });
+    onSuccess && onSuccess(res);
+  }catch(res){
+    onError && onError(err);
+  }
+}
+
+  export {CreateUser,LoginUser};
