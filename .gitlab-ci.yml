@@ -20,6 +20,7 @@ unit-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   script:
     - echo "Running unit tests..."
+    - pip install --upgrade pip
     - pip install unittest
     - python -m unittest test_testUserRegistrationAPI.py
 
