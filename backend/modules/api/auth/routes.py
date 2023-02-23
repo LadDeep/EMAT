@@ -39,6 +39,7 @@ auth = Blueprint('auth', __name__)
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
+    status = True
     if request.method == "POST":
         try:
             data = request.get_json()
@@ -46,6 +47,7 @@ def register():
             password = data["password"]
             first_name = data["first_name"]
             last_name = data["last_name"]
+            currency = data["currency"]
 
             ## not needed email & password will be validated on the frontend
             # validate_email(email)
@@ -55,34 +57,38 @@ def register():
             db_user = User.objects(email=email)
             # check if the user exists
             if db_user:
-                return jsonify({"error": "User with the email has already existed"}), 409
+                status = False
+                return jsonify({"status": status, "error": "User with the email has already existed"}), 409
 
             newUser = User(user_id=uuid.uuid4(), first_name=first_name,
-                           last_name=last_name, email=email)
+                           last_name=last_name, email=email, currency = currency)
 
             newUser.hash_password(password)
 
             newUser.save()
             return jsonify({
-                "status": "success",
+                "status": status,
                 "message": "signup successfully"
             }), 200
 
         # except (EmailNotValidError, EmailSyntaxError):
         #     return jsonify({"error": "Email is not valid"}), 400
         except FieldDoesNotExist as e:
-            return jsonify({"error": str(e)}), 400
+            status = False
+            return jsonify({"status": status, "error": str(e)}), 400
         # except ValidationError as e:
         #     return jsonify({"error": str(e)}), 400
         except Exception as e:
-            return jsonify({"error": str(e)}), 500
+            status = False
+            return jsonify({"status": status, "error": str(e)}), 500
 
 
 @auth.route("/login", methods=["POST", "GET"])
 def login():
+    status = True
     if request.method == 'POST':
         try:
-            data = request.get_json();
+            data = request.get_json()
             email = data["email"]
             password = data["password"]
 
@@ -94,27 +100,32 @@ def login():
                 access_token = create_access_token(identity=db_user.user_id, expires_delta=datetime.timedelta(hours=4))
                 if access_token:
                     return jsonify({
-                        "status": "success",
+                        "status": status,
                         "message": "login successfully",
                         "access_token": access_token
                     }), 200
             else:
-                return jsonify({"message": "wrong password"})
+                status = False
+                return jsonify({"status": status, "message": "wrong password"})
 
         except DoesNotExist:
-            return jsonify({"error": "User with the email not found"}), 404
+            status = False
+            return jsonify({"status": status, "error": "User with the email not found"}), 404
         except Exception as e:
-            return jsonify({"error": str(e)}), 500
+            status = False
+            return jsonify({"status": status, "error": str(e)}), 500
 
 
 @auth.route("/logout", methods=["POST"])
 def logout():
-    resp = jsonify({"status": "success", "message": "logout successfully"})
+    status = True
+    resp = jsonify({"status": status, "message": "logout successfully"})
     try:
         unset_jwt_cookies(resp)
         return resp, 200
     except Exception as e:
-        jsonify({"error": str(e)}), 500
+        status = False
+        jsonify({"status": status, "error": str(e)}), 500
 
 
 @auth.route("/reset", methods=["POST"])

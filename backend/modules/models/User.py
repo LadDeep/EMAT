@@ -7,7 +7,9 @@ class User(db.Document):
     first_name = db.StringField(max_length=100)
     last_name = db.StringField(max_length=100)
     email = db.StringField(required=True)
-    password = db.StringField()
+    password = db.StringField(required=True)  
+    currency = db.StringField(required=True)
+
 
     def hash_password(self, password):
         self.password = generate_password_hash(password)
