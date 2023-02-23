@@ -20,7 +20,9 @@ unit-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   script:
     - echo "Running unit tests..."
-    - cat $CI_PROJECT_DIR/build/executable-binary-file-v1
+    - pip install pytest
+    - python -m pytest
+
 
 lint-test-job:   # This job also runs in the test stage.
   stage: test    # It can run at the same time as unit-test-job (in parallel).
