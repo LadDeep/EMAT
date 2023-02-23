@@ -4,6 +4,7 @@ from database.database import db
 from modules.api.auth.routes import auth
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
+from modules.api.currency.currency import currency
 
 
 def create_app():
@@ -28,6 +29,7 @@ def create_app():
 
     app.register_blueprint(users,url_prefix='/users')
     app.register_blueprint(auth, url_prefix='/auth')
+    app.register_blueprint(currency, url_prefix='/currency')
     return app
 # def ping():
 #     return {"status": True, "response": 'pong'}
