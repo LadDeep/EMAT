@@ -21,6 +21,7 @@ unit-test-job:   # This job runs in the test stage.
   script:
     - echo "Running unit tests..."
     - pip install --upgrade pip
+    - pip install -r requirements.txt
     - python -m unittest test_UserRegistrationAPI.py
 
 
