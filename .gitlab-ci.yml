@@ -21,7 +21,8 @@ unit-test-job:   # This job runs in the test stage.
   script:
     - echo "Running unit tests..."
     - pip install --upgrade pip
-    - python -m unittest discover -s ../tests
+    - cd /builds/courses/2023-winter/csci-5308/group04/backend/tests
+    - python test_UserRegistrationAPI.py
 
 
 lint-test-job:   # This job also runs in the test stage.
