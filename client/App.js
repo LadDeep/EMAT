@@ -7,9 +7,15 @@ import SignIn from "./src/components/pages/SignIn";
 import PasswordRecovery from "./src/components/ForgotPassword";
 import PasswordReset from "./src/components/RecoverPassword";
 import LaunchPage from "./src/components/pages/LaunchPage";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useState } from "react";
+import { GroupsTab } from "./src/components/pages/GroupsTab";
+import { ActivitiesTab } from "./ActivitiesTab";
+import { FriendsTab } from "./FriendsTab";
+import { ChartsTab } from "./ChartsTab";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
+const BottomNavigationTab = createBottomTabNavigator();
 
 const AuthenticationScreen = () => {
   return (
@@ -20,6 +26,17 @@ const AuthenticationScreen = () => {
       <AuthStack.Screen name="PasswordRecovery" component={PasswordRecovery} />
       <AuthStack.Screen name="PasswordReset" component={PasswordReset} />
     </AuthStack.Navigator>
+  );
+};
+
+const TabNavigation = () => {
+  return (
+    <BottomNavigationTab.Navigator screenOptions={{ headerShown: false }}>
+      <BottomNavigationTab.Screen name="Groups" component={GroupsTab} />
+      <BottomNavigationTab.Screen name="Friends" component={FriendsTab} />
+      <BottomNavigationTab.Screen name="Activity" component={ActivitiesTab} />
+      <BottomNavigationTab.Screen name="Charts" component={ChartsTab} />
+    </BottomNavigationTab.Navigator>
   );
 };
 
@@ -37,8 +54,7 @@ export default function App() {
             component={AuthenticationScreen}
           />
         ) : (
-          // TODO: Rest of the app flow
-          console.log("App navigation here")
+          <RootStack.Screen name="Root" component={TabNavigation} />
         )}
       </RootStack.Navigator>
     </NavigationContainer>
