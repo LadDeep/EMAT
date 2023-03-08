@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, Image } from 'react-native';
 
-function LaunchPage() {
+function LaunchPage({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -11,7 +11,7 @@ function LaunchPage() {
       <View style={styles.buttonContainer}>
         <Button
           title="Login"
-          onPress={() => alert('Login button pressed')}
+          onPress={() => navigation.push("SignIn")}
           style={styles.button1}
         />
         </View>
@@ -19,7 +19,7 @@ function LaunchPage() {
       <View style={styles.buttonContainer}>
         <Button
           title="Register"
-          onPress={() => alert('Register button pressed')}
+          onPress={() => navigation.push("SignUp")}
           style={styles.button2}
         />
       </View>
