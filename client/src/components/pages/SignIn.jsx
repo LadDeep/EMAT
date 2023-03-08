@@ -9,11 +9,11 @@ import {
   Image,
 } from "react-native";
 
-const SignUp = () => {
+const SignIn = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignUp = () => {
+  const handleSignIn = () => {
   let payload={
     email:email,
     password:password
@@ -52,14 +52,10 @@ const SignUp = () => {
         value={password}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
-      <Text
-        onPress={() => {
-          console.log("forgot password clicked");
-        }}
-      >
+      <Text onPress={() => navigation.push("PasswordRecovery")}>
         Forgot Password?
       </Text>
     </View>
@@ -102,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUp;
+export default SignIn;

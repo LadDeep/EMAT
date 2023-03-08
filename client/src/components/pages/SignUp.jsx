@@ -5,7 +5,7 @@ import {CreateUser} from '../../api/api'
 
 // {"email":"curl@gmail.com","password":"1234567890","first_name":"curl","last_name":"Post"}
 
-const Form = () => {
+const SignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -111,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Form;
+export default SignUp;
