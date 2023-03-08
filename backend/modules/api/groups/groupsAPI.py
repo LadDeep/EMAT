@@ -5,8 +5,6 @@ from modules.lib.utilFunctions import createObjectWithRequiredFields
 import json
 
 
-group = Group()
-print(group.__class__.__name__)
 group = Blueprint('group',__name__)
 
 @group.route("/register",methods=['POST'])

@@ -3,6 +3,7 @@ from modules.api.users.usersAPI import users
 from database.database import db
 from modules.api.auth.routes import auth
 from modules.api.groups.groupsAPI import group
+from modules.api.expense.expenseAPI import expense
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from modules.api.currency.currency import currency
@@ -32,6 +33,7 @@ def create_app():
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(currency, url_prefix='/currency')
     app.register_blueprint(group,url_prefix='/group')
+    app.register_blueprint(expense,url_prefix='/expense')
 
     return app
 # def ping():
