@@ -40,6 +40,7 @@ auth = Blueprint('auth', __name__)
 @auth.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        result = {"status": False}
         try:
             data = request.get_json()
             email = data["email"]
@@ -63,10 +64,9 @@ def register():
             newUser.hash_password(password)
 
             newUser.save()
-            return jsonify({
-                "status": "success",
-                "message": "signup successfully"
-            }), 200
+            result["status"] = True
+            result["message"] =  "signup successfully"
+            return result, 200
 
         # except (EmailNotValidError, EmailSyntaxError):
         #     return jsonify({"error": "Email is not valid"}), 400

@@ -2,6 +2,7 @@ from flask import Flask
 from modules.api.users.usersAPI import users
 from database.database import db
 from modules.api.auth.routes import auth
+from modules.api.groups.groupsAPI import group
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 
@@ -28,6 +29,8 @@ def create_app():
 
     app.register_blueprint(users,url_prefix='/users')
     app.register_blueprint(auth, url_prefix='/auth')
+    app.register_blueprint(group,url_prefix='/group')
+
     return app
 # def ping():
 #     return {"status": True, "response": 'pong'}
