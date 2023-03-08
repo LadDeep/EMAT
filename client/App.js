@@ -13,6 +13,7 @@ import { GroupsTab } from "./src/components/pages/GroupsTab";
 import { ActivitiesTab } from "./ActivitiesTab";
 import { FriendsTab } from "./FriendsTab";
 import { ChartsTab } from "./ChartsTab";
+import Icon from "react-native-vector-icons/MaterialIcons";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const BottomNavigationTab = createBottomTabNavigator();
@@ -31,7 +32,24 @@ const AuthenticationScreen = () => {
 
 const TabNavigation = () => {
   return (
-    <BottomNavigationTab.Navigator screenOptions={{ headerShown: false }}>
+    <BottomNavigationTab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ _, color, size }) => {
+          let iconName;
+          if (route.name === "Groups") {
+            iconName = "groups";
+          } else if (route.name === "Friends") {
+            iconName = "person";
+          } else if (route.name === "Activity") {
+            iconName = "payments";
+          } else if (route.name === "Charts") {
+            iconName = "analytics";
+          }
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+      })}
+    >
       <BottomNavigationTab.Screen name="Groups" component={GroupsTab} />
       <BottomNavigationTab.Screen name="Friends" component={FriendsTab} />
       <BottomNavigationTab.Screen name="Activity" component={ActivitiesTab} />
