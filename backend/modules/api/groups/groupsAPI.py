@@ -1,7 +1,7 @@
 from flask import Blueprint,request,jsonify
 from modules.models.Group import Group
 from modules.models.User import User
-from modules.lib.utilFunctions import createObjectWithRequiredFields
+from modules.utils.utilFunctions import createObjectWithRequiredFields
 import json
 
 
