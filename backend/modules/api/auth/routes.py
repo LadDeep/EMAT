@@ -102,6 +102,7 @@ def login():
                 if access_token:
                     return jsonify({
                         "status": status,
+                        "user_id": db_user.user_id,
                         "message": "login successfully",
                         "access_token": access_token
                     }), 200
