@@ -1,6 +1,9 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  useNavigation,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUp from "./src/components/pages/SignUp";
 import SignIn from "./src/components/pages/SignIn";
@@ -13,9 +16,13 @@ import { GroupsTab } from "./src/components/pages/GroupsTab";
 import { ActivitiesTab } from "./ActivitiesTab";
 import { FriendsTab } from "./FriendsTab";
 import { ChartsTab } from "./ChartsTab";
+import { GroupDetailsComponent } from "./src/components/GroupDetailsComponent";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { Avatar } from "react-native-ui-lib";
+import UserInfo from "./UserInfo";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
+const GroupStack = createNativeStackNavigator();
 const BottomNavigationTab = createBottomTabNavigator();
 
 const AuthenticationScreen = () => {
@@ -27,6 +34,22 @@ const AuthenticationScreen = () => {
       <AuthStack.Screen name="PasswordRecovery" component={PasswordRecovery} />
       <AuthStack.Screen name="PasswordReset" component={PasswordReset} />
     </AuthStack.Navigator>
+  );
+};
+const GroupScreen = () => {
+  const navigation = useNavigation();
+  return (
+    <GroupStack.Navigator
+      screenOptions={({ route }) => ({
+        headerSearchBarOptions:true
+      })}
+    >
+      <GroupStack.Screen name="GroupsTab" component={GroupsTab} />
+      <GroupStack.Screen
+        name="GroupDetails"
+        component={GroupDetailsComponent}
+      />
+    </GroupStack.Navigator>
   );
 };
 
@@ -50,7 +73,10 @@ const TabNavigation = () => {
         },
       })}
     >
-      <BottomNavigationTab.Screen name="Groups" component={GroupsTab} />
+      <BottomNavigationTab.Screen
+        name="Groups"
+        component={GroupScreen}
+      />
       <BottomNavigationTab.Screen name="Friends" component={FriendsTab} />
       <BottomNavigationTab.Screen name="Activity" component={ActivitiesTab} />
       <BottomNavigationTab.Screen name="Charts" component={ChartsTab} />

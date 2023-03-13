@@ -1,8 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { View, Avatar, Button, Colors } from "react-native-ui-lib";
+import { View, Button, Colors } from "react-native-ui-lib";
 import { GroupList } from "../GroupList";
-import SearchComponent from "../SearchComponent";
 import data from "../../../data.json";
 
 export const GroupsTab = () => {
@@ -15,15 +14,6 @@ export const GroupsTab = () => {
   return (
     <View>
       <View>
-        <View style={styles.headerView}>
-          <Avatar
-            source={{
-              uri: "https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg",
-            }}
-            onPress={handleNavigationToUserAccount}
-          />
-          <SearchComponent />
-        </View>
         <View style={styles.container}>
           {data.groups ? (
             <GroupList />
