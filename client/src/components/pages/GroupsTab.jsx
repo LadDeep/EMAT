@@ -32,15 +32,8 @@ export const GroupsTab = () => {
 };
 
 const styles = StyleSheet.create({
-  headerView: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    paddingBottom: 8,
-    paddingTop: 8,
-  },
   container: {
+    height: "100%",
     backgroundColor: "F7F7F2",
     alignItems: "center",
     justifyContent: "center",
