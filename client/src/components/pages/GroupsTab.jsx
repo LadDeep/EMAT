@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import { View, Button, Colors } from "react-native-ui-lib";
+import { useNavigation } from "@react-navigation/native";
 import { GroupList } from "../GroupList";
 import data from "../../../data.json";
 
@@ -9,7 +10,7 @@ export const GroupsTab = () => {
     //TODO: navigate to user account details page
   };
   const handleGroupRegistration = () => {
-    //TODO: navigate to group registration page
+    navigation.push("GroupRegistration");
   };
   return (
     <View>

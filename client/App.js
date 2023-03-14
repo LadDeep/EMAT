@@ -1,9 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import {
-  NavigationContainer,
-  useNavigation,
-} from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUp from "./src/components/pages/SignUp";
 import SignIn from "./src/components/pages/SignIn";
@@ -17,6 +14,7 @@ import { ActivitiesTab } from "./ActivitiesTab";
 import { FriendsTab } from "./FriendsTab";
 import { ChartsTab } from "./ChartsTab";
 import { GroupDetailsComponent } from "./src/components/GroupDetailsComponent";
+import { GroupRegistrationForm } from "./src/components/GroupRegistrationForm";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Avatar } from "react-native-ui-lib";
 import UserInfo from "./UserInfo";
@@ -41,10 +39,14 @@ const GroupScreen = () => {
   return (
     <GroupStack.Navigator
       screenOptions={({ route }) => ({
-        headerSearchBarOptions:true
+        headerSearchBarOptions: true,
       })}
     >
       <GroupStack.Screen name="GroupsTab" component={GroupsTab} />
+      <GroupStack.Screen
+        name="GroupRegistration"
+        component={GroupRegistrationForm}
+      />
       <GroupStack.Screen
         name="GroupDetails"
         component={GroupDetailsComponent}
@@ -73,10 +75,7 @@ const TabNavigation = () => {
         },
       })}
     >
-      <BottomNavigationTab.Screen
-        name="Groups"
-        component={GroupScreen}
-      />
+      <BottomNavigationTab.Screen name="Groups" component={GroupScreen} />
       <BottomNavigationTab.Screen name="Friends" component={FriendsTab} />
       <BottomNavigationTab.Screen name="Activity" component={ActivitiesTab} />
       <BottomNavigationTab.Screen name="Charts" component={ChartsTab} />
