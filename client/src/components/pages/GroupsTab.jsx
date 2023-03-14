@@ -6,9 +6,6 @@ import { GroupList } from "../GroupList";
 import data from "../../../data.json";
 
 export const GroupsTab = () => {
-  const handleNavigationToUserAccount = () => {
-    //TODO: navigate to user account details page
-  };
   const handleGroupRegistration = () => {
     navigation.push("GroupRegistration");
   };
@@ -16,7 +13,7 @@ export const GroupsTab = () => {
     <View>
       <View>
         <View style={styles.container}>
-          {data.groups ? (
+          {!data.groups ? (
             <GroupList />
           ) : (
             <Button
