@@ -2,6 +2,9 @@ from flask import Flask
 from modules.api.users.usersAPI import users
 from database.database import db
 from modules.api.auth.routes import auth
+from modules.api.groups.groupsAPI import group
+from modules.api.expense.expenseAPI import expense
+from modules.api.activities.activitiesAPI import activities_bp
 from modules.api.profile.profile import profile
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
@@ -32,6 +35,10 @@ def create_app():
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(profile,url_prefix='/profile')
     app.register_blueprint(currency, url_prefix='/currency')
+    app.register_blueprint(group,url_prefix='/group')
+    app.register_blueprint(expense,url_prefix='/expense')
+    app.register_blueprint(activities_bp,url_prefix='/activities')
+
     return app
 # def ping():
 #     return {"status": True, "response": 'pong'}

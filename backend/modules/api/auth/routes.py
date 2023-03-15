@@ -39,6 +39,7 @@ auth = Blueprint('auth', __name__)
 def register():
     status = True
     if request.method == "POST":
+        result = {"status": False}
         try:
             data = request.get_json()
             email = data["email"]
@@ -100,6 +101,7 @@ def login():
                 if access_token:
                     return jsonify({
                         "status": status,
+                        "user_id": db_user.user_id,
                         "message": "login successfully",
                         "access_token": access_token
                     }), 200
