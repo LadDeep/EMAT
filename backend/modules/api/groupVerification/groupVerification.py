@@ -107,7 +107,7 @@ def verifyCode():
         message = Message(
             subject = "Email confirmed",
             recipients = [email],
-            body = "User's email has been verified."
+            body = "User has been added into the group."
         )
         mail.send(message)
 
