@@ -76,3 +76,47 @@ def passwordReset():
     return "Verification code sent succefully."
 
 
+
+#API to verify the verification code
+
+@app.route("/verifyCode", methods = ["POST"])
+
+def verifyCode():
+
+    email = request.form.get("email")
+    code = request.form.get("code")
+
+    #if email doesn't match with the vefification code
+
+    if email or not code:
+        return "Email and verification code are required.", 400
+    
+    if email not in verificationCodes:
+        return "No verification code found for this email.", 404
+    
+    if verificationCodes[email] != code:
+        return "Invalid verification code. Please request a new code", 401
+    
+    #Deleting verification code, so that new code can be store.
+    del verificationCodes[email]
+
+
+    #Email response format and error handling
+
+    try:
+        message = Message(
+            subject = "Email confirmed",
+            recipients = [email],
+            body = "User's email has been verified."
+        )
+        mail.send(message)
+
+    except Exception as e:
+        return f"Failed to send email: {str(e)}", 500
+    
+
+    return "Email sent successfully."
+    
+
+
+
