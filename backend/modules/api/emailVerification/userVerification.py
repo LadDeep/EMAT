@@ -35,7 +35,7 @@ def sendVerificationEmail(to):
     verificationCode = RegistrationVerificationCode()
     message = Message(
 
-        subject = "User registration code",
+        subject = "User registration code email",
         recipients = [to],
         body = f"Your verification code is {verificationCode}."
     )
