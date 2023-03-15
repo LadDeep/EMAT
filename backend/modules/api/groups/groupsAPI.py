@@ -24,10 +24,20 @@ def registerGroup():
                 participants = json_data.get("participants",None)
                 group = Group()
                 description = json_data.get("group_description",None)
+                group.created_by = user_id_verified
                 if description is not None:
                     group.group_description = description
                 
                 if participants is not None:
+                    users = User.objects.filter(email__in=participants)
+                    users = [json.loads(x.to_json()) for x in users]
+                    emails_registered = [x['email'] for x in users if x.get('email') is not None]
+                    email_not_registered = [x for x in participants if x not in emails_registered]
+                    # send group invitation to emails_registered
+                    # send app & group invitation to emails_not_registered
+                    participants = [x['user_id'] for x in users if x.get('user_id') is not None]
+                    participants.append(user_id_verified)
+                    participants = list(set(participants))
                     group.participants = participants
                 
                 result = createObjectWithRequiredFields(group,required_fields,json_data,result) 
@@ -53,19 +63,11 @@ def listGroups():
 
     if user_id_verified:
         try:
-            user = User.objects(user_id=user_id_verified).first()
-            userObject = json.loads(user.to_json())
-            # print(userObject.keys())
-            email = userObject.get("email",None)
-            if email is not None:
-                groups = Group.objects.filter(participants__in=[email])
-                groups = [json.loads(group.to_json()) for group in groups]
-                result["response"] = groups
-                status = 200
-            else:
-                result["status"] = False
-                result["error"] = f"Email Field does not exist against User ID: {user_id_verified}"
-                status=404
+            groups = Group.objects.filter(participants__in=[user_id_verified])
+            groups = [json.loads(group.to_json()) for group in groups]
+            result["response"] = groups
+            status = 200
+           
 
         except Exception as e:
             traceback_message = traceback.format_exc()

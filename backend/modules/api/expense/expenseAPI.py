@@ -63,7 +63,7 @@ def createExpense():
         if user_id_verified:
             try:
                 json_data = request.json
-                required_fields = ['group_id','email','amount']
+                required_fields = ['group_id','amount']
                 json_keys = list(json_data.keys())
                 required_fields_exist = set(required_fields).issubset(json_keys)
 
@@ -71,10 +71,10 @@ def createExpense():
                     group_id = json_data['group_id']
                     group = Group.objects.get_or_404(group_id=group_id)
                     groups_dict = json.loads(group.to_json())
-                    email = json_data['email']
-                    if email in groups_dict['participants']:
+                    
+                    if user_id_verified in groups_dict['participants']:
                         amount = json_data['amount']
-                        expense = Expense(group_id=group_id,spent_by=email,amount=amount)
+                        expense = Expense(group_id=group_id,spent_by=user_id_verified,amount=amount)
                         if 'description' in json_keys:
                             expense.description = json_data['description']
                         group.expenses.append(expense)
@@ -84,7 +84,7 @@ def createExpense():
                         result['response'] = f'Expense {expense_id} Created'
                         status = 201
                     else:
-                        result['error']= f'Email ID {email} does not exist as a participant in Group {group_id}'
+                        result['error']= f'User ID {user_id_verified} does not exist as a participant in Group {group_id}'
                         status = 404
                 else:
                     fields_not_exist = [i for i in required_fields if i not in json_keys]
