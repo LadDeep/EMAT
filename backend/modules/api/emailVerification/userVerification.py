@@ -2,7 +2,7 @@
 
 #Importing Modules
 
-from flask import Flask, request
+from flask import Flask, jsonify, request
 from flask_mail import Mail, Message
 import random
 
@@ -60,7 +60,7 @@ def userRegistrationMail():
 
     #If no email is provided
     if not email:
-        return "Email address is required.", 400
+        return jsonify(success=False, message="Email address is required."), 400
     
     subject = request.form.get("subject", "Verification code")
     body = request.form.get("body", "")
@@ -74,8 +74,9 @@ def userRegistrationMail():
     
     except Exception as e:
         return f"Unable to send email: {str(e)}", 500
-    return "Verification code sent succefully."
-
+    
+    
+    return jsonify(success=True, message="Verification code sent successfully.")
 
 #API to verify the verification code
 
@@ -89,13 +90,13 @@ def verifyCode():
     #if email doesn't match with the vefification code
 
     if email or not code:
-        return "Email and verification code are required.", 400
-    
+        return jsonify(success=False, message="Email address and verification code are required."), 400
+
     if email not in verificationCodes:
-        return "No verification code found for this email.", 404
+        return jsonify(success=False, message="No verification code found for this email address."), 404
     
     if verificationCodes[email] != code:
-        return "Invalid verification code. Please request a new code", 401
+        return jsonify(success=False, message="Invalid verification code."), 401
     
     #Deleting verification code, so that new code can be store.
     del verificationCodes[email]
@@ -112,10 +113,10 @@ def verifyCode():
         mail.send(message)
 
     except Exception as e:
-        return f"Failed to send email: {str(e)}", 500
+        return jsonify(success=False, message=f"Failed to send email: {str(e)}"), 500
     
 
-    return "Email sent successfully."
+    return jsonify(success=True, message="Email sent successfully.")
     
 
 
