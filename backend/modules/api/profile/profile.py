@@ -9,7 +9,7 @@ profile = Blueprint('profile', __name__)
 
 # get user profile
 @profile.route("/user", methods=["GET"])
-@jwt_required
+@jwt_required()
 def getProfile():
 
     try:
@@ -28,7 +28,7 @@ def getProfile():
 
 # update user email
 @profile.route("/update_email", methods=["PUT"])
-@jwt_required
+@jwt_required()
 def update_email():
 
     try:
@@ -61,7 +61,7 @@ def update_email():
 
 # update last_name 
 @profile.route("/update_last_name", methods=["PUT"])
-@jwt_required
+@jwt_required()
 def update_last_name():
 
     try:
@@ -90,7 +90,7 @@ def update_last_name():
 
 # update first_name 
 @profile.route("/update_first_name", methods=["PUT"])
-@jwt_required
+@jwt_required()
 def update_first_name():
 
     try:
@@ -120,7 +120,7 @@ def update_first_name():
 
 # delete user
 @profile.route("/delete_user")
-@jwt_required
+@jwt_required()
 def deleteUser():
 
     try:
