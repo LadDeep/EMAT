@@ -73,9 +73,9 @@ def userRegistrationMail():
         verificationCodes[email] = code
     
     except Exception as e:
-        return f"Unable to send email: {str(e)}", 500
+        return jsonify(success=False, message=f"Unable to send email: {str(e)}"), 500
     
-    
+
     return jsonify(success=True, message="Verification code sent successfully.")
 
 #API to verify the verification code
