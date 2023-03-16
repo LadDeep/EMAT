@@ -1,15 +1,13 @@
 import datetime
-import re
 import uuid
 from smtplib import SMTPAuthenticationError, SMTPServerDisconnected, SMTPException
-from flask import request, jsonify, Blueprint, current_app
+from flask import request, jsonify, Blueprint, current_app, session
 from flask_jwt_extended import create_access_token, decode_token, unset_jwt_cookies
 from flask_mail import Message
 from werkzeug.security import generate_password_hash
 from modules.models.User import User
-from mongoengine.errors import ValidationError, FieldDoesNotExist, DoesNotExist
+from mongoengine.errors import FieldDoesNotExist, DoesNotExist
 from jwt.exceptions import ExpiredSignatureError, DecodeError, InvalidTokenError
-from email_validator import validate_email, EmailNotValidError, EmailSyntaxError
 
 auth = Blueprint('auth', __name__)
 
@@ -97,8 +95,9 @@ def login():
             db_user = User.objects.get(email=email)
 
             if db_user.check_password(password):
-
-                access_token = create_access_token(identity=db_user.user_id, expires_delta=datetime.timedelta(hours=4))
+                
+                session["user_id"] = db_user.user_id
+                access_token = create_access_token(identity=db_user.user_id)
                 if access_token:
                     return jsonify({
                         "status": status,
@@ -124,10 +123,11 @@ def logout():
     resp = jsonify({"status": status, "message": "logout successfully"})
     try:
         unset_jwt_cookies(resp)
+        session.pop("user_id", None)
         return resp, 200
     except Exception as e:
         status = False
-        jsonify({"status": status, "error": str(e)}), 500
+        return jsonify({"status": status, "error": str(e)}), 500
 
 
 @auth.route("/reset", methods=["POST"])
@@ -207,21 +207,3 @@ def send_email(reset_token, user):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-# will add some routes about token later
-
-def validate_password(password):
-    if not password:
-        return False
-
-    if not re.search("[A-Z]", password):
-        return False
-    if not re.search("[a-z]", password):
-        return False
-    if not re.search("[0-9]", password):
-        return False
-
-    if len(password) < 8 or len(password) > 20:
-        return False
-
-    return True
