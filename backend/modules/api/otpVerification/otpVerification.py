@@ -121,7 +121,7 @@ def verifyCode():
         return f"Failed to send email: {str(e)}", 500
     
 
-     return jsonify(success=True, message="Email sent successfully.")
+    return jsonify(success=True, message="Email sent successfully.")
 
 
 
