@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { View, Button, Colors } from "react-native-ui-lib";
 import { useNavigation } from "@react-navigation/native";
 import { GroupList } from "../GroupList";
-import { FAB } from '@rneui/themed';
+import { FAB } from "@rneui/themed";
 import data from "../../../data.json";
 
 export const GroupsTab = () => {
@@ -13,28 +13,28 @@ export const GroupsTab = () => {
   };
   return (
     <>
-    <View>
       <View>
-        <View style={styles.container}>
-          {!data.groups ? (
-            <GroupList />
+        <View>
+          <View style={styles.container}>
+            {!data.groups ? (
+              <GroupList />
             ) : (
               <Button
-              label={"Add new group"}
-              size={Button.sizes.medium}
-              backgroundColor={Colors.blue30}
-              onPress={handleGroupRegistration}
-            />
-          )}
+                label={"Add new group"}
+                size={Button.sizes.medium}
+                backgroundColor={Colors.blue30}
+                onPress={handleGroupRegistration}
+              />
+            )}
+          </View>
         </View>
       </View>
-    </View>
-    <FAB
-    icon={{ name: "group-add", color: "white" }}
-    color="blue"
-    placement="right"
-    onPress={handleGroupRegistration}
-    />
+      <FAB
+        icon={{ name: "group-add", color: "white" }}
+        color="blue"
+        placement="right"
+        onPress={handleGroupRegistration}
+      />
     </>
   );
 };
