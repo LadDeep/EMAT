@@ -22,7 +22,7 @@ def getCurrency():
 
     try:
 
-        details = CurrencyList.objects().values("name", "symbol", "code")
+        details = CurrencyList.objects.fields(name=1, symbol=1, code=1)
         
         return jsonify({"status": True, "message": list(details)}), 200
 
