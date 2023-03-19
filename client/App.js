@@ -15,6 +15,7 @@ import { FriendsTab } from "./FriendsTab";
 import { ChartsTab } from "./ChartsTab";
 import { GroupDetailsComponent } from "./src/components/GroupDetailsComponent";
 import { GroupRegistrationForm } from "./src/components/GroupRegistrationForm";
+import GroupSettings from "./src/components/GroupSettings";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Avatar } from "react-native-ui-lib";
 import UserInfo from "./UserInfo";
@@ -42,7 +43,11 @@ const GroupScreen = () => {
         headerSearchBarOptions: true,
       })}
     >
-      <GroupStack.Screen name="GroupsTab" component={GroupsTab} />
+      <GroupStack.Screen
+        name="GroupsTab"
+        component={GroupsTab}
+        options={{ headerSearchBarOptions: true }}
+      />
       <GroupStack.Screen
         name="GroupRegistration"
         component={GroupRegistrationForm}
@@ -51,6 +56,7 @@ const GroupScreen = () => {
         name="GroupDetails"
         component={GroupDetailsComponent}
       />
+      <GroupStack.Screen name="GroupSettings" component={GroupSettings} />
     </GroupStack.Navigator>
   );
 };
