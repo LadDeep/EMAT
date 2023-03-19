@@ -16,6 +16,7 @@ import { ChartsTab } from "./ChartsTab";
 import { GroupDetailsComponent } from "./src/components/GroupDetailsComponent";
 import { GroupRegistrationForm } from "./src/components/GroupRegistrationForm";
 import GroupSettings from "./src/components/GroupSettings";
+import GroupDetailsEdit from "./src/components/GroupDetailsEdit";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Avatar } from "react-native-ui-lib";
 import UserInfo from "./UserInfo";
@@ -39,9 +40,6 @@ const GroupScreen = () => {
   const navigation = useNavigation();
   return (
     <GroupStack.Navigator
-      screenOptions={({ route }) => ({
-        headerSearchBarOptions: true,
-      })}
     >
       <GroupStack.Screen
         name="GroupsTab"
@@ -57,6 +55,7 @@ const GroupScreen = () => {
         component={GroupDetailsComponent}
       />
       <GroupStack.Screen name="GroupSettings" component={GroupSettings} />
+      <GroupStack.Screen name="GroupDetailsEdit" component={GroupDetailsEdit} />
     </GroupStack.Navigator>
   );
 };

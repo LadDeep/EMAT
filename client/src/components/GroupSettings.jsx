@@ -20,6 +20,7 @@ const GroupSettings = ({route}) => {
           name="edit"
           size={24}
           color="blue"
+          onPress={() => navigation.push("GroupDetailsEdit", {id: selectedGroup.group_id, name: selectedGroup.group_name, currency: selectedGroup.group_currency})}
           style={{ marginLeft: 16 }}
         />
       </View>
