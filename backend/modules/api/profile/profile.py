@@ -138,4 +138,29 @@ def deleteUser():
     except Exception as e:
         return jsonify({"status": False, "error": str(e)}), 500
 
+
+@profile.route("/email", methods=["GET"])
+def getUserEmail():
+
+    try:
+        data = request.get_json()
+        userId = data["user_id"]
+        user = User.objects(user_id=userId)
+
+        return jsonify({"status": True, "message": user.email}), 200
+    except Exception as e:
+        return jsonify({"status": False, "error": str(e)}), 500
+
+@profile.route("/fullname", methods=["GET"])
+def getFullName():
+
+    try:
+        data = request.get_json()
+        userId = data["user_id"]
+        user = User.objects(user_id=userId)
+
+        return jsonify({"status": True, "message": user.first_name + " " + user.last_name}), 200
+    
+    except Exception as e:
+        return jsonify({"status": False, "error": str(e)}), 500
     
