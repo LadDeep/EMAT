@@ -18,6 +18,7 @@ import { GroupRegistrationForm } from "./src/components/GroupRegistrationForm";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Avatar } from "react-native-ui-lib";
 import UserInfo from "./UserInfo";
+import RegisterExpense from "./src/components/RegisterExpense";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const GroupStack = createNativeStackNavigator();
@@ -50,6 +51,10 @@ const GroupScreen = () => {
       <GroupStack.Screen
         name="GroupDetails"
         component={GroupDetailsComponent}
+      />
+      <GroupStack.Screen
+        name="Add Expense"
+        component={RegisterExpense}
       />
     </GroupStack.Navigator>
   );
