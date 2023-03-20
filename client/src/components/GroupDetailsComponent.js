@@ -6,10 +6,16 @@ import OverallExpenseDisplay from "./OverallExpenseDisplay";
 import { StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
+import { FAB } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
 
 export const GroupDetailsComponent = ({ route }) => {
   const navigation = useNavigation();
   const { selectedGroup } = route.params;
+  const handleAddExpense = ()=>{
+    // navigate to Add Expense page
+    navigation.push("Add Expense");
+  }
 
   useEffect(() => {
     //TODO: api call for fetching overall expense list here
@@ -47,6 +53,12 @@ export const GroupDetailsComponent = ({ route }) => {
       <View flex>
         <GroupActivitiesList activities={groupData.expenses} />
       </View>
+      <FAB
+        icon={{ name: "money", color: "white" }}
+        color="blue"
+        placement="right"
+        onPress={handleAddExpense}
+      />
     </>
   );
 };

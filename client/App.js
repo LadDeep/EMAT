@@ -20,6 +20,7 @@ import GroupDetailsEdit from "./src/components/GroupDetailsEdit";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Avatar } from "react-native-ui-lib";
 import UserInfo from "./UserInfo";
+import RegisterExpense from "./src/components/RegisterExpense";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const GroupStack = createNativeStackNavigator();
@@ -54,8 +55,10 @@ const GroupScreen = () => {
         name="GroupDetails"
         component={GroupDetailsComponent}
       />
-      <GroupStack.Screen name="GroupSettings" component={GroupSettings} />
-      <GroupStack.Screen name="GroupDetailsEdit" component={GroupDetailsEdit} />
+      <GroupStack.Screen
+        name="Add Expense"
+        component={RegisterExpense}
+      />
     </GroupStack.Navigator>
   );
 };
