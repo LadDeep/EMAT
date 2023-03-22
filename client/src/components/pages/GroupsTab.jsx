@@ -1,57 +1,47 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { View, Avatar, Button, Colors } from "react-native-ui-lib";
+import { View, Button, Colors } from "react-native-ui-lib";
+import { useNavigation } from "@react-navigation/native";
 import { GroupList } from "../GroupList";
-import SearchComponent from "../SearchComponent";
+import { FAB } from "@rneui/themed";
 import data from "../../../data.json";
 
 export const GroupsTab = () => {
-  const handleNavigationToUserAccount = () => {
-    //TODO: navigate to user account details page
-  };
+  const navigation = useNavigation();
   const handleGroupRegistration = () => {
-    //TODO: navigate to group registration page
+    navigation.push("GroupRegistration");
   };
   return (
-    <View>
+    <>
       <View>
-        <View style={styles.headerView}>
-          <Avatar
-            source={{
-              uri: "https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg",
-            }}
-            onPress={handleNavigationToUserAccount}
-          />
-          <SearchComponent />
-        </View>
-        <View style={styles.container}>
-          {data.groups ? (
-            <GroupList />
-          ) : (
-            <Button
-              label={"Add new group"}
-              size={Button.sizes.medium}
-              backgroundColor={Colors.blue30}
-              onPress={handleGroupRegistration}
-            />
-          )}
+        <View>
+          <View style={styles.container}>
+            {!data.groups ? (
+              <GroupList />
+            ) : (
+              <Button
+                label={"Add new group"}
+                size={Button.sizes.medium}
+                backgroundColor={Colors.blue30}
+                onPress={handleGroupRegistration}
+              />
+            )}
+          </View>
         </View>
       </View>
-    </View>
+      <FAB
+        icon={{ name: "group-add", color: "white" }}
+        color="blue"
+        placement="right"
+        onPress={handleGroupRegistration}
+      />
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  headerView: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "space-evenly",
-    paddingBottom: 8,
-    paddingTop: 8,
-    marginTop:45,
-  },
   container: {
+    height: "100%",
     backgroundColor: "F7F7F2",
     alignItems: "center",
     justifyContent: "center",
