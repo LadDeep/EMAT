@@ -15,9 +15,12 @@ import { FriendsTab } from "./FriendsTab";
 import { ChartsTab } from "./ChartsTab";
 import { GroupDetailsComponent } from "./src/components/GroupDetailsComponent";
 import { GroupRegistrationForm } from "./src/components/GroupRegistrationForm";
+import GroupSettings from "./src/components/GroupSettings";
+import GroupDetailsEdit from "./src/components/GroupDetailsEdit";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Avatar } from "react-native-ui-lib";
 import UserInfo from "./UserInfo";
+import RegisterExpense from "./src/components/RegisterExpense";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const GroupStack = createNativeStackNavigator();
@@ -38,11 +41,12 @@ const GroupScreen = () => {
   const navigation = useNavigation();
   return (
     <GroupStack.Navigator
-      screenOptions={({ route }) => ({
-        headerSearchBarOptions: true,
-      })}
     >
-      <GroupStack.Screen name="GroupsTab" component={GroupsTab} />
+      <GroupStack.Screen
+        name="GroupsTab"
+        component={GroupsTab}
+        options={{ headerSearchBarOptions: true }}
+      />
       <GroupStack.Screen
         name="GroupRegistration"
         component={GroupRegistrationForm}
@@ -50,6 +54,10 @@ const GroupScreen = () => {
       <GroupStack.Screen
         name="GroupDetails"
         component={GroupDetailsComponent}
+      />
+      <GroupStack.Screen
+        name="Add Expense"
+        component={RegisterExpense}
       />
     </GroupStack.Navigator>
   );

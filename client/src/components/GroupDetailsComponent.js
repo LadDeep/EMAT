@@ -1,29 +1,47 @@
-import {React, useEffect} from "react";
+import { React, useEffect, useLayoutEffect } from "react";
 import { Avatar, Text, View, Button } from "react-native-ui-lib";
 import GroupActivitiesList from "./GroupActivitiesList";
 import groupData from "../../api-mock-data.json";
 import OverallExpenseDisplay from "./OverallExpenseDisplay";
 import { StyleSheet } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+import { FAB } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
 
 export const GroupDetailsComponent = ({ route }) => {
+  const navigation = useNavigation();
   const { selectedGroup } = route.params;
-  
+  const handleAddExpense = ()=>{
+    // navigate to Add Expense page
+    navigation.push("Add Expense");
+  }
+
   useEffect(() => {
     //TODO: api call for fetching overall expense list here
-  }, [])
-  
+  }, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Icon
+          name="settings"
+          size={24}
+          onPress={() =>
+            navigation.push("GroupSettings", { selectedGroup: selectedGroup })
+          }
+        />
+      ),
+    });
+  });
 
   return (
     <>
-      <View
-        style={styles.container}
-      >
+      <View style={styles.container}>
         <View flex row marginV-16>
           <Avatar size={76} source={{ uri: selectedGroup.imageUrl }} />
           <View paddingL-24 center>
-            <Text style={styles.fontTitle}>
-              {selectedGroup.name}
-            </Text>
+            <Text style={styles.fontTitle}>{selectedGroup.name}</Text>
           </View>
         </View>
         <OverallExpenseDisplay />
@@ -33,8 +51,14 @@ export const GroupDetailsComponent = ({ route }) => {
         </View>
       </View>
       <View flex>
-        <GroupActivitiesList activities={groupData.expenses}/>
+        <GroupActivitiesList activities={groupData.expenses} />
       </View>
+      <FAB
+        icon={{ name: "money", color: "white" }}
+        color="blue"
+        placement="right"
+        onPress={handleAddExpense}
+      />
     </>
   );
 };
@@ -45,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: "F7F7F2",
     marginHorizontal: 48,
   },
-  detailsContainer:{ flexDirection: "row", marginVertical: 16 },
-  buttonGroup:{ flexDirection: "row", justifyContent: "center" },
+  detailsContainer: { flexDirection: "row", marginVertical: 16 },
+  buttonGroup: { flexDirection: "row", justifyContent: "center" },
   fontTitle: { fontWeight: "bold", fontSize: 24 },
-})
+});
