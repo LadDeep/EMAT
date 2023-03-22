@@ -45,10 +45,11 @@ const styles = StyleSheet.create({
   headerView: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-evenly",
     paddingBottom: 8,
     paddingTop: 8,
+    marginTop:45,
   },
   container: {
     backgroundColor: "F7F7F2",
