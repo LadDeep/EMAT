@@ -7,7 +7,6 @@ import { StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { FAB } from "@rneui/themed";
-import { useNavigation } from "@react-navigation/native";
 
 export const GroupDetailsComponent = ({ route }) => {
   const navigation = useNavigation();
