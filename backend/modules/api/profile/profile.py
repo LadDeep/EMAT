@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 
-from backend.modules.models import User
+from modules.models import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from mongoengine.errors import ValidationError, OperationError
 
