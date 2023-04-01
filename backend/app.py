@@ -15,9 +15,10 @@ def create_app():
     app = Flask(__name__)
 
     app.config["MONGODB_SETTINGS"] = [
-        {"db": "EMAT", "host": "localhost"}
+        {"db": "EMAT", "host": "mongodb+srv://ematasdcg4:ematasdcg4@emat-atlas.z7lxpwg.mongodb.net/EMAT?retryWrites=true&w=majority"}
     ]
     app.debug = True
+    app.secret_key = "secret-key"
     db.init_app(app)
 
     app.config["JWT_SECRET_KEY"] = "secret-key"  # need to change this key and export in the env
