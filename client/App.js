@@ -19,19 +19,29 @@ import GroupSettings from "./src/components/GroupSettings";
 import GroupDetailsEdit from "./src/components/GroupDetailsEdit";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Avatar } from "react-native-ui-lib";
-import UserInfo from "./UserInfo";
 import RegisterExpense from "./src/components/RegisterExpense";
+import instance from "./src/axios";
+import { getValueFor } from "./src/secureStore";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const GroupStack = createNativeStackNavigator();
 const BottomNavigationTab = createBottomTabNavigator();
 
-const AuthenticationScreen = () => {
+const AuthenticationScreen = ({route}) => {
+  const {handleLogin} = route.params
   return (
     <AuthStack.Navigator>
       <AuthStack.Screen name="Launch" component={LaunchPage} />
-      <AuthStack.Screen name="SignIn" component={SignIn} />
-      <AuthStack.Screen name="SignUp" component={SignUp} />
+      <AuthStack.Screen
+        name="SignIn"
+        component={SignIn}
+        initialParams={{ handleLogin }}
+      />
+      <AuthStack.Screen
+        name="SignUp"
+        component={SignUp}
+        initialParams={{ handleLogin }}
+      />
       <AuthStack.Screen name="PasswordRecovery" component={PasswordRecovery} />
       <AuthStack.Screen name="PasswordReset" component={PasswordReset} />
     </AuthStack.Navigator>
@@ -92,9 +102,17 @@ const TabNavigation = () => {
 };
 
 export default function App() {
-  const [isUserLoggedIn, setisUserLoggedIn] = useState(false);
+  const [token, setToken] = useState(null);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(token !== null);
+  const getToken = () => {
+    const token = getValueFor("ACCESS_TOKEN").then((token) => {
+      setToken(token);
+      instance.defaults.headers.common["Authorization"] = "Bearer "+ token;
+    });
+  };  
   const handleLogin = () => {
-    setisUserLoggedIn(!isUserLoggedIn);
+    setIsUserLoggedIn(true);
+    getToken();
   };
   return (
     <NavigationContainer>
@@ -103,6 +121,7 @@ export default function App() {
           <RootStack.Screen
             name="Authentication"
             component={AuthenticationScreen}
+            initialParams={{ handleLogin }}
           />
         ) : (
           <RootStack.Screen name="Root" component={TabNavigation} />

@@ -8,10 +8,12 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
+import { save } from "../../secureStore";
 
-const SignIn = ({ navigation }) => {
+const SignIn = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const {handleLogin} = route.params
 
   const handleSignIn = () => {
   let payload={
@@ -23,6 +25,8 @@ const SignIn = ({ navigation }) => {
     payload,
     (res) => {
      console.log("This is response of registered user",res)
+      save("ACCESS_TOKEN", res.data.access_token)
+      handleLogin()
         },
         (err) => {
           console.log(err);
