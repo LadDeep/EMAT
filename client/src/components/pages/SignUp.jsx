@@ -28,13 +28,15 @@ const SignUp = () => {
     );
   },[]);
   const handleSubmit = () => {
-    let payload ={
-      email:email,
-    password:password,
-    first_name:firstName,
-    last_name:lastName,
-    currency:baseCurrency,
-  }
+    let payload = {
+      email: email,
+      password: password,
+      first_name: firstName,
+      last_name: lastName,
+      currency: baseCurrency,
+      monthly_budget_amount: monthlyBudget,
+      warning_budget_amount: alertValue,
+    };
   console.log("This is payload",payload)
     CreateUser(
       payload,
