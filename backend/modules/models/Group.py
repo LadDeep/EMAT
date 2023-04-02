@@ -14,3 +14,4 @@ class Group(db.Document):
     destruction_date = db.DateTimeField()
     created_at = db.DateTimeField(default=datetime.datetime.utcnow())
     created_by = db.StringField()
+    joiningToken = db.StringField(required=True)

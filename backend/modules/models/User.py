@@ -9,8 +9,9 @@ class User(db.Document):
     email = db.StringField(required=True)
     password = db.StringField(required=True)  
     currency = db.StringField(required=True)
-
-
+    isEmailVerified = db.BooleanField(default=False)
+    verificationToken = db.StringField(required=True)
+    
     def hash_password(self, password):
         self.password = generate_password_hash(password)
 
