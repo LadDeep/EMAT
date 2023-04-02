@@ -29,3 +29,13 @@ app = Flask(__name__)
 
         else:
             netAmount[user] = -(totalExpense / totalUsers) 
+
+
+    # Checking if total amount owed by all the users is 0.
+
+    isZero = all(value == 0 for value in netAmounts.values())
+
+
+    # Returning net amount and balance
+    return jsonify({"Net amount": netAmounts, "isZero": isZero}), 200
+            
