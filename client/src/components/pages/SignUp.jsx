@@ -14,7 +14,19 @@ const SignUp = () => {
   const [baseCurrency, setBaseCurrency] = useState("USD");  
   const [monthlyBudget, setMonthlyBudget] = useState(10);
   const [alertValue, setAlertValue] = useState(0);
+  const [currencyList, setCurrencyList] = useState()
 
+  useEffect(() => {
+    FetchDetailedCurrencyList(
+      (res) => {
+        console.log(res.data.message)
+        setCurrencyList(res.data.message)
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  },[]);
   const handleSubmit = () => {
     let payload ={
       email:email,
@@ -87,11 +99,10 @@ const SignUp = () => {
         style={styles.picker}
         onValueChange={(itemValue, itemIndex) => setBaseCurrency(itemValue)}
       >
-        <Picker.Item label="USD" value="USD" />
-        <Picker.Item label="EUR" value="EUR" />
-        <Picker.Item label="GBP" value="GBP" />
-        <Picker.Item label="INR" value="INR" />
-        <Picker.Item label="JPY" value="JPY" />
+        {currencyList &&
+          currencyList.map((currency, index) => (
+            <Picker.Item label={currency.name} value={currency.code} />
+          ))}
       </Picker>
       <View>
 

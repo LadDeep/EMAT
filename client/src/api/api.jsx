@@ -24,4 +24,26 @@ const LoginUser =async(data,onSuccess,onError) =>{
   }
 }
 
-  export {CreateUser,LoginUser};
+const FetchCurrencyList = async(onSuccess, onError)=>{
+  try{
+    const res = await instance.get("/currency/list",{
+      headers:{"Content-Type":"application/json"},
+    });
+    onSuccess && onSuccess(res);
+  } catch(err){
+    onError && onError(err);
+  }
+}
+
+const FetchDetailedCurrencyList = async(onSuccess, onError)=>{
+  try{
+    const res = await instance.get("/currency/details",{
+      headers:{"Content-Type":"application/json"},
+    });
+    onSuccess && onSuccess(res);
+  } catch(err){
+    onError && onError(err);
+  }
+}
+
+export { CreateUser, LoginUser, FetchCurrencyList, FetchDetailedCurrencyList };
