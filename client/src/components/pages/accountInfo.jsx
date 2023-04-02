@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
+
 
 const accountDetails = () => {
   return (
@@ -37,6 +38,7 @@ const accountDetails = () => {
         />
           <Text style={styles.value1}>Expense Summary</Text>
         </View>
+     
       </View>
       <View style={styles.details}>
       <View style={styles.heading}>
@@ -77,6 +79,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     padding:6,
   },
+ 
 
   avatar: {
     width: 80,

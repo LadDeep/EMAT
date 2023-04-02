@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import {CreateUser} from '../../api/api'
+import { Slider } from "react-native-ui-lib";
 
-// {"email":"curl@gmail.com","password":"1234567890","first_name":"curl","last_name":"Post"}
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState("");
@@ -11,14 +11,17 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [baseCurrency, setBaseCurrency] = useState("USD");
+  const [baseCurrency, setBaseCurrency] = useState("USD");  
+  const [monthlyBudget, setMonthlyBudget] = useState(10);
+  const [alertValue, setAlertValue] = useState(0);
 
   const handleSubmit = () => {
     let payload ={
       email:email,
     password:password,
     first_name:firstName,
-    last_name:lastName
+    last_name:lastName,
+    currency:baseCurrency,
   }
   console.log("This is payload",payload)
     CreateUser(
@@ -27,10 +30,21 @@ const SignUp = () => {
        console.log("This is response of registered user",res)
           },
           (err) => {
-            console.log(err);
+            console.log(JSON.stringify(err,null,4));
           }
         );
   };
+
+
+  const handleMonthlyBudgetChange = (value) => {
+    setMonthlyBudget(value);
+    setAlertValue(value / 2);
+  }
+
+  const handleAlertValueChange = (val) => {
+   setAlertValue(parseInt(val))
+   console.log(parseInt(val))
+  }
 
   return (
     <View style={styles.container}>
@@ -79,7 +93,23 @@ const SignUp = () => {
         <Picker.Item label="INR" value="INR" />
         <Picker.Item label="JPY" value="JPY" />
       </Picker>
+      <View>
 
+      <TextInput
+       style={styles.input}
+        keyboardType='numeric'
+        placeholder='Monthly Budget'
+        value={monthlyBudget}
+        onChangeText={handleMonthlyBudgetChange}
+      />
+  
+      <Slider
+  minimumValue={0}
+  maximumValue={monthlyBudget}
+  onValueChange={(val) =>{handleAlertValueChange(val)} }
+/>
+      <Text style={styles.alertText}>Alert Value: {alertValue}</Text>
+    </View>
       <Button title="Submit" onPress={handleSubmit} />
     </View>
   );
@@ -108,6 +138,9 @@ const styles = StyleSheet.create({
     width: 200,
     height: 44,
     marginBottom: 20,
+  },
+  slider: {
+    marginBottom: 10,
   },
 });
 
