@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import {CreateUser} from '../../api/api'
+import {CreateUser, FetchDetailedCurrencyList} from '../../api/api'
 import { Slider } from "react-native-ui-lib";
-
+import { useNavigation } from "@react-navigation/native";
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState("");
@@ -15,6 +15,7 @@ const SignUp = () => {
   const [monthlyBudget, setMonthlyBudget] = useState(10);
   const [alertValue, setAlertValue] = useState(0);
   const [currencyList, setCurrencyList] = useState()
+  const navigation = useNavigation();
 
   useEffect(() => {
     FetchDetailedCurrencyList(
@@ -42,6 +43,8 @@ const SignUp = () => {
       payload,
       (res) => {
        console.log("This is response of registered user",res)
+       alert("Registered Successfully")
+       navigation.navigate("SignIn")
           },
           (err) => {
             console.log(JSON.stringify(err,null,4));
