@@ -153,3 +153,37 @@ def updateGroup():
         status = 415
     
     return result,status
+
+@group.route("/stats",methods=['GET'])
+def getGroupStats():
+    result = {"status": False}
+    group_id = request.args.get("group_id")
+    pipeline = [{ "$unwind": "$expenses" }, { "$group": { "_id": "$expenses.spent_by", "total": { "$sum": "$expenses.amount" } } }]
+    if group_id:
+        try:
+            pipeline.insert(0,{ "$match": { "group_id": group_id } })
+            group_stats = Group.aggregate(*pipeline)
+            group_stats_json = [x.to_json() for x in group_stats]
+            user_ids = [x["_id"] for x in group_stats_json]
+            result["status"] = True
+            if len(user_ids) > 0:
+                users = User.objects.filter(user_id__in=user_ids)
+                keys_needed = ['first_name','last_name','email']
+                for user in users:
+                    index = user_ids.index(user.user_id)
+                    for key in keys_needed:
+                        group_stats_json[index][key] = user[key]
+                
+                result["response"] = group_stats_json
+            else:
+                result["response"] = f"No Expenses in group: {group_id}"
+        except Exception as e:
+            traceback_message = traceback.format_exc()
+            print(traceback_message)
+            result['error'] = f"{e.__class__.__name__} occured"
+            result['traceback'] = traceback_message
+    else:
+        result["response"] = f"Incomplete Query Parameters: 'group_id' is missing"
+
+    return result
+            
