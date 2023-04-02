@@ -1,13 +1,25 @@
-import React from "react";
+import { useState, useEffect, React } from "react";
 import { StyleSheet } from "react-native";
 import { View, Button, Colors } from "react-native-ui-lib";
 import { useNavigation } from "@react-navigation/native";
 import { GroupList } from "../GroupList";
 import { FAB } from "@rneui/themed";
-import data from "../../../data.json";
-
+import { FetchGroups } from "../../api/api";
 export const GroupsTab = () => {
+  const [groups, setGroups] = useState(null);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    FetchGroups(
+      (res) => {
+        setGroups(res.data.response);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }, []);
+
   const handleGroupRegistration = () => {
     navigation.push("GroupRegistration");
   };
@@ -16,8 +28,8 @@ export const GroupsTab = () => {
       <View>
         <View>
           <View style={styles.container}>
-            {!data.groups ? (
-              <GroupList />
+            {groups && groups.length!==0 ? (
+              <GroupList list={groups}/>
             ) : (
               <Button
                 label={"Add new group"}

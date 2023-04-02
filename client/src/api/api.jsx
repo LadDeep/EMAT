@@ -24,6 +24,17 @@ const LoginUser =async(data,onSuccess,onError) =>{
   }
 }
 
+const FetchGroups = async(onSuccess, onError)=>{
+  try{
+    const res = await instance.get("/group/list",{
+      headers:{"Content-Type":"application/json"},
+    });
+    onSuccess && onSuccess(res);
+  } catch(err){
+    onError && onError(err);
+  }
+}
+
 const FetchCurrencyList = async(onSuccess, onError)=>{
   try{
     const res = await instance.get("/currency/list",{
@@ -46,4 +57,4 @@ const FetchDetailedCurrencyList = async(onSuccess, onError)=>{
   }
 }
 
-export { CreateUser, LoginUser, FetchCurrencyList, FetchDetailedCurrencyList };
+export { CreateUser, LoginUser, FetchGroups, FetchCurrencyList, FetchDetailedCurrencyList };
