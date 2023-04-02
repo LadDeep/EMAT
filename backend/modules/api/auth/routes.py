@@ -49,7 +49,8 @@ def register():
             first_name = data["first_name"]
             last_name = data["last_name"]
             currency = data["currency"]
-
+            monthly_budget_amount = data["monthly_budget_amount"]
+            warning_budget_amount = data["warning_budget_amount"]
             ## not needed email & password will be validated on the frontend
             # validate_email(email)
             # if not validate_password(password):
@@ -69,7 +70,7 @@ def register():
             sendEmail(mail_object,email)
 
             newUser = User(user_id=user_id, first_name=first_name,
-                           last_name=last_name, email=email, currency = currency,verificationToken=verification_code)
+                           last_name=last_name, email=email, currency = currency,verificationToken=verification_code,monthly_budget_amount=monthly_budget_amount,warning_budget_amount=warning_budget_amount)
 
             newUser.hash_password(password)
 

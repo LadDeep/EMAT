@@ -11,6 +11,8 @@ class User(db.Document):
     currency = db.StringField(required=True)
     isEmailVerified = db.BooleanField(default=False)
     verificationToken = db.StringField(required=True)
+    monthly_budget_amount = db.FloatField(required=True)
+    warning_budget_amount = db.FloatField(required=True)
     
     def hash_password(self, password):
         self.password = generate_password_hash(password)
