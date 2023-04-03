@@ -174,7 +174,20 @@ def getGroupStats():
                     for key in keys_needed:
                         group_stats_json[index][key] = user[key]
                 
-                result["response"] = group_stats_json
+                group_data = Group.objects.get_or_404(group_id=group_id)
+                participants = group_data.participants
+                amounts_owed_all = []
+                total_expense = sum([x["total"] for x in group_stats_json])
+                number_participants = len(participants)
+                for user in participants:
+                    amount_owed = {}
+                    amount_owed["_id"] = user
+                    amount_owed["owed"] =  0 - (total_expense/number_participants)
+                    if user in user_ids:
+                        index = user_ids.index(user.user_id)
+                        amount_owed["owed"] += group_stats_json[index]["total"] 
+                          
+                result["response"] = {"max":max(group_stats_json,key=lambda x: x["total"]),"min":min(amounts_owed_all,key=lambda x: x["owed"])}
             else:
                 result["response"] = f"No Expenses in group: {group_id}"
         except Exception as e:
