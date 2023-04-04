@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TextInput, Button, StyleSheet } from 'react-native';
+import { Slider } from "react-native-ui-lib";
 
 const AccountInfoScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [monthlyBudget, setMonthlyBudget] = useState(10);
+  const [alertValue, setAlertValue] = useState(0);
 
   const handleSave = () => {
     // TODO: Handle saving changes to account information
   }
+ const handleMonthlyBudgetChange = (value) => {
+    setMonthlyBudget(value);
+    setAlertValue(value / 2);
+  }
 
+  const handleAlertValueChange = (val) => {
+   setAlertValue(parseInt(val))
+   console.log(parseInt(val))
+  }
 
 
   return (
@@ -36,6 +47,22 @@ const AccountInfoScreen = () => {
           placeholder="Enter your email"
         />
       </View>
+      <View style={styles.inputContainer}>
+      <TextInput
+       style={styles.input}
+        keyboardType='numeric'
+        placeholder='Monthly Budget'
+        value={monthlyBudget}
+        onChangeText={handleMonthlyBudgetChange}
+      />
+           <Slider
+  minimumValue={0}
+  maximumValue={monthlyBudget}
+  onValueChange={(val) =>{handleAlertValueChange(val)} }
+/>
+
+      <Text style={styles.alertText}>Alert Value: {alertValue}</Text>
+    </View>
       <Button title="Save" onPress={handleSave} />
     </View>
   );

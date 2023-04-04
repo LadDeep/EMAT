@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request
 from modules.models import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from mongoengine.errors import ValidationError, OperationError
-
+import traceback
 
 profile = Blueprint('profile', __name__)
 
@@ -26,97 +26,41 @@ def getProfile():
     except Exception as e:
         return jsonify({"status": False, "error": str(e)}), 500
 
-# update user email
-@profile.route("/update_email", methods=["PUT"])
+
+@profile.route("/update", methods=["PUT"])
 @jwt_required()
-def update_email():
+def update_user():
+    content_type = request.headers.get('Content-Type')
+    user_id_verified = get_jwt_identity()
+    result = {"status": False}
+    if content_type == 'application/json':
+        if user_id_verified:
+            try:
+                user = User.objects.get_or_404(user_id = user_id_verified)
+                updatable_fields = ['first_name','last_name','currency','monthly_budget_amount','warning_budget_amount']
+                json_data = request.json
+                json_list_keys = list(json_data.keys())
 
-    try:
+                keys_to_update = [x for x in json_list_keys if x in updatable_fields]
 
-        data = request.get_json()
-        newEmail = data["email"]
+                for key in keys_to_update:
+                    user[key] = json_data[key]
+                
+                user.save()
+                result['status'] = True
+                result['response'] = f"User Details for {user_id_verified} updated"
+            except Exception as e:
+                traceback_message = traceback.format_exc()
+                print(traceback_message)
+                result['error'] = f"{e.__class__.__name__} occured"
+                result['traceback'] = traceback_message
+        else:
+            result['response'] = 'User session Expired'
+    else:
+        result['response'] = f'Unsupported Content Type in Headers: {content_type} Supported: "application/json"'
 
-        if newEmail == "":
-            return jsonify({"status": False, "error": "the provided email is empty"}), 401
-        elif User.objects(email=newEmail):
-            return jsonify({"status": False, "error": "the email has already existed"}), 409
-    
-    # here @Nitesh will do the email verification
-    # if not validate_email:
-    #     return jsonify({"status": False, "error": "the email verfied is failed"}), 401
+    return result
 
-    
-        user = User.objects(user_id=get_jwt_identity())
-        user.update(email = newEmail)
-        user.save()
-        return jsonify({
-            "status": True,
-            "message": "Email updated successfully"
-        }), 200
-    
-    except OperationError as e:
-        return jsonify({"status": False, "error": str(e)}), 401
-    except Exception as e:
-        jsonify({"status": False, "error": str(e)}), 500
-
-# update last_name 
-@profile.route("/update_last_name", methods=["PUT"])
-@jwt_required()
-def update_last_name():
-
-    try:
-
-        data = request.get_json()
-        new_last_name = data["last_name"]
-
-        if new_last_name == "":
-            return jsonify({"status": False, "error": "the provided user last name is empty"}), 401
-
-        user = User.objects(user_id=get_jwt_identity())
-        if user.last_name == new_last_name:
-            return jsonify({"status": False, "error": "the last name has already existed"}), 409
-
-        user.update(last_name = new_last_name)
-        user.save()
-        return jsonify({
-            "status": True,
-            "message": "Last name updated successfully"
-        }), 200
-    
-    except OperationError as e:
-        return jsonify({"status": False, "error": str(e)}), 401
-    except Exception as e:
-        jsonify({"status": False, "error": str(e)}), 500
-
-# update first_name 
-@profile.route("/update_first_name", methods=["PUT"])
-@jwt_required()
-def update_first_name():
-
-    try:
-
-        data = request.get_json()
-        new_first_name = data["first_name"]
-
-        if new_first_name == "":
-            return jsonify({"status": False, "error": "the provided user first name is empty"}), 401
-
-        user = User.objects(user_id=get_jwt_identity())
-        if user.first_name == new_first_name:
-            return jsonify({"status": False, "error": "the first name has already existed"}), 409
-
-
-        user.update(first_name = new_first_name)
-        user.save()
-        return jsonify({
-            "status": True,
-            "message": "First name updated successfully"
-        }), 200
-    
-    except OperationError as e:
-        return jsonify({"status": False, "error": str(e)}), 401
-    except Exception as e:
-        jsonify({"status": False, "error": str(e)}), 500
 
 # delete user
 @profile.route("/delete_user")
