@@ -1,5 +1,6 @@
 import datetime
 import uuid
+import json
 from smtplib import SMTPAuthenticationError, SMTPServerDisconnected, SMTPException
 from flask import request, jsonify, Blueprint, current_app, session
 from flask_jwt_extended import create_access_token, decode_token, unset_jwt_cookies
@@ -8,7 +9,8 @@ from werkzeug.security import generate_password_hash
 from modules.models.User import User
 from mongoengine.errors import FieldDoesNotExist, DoesNotExist
 from jwt.exceptions import ExpiredSignatureError, DecodeError, InvalidTokenError
-
+from modules.utils.utilFunctions import sendEmail,generate_verification_code
+import traceback
 auth = Blueprint('auth', __name__)
 
 
@@ -47,7 +49,8 @@ def register():
             first_name = data["first_name"]
             last_name = data["last_name"]
             currency = data["currency"]
-
+            monthly_budget_amount = data["monthly_budget_amount"]
+            warning_budget_amount = data["warning_budget_amount"]
             ## not needed email & password will be validated on the frontend
             # validate_email(email)
             # if not validate_password(password):
@@ -58,9 +61,16 @@ def register():
             if db_user:
                 status = False
                 return jsonify({"status": status, "error": "User with the email has already existed"}), 409
+            
+            verification_code = generate_verification_code()
+            user_id=uuid.uuid4()
+            base_URL = current_app.config['BASE_URL']
+            
+            mail_object = {'subject': 'EMAT - Registration', 'message': f'Verification Code: "{verification_code}"'}
+            sendEmail(mail_object,email)
 
-            newUser = User(user_id=uuid.uuid4(), first_name=first_name,
-                           last_name=last_name, email=email, currency = currency)
+            newUser = User(user_id=user_id, first_name=first_name,
+                           last_name=last_name, email=email, currency = currency,verificationToken=verification_code,monthly_budget_amount=monthly_budget_amount,warning_budget_amount=warning_budget_amount)
 
             newUser.hash_password(password)
 
@@ -113,6 +123,7 @@ def login():
             status = False
             return jsonify({"status": status, "error": "User with the email not found"}), 404
         except Exception as e:
+            print(traceback.format_exc())
             status = False
             return jsonify({"status": status, "error": str(e)}), 500
 
@@ -183,27 +194,59 @@ def resetPassword(reset_token):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
+@auth.route('/verify-user',methods=["GET"])
+def verifyUser():
+    user_id = request.args.get("user_id")
+    verification_token = request.args.get("verification_code")
+    result = {"status": False}
+    if user_id is not None and verification_token is not None:
+        try:
+            db_user = User.objects.get_or_404(user_id=user_id)
+            user_dict = json.loads(db_user.to_json())
+            if user_dict.get("verificationToken",None) == verification_token:
+                db_user["isEmailVerified"] = True
+                db_user.save()
+                result["status"] = True
+                result["response"] = "User successfully verified"
+            else:
+                result["response"] = "Verification Token does not match for user {user_id}"
+        except Exception as e:
+            traceback_message = traceback.format_exc()
+            print(traceback_message)
+            result['error'] = f"{e.__class__.__name__} occured"
+            result['traceback'] = traceback_message
+    else:
+        error_messages = []
+        if user_id is None:
+            error_messages.append("User ID 'user_id' must be present")
+        
+        if verification_token is None:
+            error_messages.append("Verification Token 'verification_code' must be present")
+        
+        result["response"] = f"Incomplete Query Parameters: {' and '.join(error_messages)} in query parameters"
 
-def send_email(reset_token, user):
-    url = request.base_url
-    # user_token = user.get_reset_token()
-    message = Message(subject="Reset Password", recipients=[user.email], sender="noreply@google.com")
-    message.body = f''' 
+    return result
+
+# def send_email(reset_token, user):
+#     url = request.base_url
+#     # user_token = user.get_reset_token()
+#     message = Message(subject="Reset Password", recipients=[user.email], sender="noreply@google.com")
+#     message.body = f''' 
     
-    A password reset for your account was requested.
-    Please click the link below to change your password.
+#     A password reset for your account was requested.
+#     Please click the link below to change your password.
 
-    {url + "/" + reset_token}
+#     {url + "/" + reset_token}
 
-    Note that this link is valid for 12 hours. After the time limit has expired, you will have to resubmit the request for a password reset.
+#     Note that this link is valid for 12 hours. After the time limit has expired, you will have to resubmit the request for a password reset.
     
     
-    '''
+#     '''
 
-    try:
-        current_app.mail.send(message)
-    except (SMTPAuthenticationError, SMTPServerDisconnected, SMTPException):
-        return jsonify({"error": "Mail server does not work"}), 400
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+#     try:
+#         current_app.mail.send(message)
+#     except (SMTPAuthenticationError, SMTPServerDisconnected, SMTPException):
+#         return jsonify({"error": "Mail server does not work"}), 400
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
 
