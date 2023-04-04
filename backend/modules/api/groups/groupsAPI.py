@@ -166,6 +166,7 @@ def updateGroup():
     return result,status
 
 @group.route("/stats",methods=['GET'])
+@jwt_required()
 def getGroupStats():
     result = {"status": False}
     group_id = request.args.get("group_id")
