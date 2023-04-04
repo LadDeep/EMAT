@@ -6,9 +6,10 @@ from modules.api.groups.groupsAPI import group
 from modules.api.expense.expenseAPI import expense
 from modules.api.activities.activitiesAPI import activities_bp
 from modules.api.profile.profile import profile
+from modules.api.currency.currency import currency
+from modules.api.settleUp.settleUpApi import settleUp
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
-from modules.api.currency.currency import currency
 
 
 def create_app():
@@ -39,6 +40,7 @@ def create_app():
     app.register_blueprint(group,url_prefix='/group')
     app.register_blueprint(expense,url_prefix='/expense')
     app.register_blueprint(activities_bp,url_prefix='/activities')
+    app.register_blueprint(settleUp,url_prefix='/settleUp')
 
     return app
 # def ping():
