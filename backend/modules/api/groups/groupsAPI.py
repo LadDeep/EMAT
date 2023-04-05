@@ -76,6 +76,11 @@ def listGroups():
         try:
             groups = Group.objects.filter(participants__in=[user_id_verified])
             groups = [json.loads(group.to_json()) for group in groups]
+            for group in groups:
+                spent = sum([expense.get("amount",0) for expense in group.get("expenses",[]) if expense.get('spent_by',None) == user_id_verified])
+                owed = sum([expense.get("amount",0) for expense in group.get("expenses",[]) if expense.get('spent_by',None) != user_id_verified])
+                group['standing_amount'] = spent - owed
+                
             result["response"] = groups
             status = 200
            
