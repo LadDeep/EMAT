@@ -1,25 +1,61 @@
-import { React, useEffect, useLayoutEffect } from "react";
+import { React, useState, useEffect, useLayoutEffect } from "react";
 import { Avatar, Text, View, Button } from "react-native-ui-lib";
 import GroupActivitiesList from "./GroupActivitiesList";
 import groupData from "../../api-mock-data.json";
 import OverallExpenseDisplay from "./OverallExpenseDisplay";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { FAB } from "@rneui/themed";
+import { getValueFor } from "../secureStore";
 
 export const GroupDetailsComponent = ({ route }) => {
   const navigation = useNavigation();
   const { selectedGroup } = route.params;
-  const handleAddExpense = ()=>{
+  const [userIdMap, setUserIdMap] = useState();
+  const [expenses, setExpenses] = useState();
+  const [userId, setUserId] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  const handleAddExpense = () => {
     // navigate to Add Expense page
-    navigation.push("Add Expense");
-  }
+    navigation.push("AddExpense");
+  };
 
+  const fetchUserIdFromSecureStore = async () => {
+    let ownUser = await getValueFor("USER_ID");
+    setUserId(ownUser);
+  };
   useEffect(() => {
     //TODO: api call for fetching overall expense list here
+    fetchUserIdFromSecureStore();
+    FetchOtherUserProfile(
+      { user_id: selectedGroup.participants },
+      (res) => {
+        if (res.data.status) {
+          const map = new Map();
+          res.data.response.forEach((element) => {
+            map.set(element.user_id, element);
+          });          
+          setUserIdMap(map);
+        }
+      },
+      (err) => {}
+    );
   }, []);
 
+  useEffect(() => {
+    const exp = selectedGroup.expenses.map((expense) => {
+      const details =
+        userIdMap?.has(expense.spent_by) && userIdMap.get(expense.spent_by);
+      const name =
+        details?.spent_by === userId
+          ? "You"
+          : details?.first_name + " " + details?.last_name;
+      return { ...expense, spent_by_name: name };
+    });
+    setExpenses(exp);
+    setIsLoading(false);
+  }, [userId, userIdMap]);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -34,13 +70,20 @@ export const GroupDetailsComponent = ({ route }) => {
     });
   });
 
+  if (isLoading) {
+    return (
+      <View flex center>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
   return (
     <>
       <View style={styles.container}>
         <View flex row marginV-16>
           <Avatar size={76} source={{ uri: selectedGroup.imageUrl }} />
           <View paddingL-24 center>
-            <Text style={styles.fontTitle}>{selectedGroup.name}</Text>
+            <Text style={styles.fontTitle}>{selectedGroup.group_name}</Text>
           </View>
         </View>
         <OverallExpenseDisplay />
@@ -49,8 +92,12 @@ export const GroupDetailsComponent = ({ route }) => {
           <Button label={"Notify"} style={{ margin: 12 }}></Button>
         </View>
       </View>
-      <View flex>
-        <GroupActivitiesList activities={groupData.expenses} />
+      <View flex center>
+        {expenses && expenses.length !== 0 ? (
+          <GroupActivitiesList activities={expenses} />
+        ) : (
+          <Text>No expenses</Text>
+        )}
       </View>
       <FAB
         icon={{ name: "money", color: "white" }}
