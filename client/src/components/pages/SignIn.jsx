@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { save } from "../../secureStore";
 
@@ -14,6 +15,8 @@ const SignIn = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const {handleLogin} = route.params
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSignIn = () => {
   let payload={
@@ -21,17 +24,25 @@ const SignIn = ({ navigation, route }) => {
     password:password
   }
   console.log("This is my payload",payload);
+  setError(null)
   LoginUser(
     payload,
     (res) => {
      console.log("This is response of registered user",res)
+     if(res.data.status){
       save("ACCESS_TOKEN", res.data.access_token)
+       save("USER_ID", res.data.user_id)
       handleLogin()
+      } else {
+        setError(res.data.message)
+      }
         },
         (err) => {
           console.log(err);
+      setError(err.response.data.error)
         }
       );
+    setIsLoading(false);
   };
 
   return (
@@ -56,12 +67,20 @@ const SignIn = ({ navigation, route }) => {
         value={password}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          setIsLoading(true);
+          handleSignIn();
+        }}
+      >
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <Text onPress={() => navigation.push("PasswordRecovery")}>
         Forgot Password?
       </Text>
+      {isLoading && <ActivityIndicator size="large" color="blue" />}
+      {error && <Text style={styles.error}>{error}</Text>}
     </View>
   );
 };
@@ -100,6 +119,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
+  error: {
+    color: "red",
+  }
 });
 
 export default SignIn;
