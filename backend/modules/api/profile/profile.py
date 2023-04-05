@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 
-from modules.models import User
+from modules.models.User import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from mongoengine.errors import ValidationError, OperationError
 import traceback
@@ -95,18 +95,19 @@ def getUserEmail():
     except Exception as e:
         return jsonify({"status": False, "error": str(e)}), 500
 
-@profile.route("/fullname", methods=["GET"])
-def getFullName():
+@profile.route("/other_user_details", methods=["POST"])
+def getOtherUserDetails():
     result = {"status":False}
-    user_id = request.args.get("user_id")
-    if user_id:
+    content_type = request.headers.get('Content-Type')
+    if content_type == 'application/json':
+        json_body = request.json
+        user_ids = json_body.get('user_id',None)
+    if user_ids is not None:
         try:
-            data = request.get_json()
-            userId = data["user_id"]
-            user = User.objects(user_id=userId)
+            users = User.objects.filter(user_id__in=user_ids)
 
             result["status"] = True
-            result["response"] = {"message": user.first_name + " " + user.last_name}
+            result["response"] = users
         except Exception as e:
             traceback_message = traceback.format_exc()
             print(traceback_message)
@@ -114,6 +115,6 @@ def getFullName():
             result['traceback'] = traceback_message
     
     else:
-        result["response"] = "Missing Query Parameter: 'user_id'"
+        result["response"] = "Missing Request Body key: 'user_id' should be a non-empty array"
     
     return result
