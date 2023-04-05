@@ -31,6 +31,7 @@ const accountDetails = ({ route }) => {
 
   }, [])
   const handleUserLogout = () => {
+    console.log("LOGOUT BUTTON is triggered")
     handleLogout()
   }
   return (
@@ -93,8 +94,8 @@ const accountDetails = ({ route }) => {
           <Text style={styles.value1}>Rate Us</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.logoutButton}>
-        <Text style={styles.logoutButtonText} onPress={handleUserLogout} >Logout</Text>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleUserLogout}>
+        <Text style={styles.logoutButtonText}  >Logout</Text>
       </TouchableOpacity>
     </View>
   );

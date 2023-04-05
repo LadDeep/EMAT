@@ -16,7 +16,7 @@ import { GroupRegistrationForm } from "./src/components/GroupRegistrationForm";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import RegisterExpense from "./src/components/RegisterExpense";
 import instance from "./src/axios";
-import { getValueFor } from "./src/secureStore";
+import { deleteKey, getValueFor } from "./src/secureStore";
 import AccountInfoScreen from "./src/components/pages/accountInfoScreen";
 import accountDetails from "./src/components/pages/accountInfo";
 import ChartDisplay from "./src/components/pages/ChartDisplay";
@@ -133,6 +133,9 @@ export default function App() {
   const handleLogout = async () => {
     await deleteKey("ACCESS_TOKEN")
     await deleteKey("USER_ID")
+    let token = await getValueFor("ACCESS_TOKEN")
+
+    console.log(" getValueFor", token)
     setToken(null);
     instance.defaults.headers.common["Authorization"] = null;
     setIsUserLoggedIn(false);
