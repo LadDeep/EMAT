@@ -104,15 +104,12 @@ const TabNavigation = () => {
 export default function App() {
   const [token, setToken] = useState(null);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(token !== null);
-  const getToken = () => {
-    const token = getValueFor("ACCESS_TOKEN").then((token) => {
+  const handleLogin = async () => {
+    let token = await getValueFor("ACCESS_TOKEN")
+    console.log("token", token, Date.now())
       setToken(token);
       instance.defaults.headers.common["Authorization"] = "Bearer "+ token;
-    });
-  };  
-  const handleLogin = () => {
     setIsUserLoggedIn(true);
-    getToken();
   };
   return (
     <NavigationContainer>

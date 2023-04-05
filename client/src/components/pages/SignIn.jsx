@@ -27,11 +27,11 @@ const SignIn = ({ navigation, route }) => {
   setError(null)
   LoginUser(
     payload,
-    (res) => {
+    async (res) => {
      console.log("This is response of registered user",res)
      if(res.data.status){
-      save("ACCESS_TOKEN", res.data.access_token)
-       save("USER_ID", res.data.user_id)
+       await save("ACCESS_TOKEN", res.data.access_token)
+       await save("USER_ID", res.data.user_id)
       handleLogin()
       } else {
         setError(res.data.message)
