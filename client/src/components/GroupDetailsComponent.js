@@ -8,7 +8,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { FAB } from "@rneui/themed";
 import { getValueFor } from "../secureStore";
-
+import {FetchOtherUserProfile } from '../api/api'
 export const GroupDetailsComponent = ({ route }) => {
   const navigation = useNavigation();
   const { selectedGroup } = route.params;

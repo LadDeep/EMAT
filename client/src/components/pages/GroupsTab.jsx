@@ -13,6 +13,7 @@ export const GroupsTab = () => {
     FetchGroups(
       (res) => {
         if(res.data.status){
+          console.log(res.data.response);
         setGroups(res.data.response);
         }
       },
