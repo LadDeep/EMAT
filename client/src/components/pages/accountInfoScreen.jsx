@@ -1,40 +1,86 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TextInput, Button, StyleSheet } from 'react-native';
 import { Slider } from "react-native-ui-lib";
+import { UpdateUser, UserDetails } from '../../api/api';
 
 const AccountInfoScreen = () => {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [monthlyBudget, setMonthlyBudget] = useState(10);
   const [alertValue, setAlertValue] = useState(0);
 
+
+  useEffect(() => {
+    UserDetails(
+      (res) => {
+        if (res.data.status) {
+          setFirstName(res.data.message.first_name)
+          setLastName(res.data.message.last_name)
+          setEmail(res.data.message.email)
+          setMonthlyBudget(res.data.message.monthly_budget_amount)
+          setAlertValue(res.data.message.warning_budget_amount)
+          console.log(res)
+
+        }
+      },
+      (err) => {
+        console.log(err)
+      })
+  }, [])
+
+
   const handleSave = () => {
-    // TODO: Handle saving changes to account information
+    let payload = {
+      first_name: firstName,
+      last_name: lastName,
+      monthly_budget_amount: monthlyBudget,
+      warning_budget_amount: alertValue,
+    }
+    console.log("This is the payload", payload)
+    UpdateUser(
+      payload,
+      (res) => {
+        console.log(res)
+      },
+      (err) => {
+        console.log(err);
+      }
+    )
   }
- const handleMonthlyBudgetChange = (value) => {
+  const handleMonthlyBudgetChange = (value) => {
     setMonthlyBudget(value);
     setAlertValue(value / 2);
   }
 
   const handleAlertValueChange = (val) => {
-   setAlertValue(parseInt(val))
-   console.log(parseInt(val))
+    setAlertValue(parseInt(val))
+    console.log(parseInt(val))
   }
 
 
   return (
     <View style={styles.container}>
-      <Image 
-        source={require('../../../assets/download.jpeg')} 
-        style={styles.profileImage} 
+      <Image
+        source={require('../../../assets/download.jpeg')}
+        style={styles.profileImage}
       />
       <Text style={styles.title}>Account Information</Text>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Name:</Text>
+        <Text style={styles.label}>First Name:</Text>
         <TextInput
           style={styles.input}
-          value={name}
-          onChangeText={setName}
+          value={firstName}
+          onChangeText={setFirstName}
+          placeholder="Enter your name"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Last Name:</Text>
+        <TextInput
+          style={styles.input}
+          value={lastName}
+          onChangeText={setLastName}
           placeholder="Enter your name"
         />
       </View>
@@ -48,21 +94,21 @@ const AccountInfoScreen = () => {
         />
       </View>
       <View style={styles.inputContainer}>
-      <TextInput
-       style={styles.input}
-        keyboardType='numeric'
-        placeholder='Monthly Budget'
-        value={monthlyBudget}
-        onChangeText={handleMonthlyBudgetChange}
-      />
-           <Slider
-  minimumValue={0}
-  maximumValue={monthlyBudget}
-  onValueChange={(val) =>{handleAlertValueChange(val)} }
-/>
+        <TextInput
+          style={styles.input}
+          keyboardType='numeric'
+          placeholder='Monthly Budget'
+          value={monthlyBudget}
+          onChangeText={handleMonthlyBudgetChange}
+        />
+        <Slider
+          minimumValue={0}
+          maximumValue={monthlyBudget}
+          onValueChange={(val) => { handleAlertValueChange(val) }}
+        />
 
-      <Text style={styles.alertText}>Alert Value: {alertValue}</Text>
-    </View>
+        <Text style={styles.alertText}>Alert Value: {alertValue}</Text>
+      </View>
       <Button title="Save" onPress={handleSave} />
     </View>
   );

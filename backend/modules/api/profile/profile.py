@@ -15,7 +15,7 @@ def getProfile():
     try:
 
         userId = get_jwt_identity()
-        user = User.objects(user_id = userId)
+        user = User.objects.get_or_404(user_id = userId)
         if not user:
             return jsonify({"status": False, "error": "the user does not exist"}), 404
     

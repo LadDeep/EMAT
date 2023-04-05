@@ -14,40 +14,40 @@ import { save } from "../../secureStore";
 const SignIn = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {handleLogin} = route.params
+  const { handleLogin } = route.params
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSignIn = () => {
-  let payload={
-    email:email,
-    password:password
-  }
-  console.log("This is my payload",payload);
-  setError(null)
-  LoginUser(
-    payload,
-    async (res) => {
-     console.log("This is response of registered user",res)
-     if(res.data.status){
-       await save("ACCESS_TOKEN", res.data.access_token)
-       await save("USER_ID", res.data.user_id)
-      handleLogin()
-      } else {
-        setError(res.data.message)
-      }
-        },
-        (err) => {
-          console.log(err);
-      setError(err.response.data.error)
+    let payload = {
+      email: email,
+      password: password
+    }
+    console.log("This is my payload", payload);
+    setError(null)
+    LoginUser(
+      payload,
+      async (res) => {
+        console.log("This is response of registered user", res)
+        if (res.data.status) {
+          await save("ACCESS_TOKEN", res.data.access_token)
+          await save("USER_ID", res.data.user_id)
+          handleLogin()
+        } else {
+          setError(res.data.message)
         }
-      );
+      },
+      (err) => {
+        console.log(err);
+        setError(err.response.data.error)
+      }
+    );
     setIsLoading(false);
   };
 
   return (
     <View style={styles.container}>
-    <Image style={styles.img} source={require('../../../assets/download.jpeg')} />
+      <Image style={styles.img} source={require('../../../assets/download.jpeg')} />
       <Text style={styles.title}>Welcome to E-Mat</Text>
       <TextInput
         style={styles.input}
@@ -90,12 +90,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor:'F7F7F2',
+    backgroundColor: 'F7F7F2',
   },
-  img:{
-    width:90,
-    height:90,
-    marginBottom:40,
+  img: {
+    width: 90,
+    height: 90,
+    marginBottom: 40,
   },
   title: {
     fontSize: 24,

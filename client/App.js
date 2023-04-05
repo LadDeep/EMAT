@@ -10,25 +10,24 @@ import LaunchPage from "./src/components/pages/LaunchPage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useState } from "react";
 import { GroupsTab } from "./src/components/pages/GroupsTab";
-import { ActivitiesTab } from "./ActivitiesTab";
-import { FriendsTab } from "./FriendsTab";
-import { ChartsTab } from "./ChartsTab";
+import Activities from "./ActivitiesTab";
 import { GroupDetailsComponent } from "./src/components/GroupDetailsComponent";
 import { GroupRegistrationForm } from "./src/components/GroupRegistrationForm";
-import GroupSettings from "./src/components/GroupSettings";
-import GroupDetailsEdit from "./src/components/GroupDetailsEdit";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { Avatar } from "react-native-ui-lib";
 import RegisterExpense from "./src/components/RegisterExpense";
 import instance from "./src/axios";
 import { getValueFor } from "./src/secureStore";
+import AccountInfoScreen from "./src/components/pages/accountInfoScreen";
+import accountDetails from "./src/components/pages/accountInfo";
+import ChartDisplay from "./src/components/pages/ChartDisplay";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const GroupStack = createNativeStackNavigator();
+const UserDetailsStack = createNativeStackNavigator();
 const BottomNavigationTab = createBottomTabNavigator();
 
-const AuthenticationScreen = ({route}) => {
-  const {handleLogin} = route.params
+const AuthenticationScreen = ({ route }) => {
+  const { handleLogin } = route.params
   return (
     <AuthStack.Navigator>
       <AuthStack.Screen name="Launch" component={LaunchPage} />
@@ -72,8 +71,28 @@ const GroupScreen = () => {
     </GroupStack.Navigator>
   );
 };
+const UserDetailsScreen = ({ route }) => {
+  const { handleLogout } = route.params;
+  return (
+    <UserDetailsStack.Navigator
+    >
+      <UserDetailsStack.Screen
+        name="AccountDetails"
+        component={accountDetails}
+        initialParams={{ handleLogout }}
+      />
+      <UserDetailsStack.Screen
+        name="AccountEdit"
+        component={AccountInfoScreen}
+      />
 
-const TabNavigation = () => {
+    </UserDetailsStack.Navigator>
+  );
+};
+
+const TabNavigation = ({ route }) => {
+  const { handleLogout } = route.params
+
   return (
     <BottomNavigationTab.Navigator
       screenOptions={({ route }) => ({
@@ -82,7 +101,7 @@ const TabNavigation = () => {
           let iconName;
           if (route.name === "Groups") {
             iconName = "groups";
-          } else if (route.name === "Friends") {
+          } else if (route.name === "User Detail") {
             iconName = "person";
           } else if (route.name === "Activity") {
             iconName = "payments";
@@ -94,9 +113,9 @@ const TabNavigation = () => {
       })}
     >
       <BottomNavigationTab.Screen name="Groups" component={GroupScreen} />
-      <BottomNavigationTab.Screen name="Friends" component={FriendsTab} />
-      <BottomNavigationTab.Screen name="Activity" component={ActivitiesTab} />
-      <BottomNavigationTab.Screen name="Charts" component={ChartsTab} />
+      <BottomNavigationTab.Screen name="Activity" component={Activities} />
+      <BottomNavigationTab.Screen name="Charts" component={ChartDisplay} />
+      <BottomNavigationTab.Screen name="User Detail" initialParams={{ handleLogout }} component={UserDetailsScreen} />
     </BottomNavigationTab.Navigator>
   );
 };
@@ -107,9 +126,16 @@ export default function App() {
   const handleLogin = async () => {
     let token = await getValueFor("ACCESS_TOKEN")
     console.log("token", token, Date.now())
-      setToken(token);
-      instance.defaults.headers.common["Authorization"] = "Bearer "+ token;
+    setToken(token);
+    instance.defaults.headers.common["Authorization"] = "Bearer " + token;
     setIsUserLoggedIn(true);
+  };
+  const handleLogout = async () => {
+    await deleteKey("ACCESS_TOKEN")
+    await deleteKey("USER_ID")
+    setToken(null);
+    instance.defaults.headers.common["Authorization"] = null;
+    setIsUserLoggedIn(false);
   };
   return (
     <NavigationContainer>
@@ -121,7 +147,7 @@ export default function App() {
             initialParams={{ handleLogin }}
           />
         ) : (
-          <RootStack.Screen name="Root" component={TabNavigation} />
+          <RootStack.Screen name="Root" initialParams={{ handleLogout }} component={TabNavigation} />
         )}
       </RootStack.Navigator>
     </NavigationContainer>
