@@ -45,10 +45,21 @@ const FetchGroups = async (onSuccess, onError) => {
   }
 }
 
-const FetchCurrencyList = async (onSuccess, onError) => {
-  try {
-    const res = await instance.get("/currency/list", {
-      headers: { "Content-Type": "application/json" },
+const RegisterGroup = async(data, onSuccess, onError)=>{
+  try{
+    const res = await instance.post("/group/register", data,{
+      headers:{"Content-Type":"application/json"},
+    });
+    onSuccess && onSuccess(res);
+  } catch(err){
+    onError && onError(err);
+  }
+}
+
+const FetchCurrencyList = async(onSuccess, onError)=>{
+  try{
+    const res = await instance.get("/currency/list",{
+      headers:{"Content-Type":"application/json"},
     });
     onSuccess && onSuccess(res);
   } catch (err) {
@@ -97,14 +108,27 @@ const FetchOtherUserProfile = async (data, onSuccess, onError) => {
     onError && onError(err);
   }
 }
+
+const FetchProfileEmail = async (data, onSuccess, onError) => {
+  try {
+    const res = await instance.get("/profile/email", {
+      headers: { "Content-Type": "application/json" },
+    });
+    onSuccess && onSuccess(res);
+  } catch (err) {
+    onError && onError(err);
+  }
+};
 export {
   CreateUser,
   LoginUser,
   FetchGroups,
+  RegisterGroup,
   FetchCurrencyList,
   FetchDetailedCurrencyList,
   UpdateUser,
   FetchActivitiesList,
   FetchOtherUserProfile,
   UserDetails,
+  FetchProfileEmail,
 };

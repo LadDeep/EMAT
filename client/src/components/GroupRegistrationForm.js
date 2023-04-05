@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 import { TextInput, StyleSheet, ScrollView } from "react-native";
 import {
   Avatar,
@@ -10,6 +11,9 @@ import {
   Checkbox,
   DateTimePicker,
 } from "react-native-ui-lib";
+import {  RegisterGroup } from "../api/api";
+import { FetchDetailedCurrencyList } from "../api/api";
+import { getValueFor } from "../secureStore";
 
 export const GroupRegistrationForm = () => {
   const [membersList, setMembersList] = useState([]);
@@ -18,20 +22,62 @@ export const GroupRegistrationForm = () => {
   const [baseCurrency, setBaseCurrency] = useState("USD");
   const [isTemporary, setIsTemporary] = useState(false);
   const [destructionDate, setDestructionDate] = useState(new Date());
+  const [currencyList, setCurrencyList] = useState(null);
   const chipInputRef = React.createRef();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    FetchDetailedCurrencyList(
+      (res) => {
+        console.log(res.data.message)
+        setCurrencyList(res.data.message)
+      },
+      (err) => {
+        console.log(err);
+        // TODO: Add message based on api response
+      }
+    );
+  },[]);
 
   const addEmail = (event) => {
-    if (event.nativeEvent.key == "Enter") {
-      setMembersList([...membersList, { label: email }]);
-    }
+      let member=chipInputRef.current.state.value?.split('\n')
+      console.log("member:",member)
+      setMembersList([
+        ...membersList,
+        { label:  member[member.length-1]},
+      ]);
+      setEmail("")
+      console.log(chipInputRef.current.state.value)
+    // }
   };
   const handleRegistration = () => {
     if (groupName.length === 0) {
       alert("Group Name cannot be empty");
     } else if (membersList.length === 0) {
       alert("Members cannot be empty");
+    } else {
+      let userEmail;
+      let mList = membersList.map((value, index)=>{return value.label})
+      //TODO: send email of creater as well
+      RegisterGroup(
+        {
+          group_name: groupName,
+          group_currency: baseCurrency,
+          participants: mList,
+        },
+        (response) => {
+          alert("Registration successfull")
+          console.log(response);
+          navigation.navigate("GroupsTab")
+        },
+        (erorr) => {
+          console.log(erorr);
+          //TODO: Show error on user already exists
+        }
+      );
     }
   };
+  console.log("email",email)
 
   return (
     <ScrollView>
@@ -74,7 +120,12 @@ export const GroupRegistrationForm = () => {
             onChangeText={(text) => {
               setEmail(text);
             }}
-            onKeyPress={(event) => addEmail(event)}
+            onKeyPress={(event) => {
+              if (event.nativeEvent.key === "Enter") {
+                addEmail(event);
+              }
+            }}
+            validate={["email"]}
           />
           <Picker
             style={styles.picker}
@@ -83,11 +134,10 @@ export const GroupRegistrationForm = () => {
               setBaseCurrency(itemValue);
             }}
           >
-            <Picker.Item label="USD" value="USD" />
-            <Picker.Item label="EUR" value="EUR" />
-            <Picker.Item label="GBP" value="GBP" />
-            <Picker.Item label="INR" value="INR" />
-            <Picker.Item label="JPY" value="JPY" />
+            {currencyList &&
+              currencyList.map((currency, index) => (
+                <Picker.Item label={currency.name} value={currency.code} />
+              ))}
           </Picker>
           <Checkbox
             label="Temporary"
