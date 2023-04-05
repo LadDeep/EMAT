@@ -97,14 +97,23 @@ def getUserEmail():
 
 @profile.route("/fullname", methods=["GET"])
 def getFullName():
+    result = {"status":False}
+    user_id = request.args.get("user_id")
+    if user_id:
+        try:
+            data = request.get_json()
+            userId = data["user_id"]
+            user = User.objects(user_id=userId)
 
-    try:
-        data = request.get_json()
-        userId = data["user_id"]
-        user = User.objects(user_id=userId)
-
-        return jsonify({"status": True, "message": user.first_name + " " + user.last_name}), 200
+            result["status"] = True
+            result["response"] = {"message": user.first_name + " " + user.last_name}
+        except Exception as e:
+            traceback_message = traceback.format_exc()
+            print(traceback_message)
+            result['error'] = f"{e.__class__.__name__} occured"
+            result['traceback'] = traceback_message
     
-    except Exception as e:
-        return jsonify({"status": False, "error": str(e)}), 500
+    else:
+        result["response"] = "Missing Query Parameter: 'user_id'"
     
+    return result
