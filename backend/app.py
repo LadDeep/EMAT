@@ -23,6 +23,7 @@ def create_app():
     db.init_app(app)
 
     app.config["JWT_SECRET_KEY"] = "secret-key"  # need to change this key and export in the env
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
     app.config["SMTP_SERVER"] = "smtp.gmail.com"
     app.config["SMTP_USERNAME"] = "username@google.com"
     app.config["SMTP_PASSWORD"] = "temppassword"

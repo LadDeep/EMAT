@@ -64,7 +64,6 @@ def register():
             
             verification_code = generate_verification_code()
             user_id=uuid.uuid4()
-            base_URL = current_app.config['BASE_URL']
             
             mail_object = {'subject': 'EMAT - Registration', 'message': f'Verification Code: "{verification_code}"'}
             sendEmail(mail_object,email)
