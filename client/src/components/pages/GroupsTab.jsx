@@ -1,7 +1,7 @@
-import { useState, useEffect, React } from "react";
+import { useState, useCallback, React } from "react";
 import { StyleSheet } from "react-native";
 import { View, Button, Colors } from "react-native-ui-lib";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { GroupList } from "../GroupList";
 import { FAB } from "@rneui/themed";
 import { FetchGroups } from "../../api/api";
@@ -9,16 +9,18 @@ export const GroupsTab = () => {
   const [groups, setGroups] = useState(null);
   const navigation = useNavigation();
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     FetchGroups(
       (res) => {
+        if(res.data.status){
         setGroups(res.data.response);
+        }
       },
       (err) => {
         console.log(err);
       }
     );
-  }, []);
+  }, []));
 
   const handleGroupRegistration = () => {
     navigation.push("GroupRegistration");

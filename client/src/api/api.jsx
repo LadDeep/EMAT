@@ -97,4 +97,14 @@ const FetchOtherUserProfile = async (data, onSuccess, onError) => {
     onError && onError(err);
   }
 }
-export { CreateUser, LoginUser, FetchGroups, FetchCurrencyList, FetchDetailedCurrencyList, UpdateUser, FetchActivitiesList, FetchOtherUserProfile, UserDetails };
+export {
+  CreateUser,
+  LoginUser,
+  FetchGroups,
+  FetchCurrencyList,
+  FetchDetailedCurrencyList,
+  UpdateUser,
+  FetchActivitiesList,
+  FetchOtherUserProfile,
+  UserDetails,
+};

@@ -3,12 +3,12 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { ListItem, Text, Avatar, View } from "react-native-ui-lib";
 
-export const GroupItem = (props) => {
+export const GroupItem = ({item}) => {
   const navigation = useNavigation();
 
   const handleGroupItemClick = () => {
     //TODO: handle navigation to group details page
-    navigation.push("GroupDetails", {selectedGroup: props.item})
+    navigation.push("GroupDetails", {selectedGroup: item})
   };
 
   return (
@@ -16,13 +16,13 @@ export const GroupItem = (props) => {
       <View flex row paddingL-24 style={{ alignItems: "center" }}>
         <Avatar
           source={{
-            uri: props.item.imageUrl,
+            uri: item.imageUrl,
           }}
           containerStyle={{ marginRight: 12 }}
         />
-        <Text style={styles.textBold}>{props.item.name}</Text>
+        <Text style={styles.textBold}>{item.group_name}</Text>
       </View>
-      {props.item.expense == 0 ? (
+      {item.expense == 0 ? (
         <Text text24 style={styles.text}>
           You're settled
         </Text>
@@ -31,10 +31,10 @@ export const GroupItem = (props) => {
           text24
           style={{
             paddingRight: 24,
-            color: `${props.item.expense > 0 ? "red" : "green"}`,
+          color: `${item.expense > 0 ? "red" : "green"}`,
           }}
         >
-          ${props.item.expense}
+          ${item.expense}
         </Text>
       )}
     </ListItem>
