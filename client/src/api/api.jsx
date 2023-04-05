@@ -19,7 +19,7 @@ const LoginUser =async(data,onSuccess,onError) =>{
       headers:{"Content-Type":"application/json"},
     });
     onSuccess && onSuccess(res);
-  }catch(res){
+  }catch(err){
     onError && onError(err);
   }
 }
