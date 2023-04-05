@@ -5,7 +5,7 @@ import { ListItem, Text, Avatar, View } from "react-native-ui-lib";
 
 export const GroupItem = ({item}) => {
   const navigation = useNavigation();
-
+  console.log(item);
   const handleGroupItemClick = () => {
     //TODO: handle navigation to group details page
     navigation.push("GroupDetails", {selectedGroup: item})

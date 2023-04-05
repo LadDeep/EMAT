@@ -1,13 +1,12 @@
 import React from "react";
 import { GridList } from "react-native-ui-lib";
-import data from "../../data.json"
 import { GroupItem } from "./GroupItem";
 
-export const GroupList = () => {
+export const GroupList = ({list}) => {
   return (
     <GridList
       horizontal={false}
-      data={data.groups}
+      data={list}
       renderItem={({ item }) => (
         <GroupItem item={item}/>
       )}
