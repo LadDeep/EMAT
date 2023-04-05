@@ -57,4 +57,24 @@ const FetchDetailedCurrencyList = async(onSuccess, onError)=>{
   }
 }
 
-export { CreateUser, LoginUser, FetchGroups, FetchCurrencyList, FetchDetailedCurrencyList };
+const FetchActivitiesList = async (onSuccess, onError)=>{
+  try{
+    const res = await instance.get("/activities/list",{
+      headers:{"Content-Type":"application/json"},
+    });
+    onSuccess && onSuccess(res);
+  }catch(err){
+    onError && onError(err);
+  }
+}
+const FetchOtherUserProfile = async (data, onSuccess, onError)=>{
+  try{
+    const res = await instance.post("/profile/other_user_details",data,{
+      headers:{"Content-Type":"application/json"},
+    });
+    onSuccess && onSuccess(res);
+  }catch(err){
+    onError && onError(err);
+  }
+}
+export { CreateUser, LoginUser, FetchGroups, FetchCurrencyList, FetchDetailedCurrencyList, FetchActivitiesList, FetchOtherUserProfile};
