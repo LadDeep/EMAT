@@ -15,14 +15,12 @@ export const GroupItem = ({item}) => {
     <ListItem flex style={styles.listItem} onPress={handleGroupItemClick}>
       <View flex row paddingL-24 style={{ alignItems: "center" }}>
         <Avatar
-          source={{
-            uri: item.imageUrl,
-          }}
+          source={""}
           containerStyle={{ marginRight: 12 }}
         />
         <Text style={styles.textBold}>{item.group_name}</Text>
       </View>
-      {item.expense == 0 ? (
+      {item.standing_amount == 0 ? (
         <Text text24 style={styles.text}>
           You're settled
         </Text>
@@ -31,10 +29,10 @@ export const GroupItem = ({item}) => {
           text24
           style={{
             paddingRight: 24,
-          color: `${item.expense > 0 ? "red" : "green"}`,
+          color: `${item.standing_amount > 0 ? "green" : "red"}`,
           }}
         >
-          ${item.expense}
+          ${item.standing_amount}
         </Text>
       )}
     </ListItem>
