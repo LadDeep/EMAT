@@ -2,14 +2,55 @@ import { React, useState } from "react";
 import { Button, TextField, View, Text } from "react-native-ui-lib";
 import { DateTimePicker } from "react-native-ui-lib/src/components/dateTimePicker";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
+import { CreateExpense } from "../api/api";
+import { useNavigation } from "@react-navigation/native";
+import MONTHS from "../constants/constants";
 
-const RegisterExpense = ({ mode }) => {
+const RegisterExpense = ({ route }) => {
   const [description, setDescription] = useState();
   const [date, setDate] = useState(new Date());
+  const [amount, setAmount] = useState()
+  const {groupId} = route.params;
+  const navigation = useNavigation();
+
   const handleExpense = ()=>{
-    // TODO: Add api call to save expense
-    console.log("expense")
+    if (description !== "" && amount !== undefined) {
+      let creationDate =
+        date.getDate() +
+        " " +
+        MONTHS[date.getMonth()] +
+        " " +
+        date.getFullYear();
+
+      let alertTitle = "Are you sure?";
+      let alertMessage = "You paid $" + amount + " for " + description + " on " + creationDate;
+      Alert.alert(alertTitle, alertMessage, [
+        {
+          text: "Cancel",
+        },
+        {
+          text: "Add",
+          onPress: () => {
+            CreateExpense(
+              {
+                description: description,
+                amount: parseFloat(amount),
+                group_id: groupId,
+                date,
+              },
+              (res) => {
+                if (res.data.status) {
+                  // TODO: Show toast for successfull creation
+                  navigation.goBack();
+  }
+              },
+              (err) => {}
+            );
+          },
+        },
+      ]);
+    }
   }
   return (
     <View flex >
@@ -27,6 +68,20 @@ const RegisterExpense = ({ mode }) => {
           />
         </View>
         <View row center>
+          <Icon style={styles.icon} name="attach-money" size={24}/>
+          <TextField
+            style={styles.input}
+            value={amount}
+            placeholder={"Amount"}
+            floatingPlaceholder
+            inputType={"numeric"}
+            keyboardType={"numeric"}
+            onChangeText={(text) => {
+              setAmount(text);
+            }}
+          />
+        </View>
+        <View row center>
           <Icon style={styles.icon} name="calendar-today" size={24} />
           <DateTimePicker
           style={styles.input}
@@ -36,8 +91,8 @@ const RegisterExpense = ({ mode }) => {
             onChange={(date) => setDate(date)}
           />
         </View>
-        <Text style={{marginBottom: 16}}>Paid by you and splitted equally</Text>
-        <Button label={`${mode === "Add" ? "Add" : "Save"} Expense`} onPress={handleExpense}/>
+        <Text style={{marginBottom: 16}}>Paid by You and splitted equally</Text>
+        <Button label="Add" onPress={handleExpense}/>
       </View>
     </View>
   );
