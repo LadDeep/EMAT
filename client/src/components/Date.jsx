@@ -20,8 +20,9 @@ const ExpenseDate = ({ createdOn }) => {
   const date = new Date(parseInt(createdOn));
 
   return (
-    <View>
+    <View center>
       <Text>{MONTHS[date.getMonth()]}</Text>
+      <Text>{date.getDate()}</Text>
       <Text>{date.getDay()}</Text>
     </View>
   );

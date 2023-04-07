@@ -8,15 +8,24 @@ const GroupActivitiesItem = ({ activity }) => {
     <ListItem style={styles.listItem}>
       <View flex row spread centerV>
         <View row centerV>
-          <Date createdOn={activity.created_on} />
-          <View paddingL-18>
+          <Date createdOn={activity?.created_at["$date"]} />
+          <View paddingL-18 paddingV-0>
             <Text style={styles.expenseDescription}>
               {activity.description}
             </Text>
-            <Text>{activity.spent_by}</Text>
+            <Text>
+              Spent by {activity.spent_by_name} $
+              {parseFloat(activity.amount).toFixed(2)}
+            </Text>
           </View>
         </View>
-        <Text>$ {parseFloat(activity.amount).toFixed(2)}</Text>
+        <Text
+          style={{
+            color: `${activity.spent_by_name === "You" ? "green" : "red"}`,
+          }}
+        >
+          ${parseFloat(activity.lent_or_borrowed_amount).toFixed(2)}
+        </Text>
       </View>
     </ListItem>
   );
