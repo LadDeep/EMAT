@@ -1,32 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { TextInput, StyleSheet, ScrollView } from "react-native";
+import {
+  TextInput, StyleSheet, ScrollView, TouchableOpacity, Text,
+  View
+} from "react-native";
+// import ReactChipsInput from 'react-native-chips';
 import {
   Avatar,
   Button,
-  ChipsInput,
-  Text,
-  View,
+
   Picker,
   Checkbox,
   DateTimePicker,
 } from "react-native-ui-lib";
-import {  RegisterGroup } from "../api/api";
+import { RegisterGroup, UserDetails } from "../api/api";
 import { FetchDetailedCurrencyList } from "../api/api";
-import { getValueFor } from "../secureStore";
 
 export const GroupRegistrationForm = () => {
-  const [membersList, setMembersList] = useState([]);
-  const [email, setEmail] = useState("");
+  const [emails, setEmails] = useState([]);
+  const [emailInput, setEmailInput] = useState('');
+  const [membersList, setMembersList] = useState();
   const [groupName, setGroupName] = useState("");
   const [baseCurrency, setBaseCurrency] = useState("USD");
   const [isTemporary, setIsTemporary] = useState(false);
   const [destructionDate, setDestructionDate] = useState(new Date());
   const [currencyList, setCurrencyList] = useState(null);
-  const chipInputRef = React.createRef();
   const navigation = useNavigation();
-
   useEffect(() => {
+
     FetchDetailedCurrencyList(
       (res) => {
         console.log(res.data.message)
@@ -34,54 +35,64 @@ export const GroupRegistrationForm = () => {
       },
       (err) => {
         console.log(err);
-        // TODO: Add message based on api response
       }
     );
-  },[]);
+  }, []);
 
-  const addEmail = (event) => {
-      let member=chipInputRef.current.state.value?.split('\n')
-      console.log("member:",member)
-      setMembersList([
-        ...membersList,
-        { label:  member[member.length-1]},
-      ]);
-      setEmail("")
-      console.log(chipInputRef.current.state.value)
-    // }
+  const handleAddEmail = () => {
+    if (emailInput.trim() !== '' && validateEmail(emailInput)) {
+      setEmails([...emails, emailInput.trim()]);
+      setEmailInput('');
+    }
   };
+
+  const handleRemoveEmail = (index) => {
+    const newEmails = [...emails];
+    newEmails.splice(index, 1);
+    setEmails(newEmails);
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+  };
+
+
+
   const handleRegistration = () => {
+
     if (groupName.length === 0) {
       alert("Group Name cannot be empty");
-    } else if (membersList.length === 0) {
+    } else if (emails.length === 0) {
       alert("Members cannot be empty");
     } else {
-      let userEmail;
-      let mList = membersList.map((value, index)=>{return value.label})
-      //TODO: send email of creater as well
+      let payload = {
+        group_name: groupName,
+        group_currency: baseCurrency && baseCurrency.value ? baseCurrency.value : "USD",
+        participants: emails
+      }
+      console.log("EMAILS", emails)
+      console.log("This is the payload of group Registration", payload)
       RegisterGroup(
-        {
-          group_name: groupName,
-          group_currency: baseCurrency,
-          participants: mList,
-        },
+        payload,
         (response) => {
           alert("Registration successfull")
           console.log(response);
           navigation.navigate("GroupsTab")
         },
-        (erorr) => {
-          console.log(erorr);
+        (error) => {
+          console.log(error);
           //TODO: Show error on user already exists
         }
       );
     }
   };
-  console.log("email",email)
+  console.log("baseCurrency", baseCurrency)
+
 
   return (
     <ScrollView>
-      <View center>
+      <View style={{ padding: 60 }} >
         <View>
           <Text style={styles.title}>Create a Group</Text>
           <Avatar
@@ -98,63 +109,80 @@ export const GroupRegistrationForm = () => {
             size={96}
           />
         </View>
-        <View paddingL-24 paddingR-24>
-          <View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Group Name"
+            onChangeText={(text) => setGroupName(text)}
+            value={groupName}
+            textContentType="none"
+            activeUnderlineColor="blue"
+          />
+        </View>
+        {/* ???? */}
+        {/* <ReactChipsInput
+            label="Enter Email" initialChips={membersList}
+
+            onChangeChips={(chips) => setMembersList(chips)}
+            alertRequired={true}
+            chipStyle={{ borderColor: 'blue', backgroundColor: 'grey' }}
+            inputStyle={{ fontSize: 17 }}
+            labelStyle={{ color: 'blue' }}
+            labelOnBlur={{ color: '#666' }} /> */}
+        <View style={styles.container}>
+          <View style={styles.chipsContainer}>
+            {emails?.map((email, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.chip}
+                onPress={() => handleRemoveEmail(index)}
+              >
+                <Text style={styles.chipText}>{email}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Group Name"
-              onChangeText={(text) => setGroupName(text)}
-              value={groupName}
-              textContentType="none"
-              activeUnderlineColor="blue"
+              placeholder="Enter email address"
+              value={emailInput}
+              onChangeText={setEmailInput}
+              blurOnSubmit={false}
+              keyboardType="email-address"
             />
+            <TouchableOpacity style={styles.addButton} onPress={handleAddEmail}>
+              <Text style={styles.addButtonText}>Add</Text>
+            </TouchableOpacity>
           </View>
-          <ChipsInput
-            style={styles.input}
-            placeholder="Add Members"
-            chips={membersList}
-            value={membersList}
-            ref={chipInputRef}
-            multiline
-            keyboardType="email-address"
-            onChangeText={(text) => {
-              setEmail(text);
-            }}
-            onKeyPress={(event) => {
-              if (event.nativeEvent.key === "Enter") {
-                addEmail(event);
-              }
-            }}
-            validate={["email"]}
-          />
-          <Picker
-            style={styles.picker}
-            value={baseCurrency}
-            onChange={(itemValue, itemIndex) => {
-              setBaseCurrency(itemValue);
-            }}
-          >
-            {currencyList &&
-              currencyList.map((currency, index) => (
-                <Picker.Item label={currency.name} value={currency.code} />
-              ))}
-          </Picker>
-          <Checkbox
-            label="Temporary"
-            value={isTemporary}
-            onValueChange={(value) => setIsTemporary(value)}
-            marginV-12
-          />
-          {isTemporary && (
-            <DateTimePicker
-              title={"Select destruction date"}
-              mode="date"
-              value={destructionDate}
-              minimumDate={new Date()}
-              onChange={(date) => setDestructionDate(date)}
-            />
-          )}
         </View>
+        <Picker
+          style={styles.picker}
+          value={baseCurrency}
+          onChange={(itemValue, itemIndex) => {
+            setBaseCurrency(itemValue);
+          }}
+        >
+          {currencyList &&
+            currencyList.map((currency, index) => (
+              <Picker.Item label={currency.name} value={currency.code} />
+            ))}
+        </Picker>
+        <Checkbox
+          label="Temporary"
+          value={isTemporary}
+          onValueChange={(value) => setIsTemporary(value)}
+          marginV-12
+        />
+        {isTemporary && (
+          <DateTimePicker
+            title={"Select destruction date"}
+            mode="date"
+            value={destructionDate}
+            minimumDate={new Date()}
+            onChange={(date) => setDestructionDate(date)}
+          />
+        )}
 
         <Button
           style={styles.button}
@@ -176,14 +204,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginTop: 16,
     marginBottom: 16,
+    textAlign: "center"
   },
-  input: {
-    height: 40,
-    borderBottomWidth: 1,
-    borderColor: "lightgrey",
-    padding: 8,
-    marginBottom: 16,
-  },
+
   button: {
     backgroundColor: "blue",
     padding: 12,
@@ -198,5 +221,42 @@ const styles = StyleSheet.create({
     width: 200,
     height: 44,
     marginBottom: 4,
+  },
+  container: {
+    flex: 1,
+    padding: 10,
+    marginTop: 30,
+  },
+  chipsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  chip: {
+    backgroundColor: '#e1e1e1',
+    borderRadius: 20,
+    padding: 10,
+    margin: 5,
+  },
+  chipText: {
+    color: '#333',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+  },
+  input: {
+    flex: 1,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 20,
+  },
+  addButton: {
+    backgroundColor: '#007aff',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  addButtonText: {
+    color: '#fff',
   },
 });
