@@ -18,7 +18,7 @@ export const GroupDetailsComponent = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const handleAddExpense = () => {
     // navigate to Add Expense page
-    navigation.push("AddExpense");
+    navigation.push("AddExpense", {groupId:selectedGroup.group_id});
   };
 
   const fetchUserIdFromSecureStore = async () => {
@@ -95,7 +95,7 @@ export const GroupDetailsComponent = ({ route }) => {
       </View>
       <View flex center>
         {expenses && expenses.length !== 0 ? (
-          <GroupActivitiesList activities={expenses} />
+          <GroupActivitiesList groupId={selectedGroup.group_id} activities={expenses} />
         ) : (
           <Text>No expenses</Text>
         )}

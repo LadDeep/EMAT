@@ -2,10 +2,15 @@ import React from "react";
 import { ListItem, Text, View } from "react-native-ui-lib";
 import Date from "./Date";
 import { StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const GroupActivitiesItem = ({ activity }) => {
+const GroupActivitiesItem = ({groupId, activity }) => {
+  const navigation = useNavigation();
+  const handleExpenseDescription = ()=>{
+    navigation.push("Expense", {groupId, activity});
+  }
   return (
-    <ListItem style={styles.listItem}>
+    <ListItem style={styles.listItem} onPress={handleExpenseDescription}>
       <View flex row spread centerV>
         <View row centerV>
           <Date createdOn={activity?.created_at["$date"]} />
