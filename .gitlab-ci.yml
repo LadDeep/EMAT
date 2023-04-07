@@ -1,4 +1,5 @@
-image: python:latest
+image: python:3.9
+
 stages:
   - build
   - test
@@ -7,34 +8,36 @@ stages:
 build-job:
   stage: build
   script:
-    - echo "Compiling the code..."
+    - echo "Building the app..."
     - mkdir build/
-    - echo "backend file" > build/executable-binary-file-v1
-    - echo "Compile complete."
+    - cp -r app build/
+    - cd build/app
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+    - echo "Build complete."
   artifacts:
     paths:
-      - build/executable-binary-file-v1
+      - build/app/
 
 unit-test-job:
   stage: test
   script:
     - echo "Running unit tests..."
-    - pip install --upgrade pip
-    - pip3 install requests
-    - cd /builds/courses/2023-winter/csci-5308/group04/backend/tests
-    - coverage run --source='.' -m unittest discover
+    - cd build/app
+    - coverage run --source='.' -m pytest
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
 
 lint-test-job:
   stage: test
   script:
     - echo "Linting code..."
-    - echo "No lint issues found."
+    - pylint app/*.py
 
 coverage-job:
   stage: test
   script:
     - echo "Generating test coverage report..."
+    - cd build/app
     - coverage report --fail-under=80
 
 deploy-job:
@@ -42,5 +45,6 @@ deploy-job:
   environment: production
   script:
     - echo "Deploying application..."
-    - python3 --version
+    - cd build/app
+    - gunicorn app:app -b 0.0.0.0:5000 --daemon
     - echo "Application successfully deployed."
