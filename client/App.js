@@ -67,7 +67,6 @@ const GroupScreen = () => {
         component={GroupDetailsComponent}
       />
       <GroupStack.Screen name="AddExpense" component={RegisterExpense} />
-        name="AddExpense"
       <GroupStack.Screen name="Expense" component={ExpenseDisplay}/>
       <GroupStack.Screen name="Edit Expense" component={UpdateExpense}/>
     </GroupStack.Navigator>
