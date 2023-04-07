@@ -18,7 +18,7 @@ export const GroupDetailsComponent = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const handleAddExpense = () => {
     // navigate to Add Expense page
-    navigation.push("AddExpense");
+    navigation.push("AddExpense", {groupId:selectedGroup.group_id});
   };
 
   const fetchUserIdFromSecureStore = async () => {
@@ -48,10 +48,11 @@ export const GroupDetailsComponent = ({ route }) => {
       const details =
         userIdMap?.has(expense.spent_by) && userIdMap.get(expense.spent_by);
       const name =
-        details?.spent_by === userId
+        expense.spent_by === userId
           ? "You"
           : details?.first_name + " " + details?.last_name;
-      return { ...expense, spent_by_name: name };
+        const lent_or_borrowed_amount = expense.amount - expense.amount/selectedGroup.participants.length;
+      return { ...expense, spent_by_name: name, lent_or_borrowed_amount  };
     });
     setExpenses(exp);
     setIsLoading(false);
@@ -94,7 +95,7 @@ export const GroupDetailsComponent = ({ route }) => {
       </View>
       <View flex center>
         {expenses && expenses.length !== 0 ? (
-          <GroupActivitiesList activities={expenses} />
+          <GroupActivitiesList groupId={selectedGroup.group_id} activities={expenses} />
         ) : (
           <Text>No expenses</Text>
         )}

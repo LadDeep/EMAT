@@ -20,6 +20,8 @@ import { deleteKey, getValueFor } from "./src/secureStore";
 import AccountInfoScreen from "./src/components/pages/accountInfoScreen";
 import accountDetails from "./src/components/pages/accountInfo";
 import ChartDisplay from "./src/components/pages/ChartDisplay";
+import ExpenseDisplay from "./src/components/ExpenseDisplay";
+import UpdateExpense from "./src/components/UpdateExpense";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const GroupStack = createNativeStackNavigator();
@@ -64,10 +66,9 @@ const GroupScreen = () => {
         name="GroupDetails"
         component={GroupDetailsComponent}
       />
-      <GroupStack.Screen
-        name="AddExpense"
-        component={RegisterExpense}
-      />
+      <GroupStack.Screen name="AddExpense" component={RegisterExpense} />
+      <GroupStack.Screen name="Expense" component={ExpenseDisplay}/>
+      <GroupStack.Screen name="Edit Expense" component={UpdateExpense}/>
     </GroupStack.Navigator>
   );
 };

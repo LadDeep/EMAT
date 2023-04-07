@@ -7,14 +7,14 @@ import { CreateExpense } from "../api/api";
 import { useNavigation } from "@react-navigation/native";
 import MONTHS from "../constants/constants";
 
-const RegisterExpense = ({ route }) => {
-  const [description, setDescription] = useState();
-  const [date, setDate] = useState(new Date());
-  const [amount, setAmount] = useState()
-  const {groupId} = route.params;
+const UpdateExpense = ({ route }) => {
+  const {groupId, activity} = route.params;
+  const [description, setDescription] = useState(activity.description);
+  const [date, setDate] = useState(new Date(parseInt(activity.created_at["$date"])));
+  const [amount, setAmount] = useState(parseInt(activity.amount))
   const navigation = useNavigation();
 
-  const handleExpense = ()=>{
+  const handleEditExpense = ()=>{
     if (description !== "" && amount !== undefined) {
       let creationDate =
         date.getDate() +
@@ -30,7 +30,7 @@ const RegisterExpense = ({ route }) => {
           text: "Cancel",
         },
         {
-          text: "Add",
+          text: "Save",
           onPress: () => {
             CreateExpense(
               {
@@ -55,10 +55,10 @@ const RegisterExpense = ({ route }) => {
   }
   console.log(groupId)
   return (
-    <View flex marginV-12>
+    <View flex >
       <View center margin-24>
         <View row center>
-          <Icon style={styles.icon} name="receipt" size={24} />
+          <Icon style={styles.icon} name="receipt" size={24}/>
           <TextField
             style={styles.input}
             value={description}
@@ -70,7 +70,7 @@ const RegisterExpense = ({ route }) => {
           />
         </View>
         <View row center>
-          <Icon style={styles.icon} name="attach-money" size={24} />
+          <Icon style={styles.icon} name="attach-money" size={24}/>
           <TextField
             style={styles.input}
             value={amount}
@@ -86,18 +86,16 @@ const RegisterExpense = ({ route }) => {
         <View row center>
           <Icon style={styles.icon} name="calendar-today" size={24} />
           <DateTimePicker
-            style={styles.input}
+          style={styles.input}
             title={"Select date"}
             mode="date"
             value={date}
             onChange={(date) => setDate(date)}
           />
         </View>
-        <Text style={{ marginBottom: 16 }}>
-          Paid by You and splitted equally
-        </Text>
+        <Text style={{marginBottom: 16}}>Paid by You and splitted equally</Text>
+        <Button label="Save" onPress={handleEditExpense}/>
       </View>
-      <Button label="Add" onPress={handleExpense} />
     </View>
   );
 };
@@ -113,4 +111,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default RegisterExpense;
+export default UpdateExpense;

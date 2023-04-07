@@ -119,6 +119,29 @@ const FetchProfileEmail = async (onSuccess, onError) => {
     onError && onError(err);
   }
 };
+
+const OverallGroupStandings = async (groupId, onSuccess, onError) => {
+  try {
+    const res = await instance.get(`${"/settleUp?group_id="+groupId}`, {
+      headers: { "Content-Type": "application/json" },
+    });
+    onSuccess && onSuccess(res);
+  } catch (err) {
+    onError && onError(err);
+  }
+};
+
+const CreateExpense = async (data, onSuccess, onError) => {
+  try {
+    const res = await instance.post("/expense/create", data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    onSuccess && onSuccess(res);
+  } catch (err) {
+    onError && onError(err);
+  }
+};
+
 export {
   CreateUser,
   LoginUser,
@@ -131,4 +154,6 @@ export {
   FetchOtherUserProfile,
   UserDetails,
   FetchProfileEmail,
+  OverallGroupStandings,
+  CreateExpense,
 };
