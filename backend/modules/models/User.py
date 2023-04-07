@@ -1,6 +1,7 @@
 from database.database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
+from modules.models.SettleUp import SettleUp
 
 class User(db.Document):
     user_id = db.UUIDField(binary=False,default=uuid.uuid4())
@@ -13,6 +14,7 @@ class User(db.Document):
     verificationToken = db.StringField(required=True)
     monthly_budget_amount = db.FloatField(required=True)
     warning_budget_amount = db.FloatField(required=True)
+    settleUp = db.EmbeddedDocumentListField(SettleUp)
     
     def hash_password(self, password):
         self.password = generate_password_hash(password)
