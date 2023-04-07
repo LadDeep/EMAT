@@ -27,6 +27,8 @@ def whoOwesWhat():
             group_stats_json = [dict(doc) for doc in group_stats]
             group_data = Group.objects.get_or_404(group_id=group_id)
             participants = group_data.participants
+            user_names = User.objects.filter(user_id__in=participants)
+            user_names = [json.loads(x.to_json()) for x in user_names]
             user_spent = [x for x in group_stats_json if x["_id"] == user_id_verified]
             other_spent = [x for x in group_stats_json if x["_id"] != user_id_verified]
             other_participants = [x for x in participants if x != user_id_verified]
@@ -52,6 +54,11 @@ def whoOwesWhat():
                 settledUpExpenseObjects = user_object.settleUp.filter(user_id=expense_user_id,group_id=group_id)
                 for settledUpExpenseObject in settledUpExpenseObjects:
                     expense["total"] -= settledUpExpenseObject['amount']
+
+            
+            for expense in other_spent:
+                user_object = next(filter(lambda x: x['user_id'] == expense['_id'],user_names),None)
+                expense['user_name'] = f"{user_object['first_name']} {user_object['last_name']}"
 
             result["status"] = True
             result["response"] = other_spent

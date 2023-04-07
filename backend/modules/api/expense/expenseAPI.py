@@ -117,7 +117,7 @@ def updateExpense():
         if user_id_verified:
             try:
                 json_data = request.json
-                updatable_fields = ['description']
+                updatable_fields = ['description','amount','date']
                 required_fields = ['expense_id','group_id']
                 json_keys = list(json_data.keys())
                 required_fields_exist = set(required_fields).issubset(json_keys)
@@ -129,6 +129,8 @@ def updateExpense():
                     updatable_fields_exist = set(updatable_fields).issubset(json_keys)
                     if updatable_fields_exist:
                         for key in updatable_fields:
+                            if key == 'date':
+                                json_data[key] = datetime.datetime.strptime(json_data[key], "%Y-%m-%dT%H:%M:%S.%fZ")
                             expense[key] = json_data[key]
                         group.save()
                         result['status'] = True

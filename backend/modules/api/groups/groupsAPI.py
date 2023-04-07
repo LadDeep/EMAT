@@ -77,10 +77,16 @@ def listGroups():
             groups = Group.objects.filter(participants__in=[user_id_verified])
             groups = [json.loads(group.to_json()) for group in groups]
             for group in groups:
+                user_names = User.objects.filter(user_id__in=group['participants'])
+                user_names = [json.loads(x.to_json()) for x in user_names]
+                print(user_names)
                 spent = sum([expense.get("amount",0) for expense in group.get("expenses",[]) if expense.get('spent_by',None) == user_id_verified])
                 owed = sum([expense.get("amount",0) for expense in group.get("expenses",[]) if expense.get('spent_by',None) != user_id_verified])
                 group['standing_amount'] = spent - owed
-                
+                for expense in group['expenses']:
+                    user_object = next(filter(lambda x: x['user_id'] == expense['spent_by'],user_names),None)
+                    expense['user_name'] = f"{user_object['first_name']} {user_object['last_name']}"
+
             result["response"] = groups
             status = 200
            
@@ -179,19 +185,32 @@ def getGroupStats():
     if group_id:
         try:
             pipeline.insert(0,{ "$match": { "group_id": group_id } })
-            group_stats = Group.aggregate(*pipeline)
-            group_stats_json = [x.to_json() for x in group_stats]
+            group_stats = Group.objects.aggregate(*pipeline)
+            group_stats_json = [dict(x) for x in group_stats]
+            group = Group.objects.get_or_404(group_id=group_id)
             user_ids = [x["_id"] for x in group_stats_json]
+
+            user_ids.extend(group.participants)
+            user_ids = list(set(user_ids))
+            
+            for user_id in user_ids:
+                spent_obj = next(filter(lambda item: item['_id'] == user_id, group_stats_json), None)
+                if spent_obj is None:
+                    group_stats_json.append({"_id":user_id,"total": 0})
+
+            
             result["status"] = True
             if len(user_ids) > 0:
                 users = User.objects.filter(user_id__in=user_ids)
+                users = [json.loads(x.to_json()) for x in users]
                 keys_needed = ['first_name','last_name','email']
                 for user in users:
-                    index = user_ids.index(user.user_id)
-                    for key in keys_needed:
-                        group_stats_json[index][key] = user[key]
+                    group_index = next((index for (index,d) in enumerate(group_stats_json) if d['_id'] == user['user_id']),None)
+                    if group_index is not None:
+                        for key in keys_needed:
+                            group_stats_json[group_index][key] = user[key]
                 
-                result["response"] = {"max":max(group_stats_json,key=lambda x: x["total"]),"min":min(group_stats_json,key=lambda x: x["total"])}
+                result["response"] = {"max": max(group_stats_json,key=lambda x: x['total']),"min":min(group_stats_json,key=lambda x: x['total'])}
             else:
                 result["response"] = f"No Expenses in group: {group_id}"
         except Exception as e:
