@@ -48,3 +48,4 @@ deploy-job:
     - cd build/app
     - gunicorn app:app -b 0.0.0.0:5000 --daemon
     - echo "Application successfully deployed."
+    
