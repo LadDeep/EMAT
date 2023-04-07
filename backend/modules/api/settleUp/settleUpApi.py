@@ -29,7 +29,13 @@ def whoOwesWhat():
             participants = group_data.participants
             user_spent = [x for x in group_stats_json if x["_id"] == user_id_verified]
             other_spent = [x for x in group_stats_json if x["_id"] != user_id_verified]
+            other_participants = [x for x in participants if x != user_id_verified]
             
+            for user in other_participants:
+                other_spent_obj = next(filter(lambda item: item['_id'] == user, other_spent), None)
+                if other_spent_obj is None:
+                    other_spent.append({"_id":user,"total": 0})
+
             print(group_stats_json)
             if len(user_spent) > 0:
                 user_spent = user_spent[0]
