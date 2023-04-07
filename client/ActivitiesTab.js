@@ -36,9 +36,11 @@ const Activities = () => {
       (res) => {
         if(res.data.status){
             let response = res.data.response;
+            let groupResponseData = response.groups;
+            let settleUpResponseData = response.settleUps;
             
-            if(Array.isArray(response)){
-              let user_ids =  [... new Set(response.map(item => item.spent_by))];
+            
+            let user_ids =  [...new Set([...groupResponseData.map(item => item.spent_by),...settleUpResponseData.map(item=>item.user_id)])];
               
             FetchOtherUserProfile({user_id: user_ids},(userResponse)=>{
               if(userResponse.data.status){
@@ -49,18 +51,34 @@ const Activities = () => {
                   userResponseObject.forEach(item=>{
                     userResponseIDNameMapping[item.user_id] = `${item.first_name} ${item.last_name}`;
                   })
-                  response = response.map(item=>{
-                    item['created_at'] = new Date(item['created_at']['$date']).toLocaleDateString('en-GB');
+                  groupResponseData = groupResponseData.map(item=>{
+                    item['created_at'] = new Date(item['created_at']['$date'])
                     item['user_name'] = userResponseIDNameMapping[item.spent_by];
+                    item['activity_type'] = 'expense'
                     return item;
                   })
-                  setActivities(response);
+                  settleUpResponseData = settleUpResponseData.map(item=>{
+                    item['created_at'] = new Date(item['last_settled_at']['$date'])
+                    item['user_name'] = userResponseIDNameMapping[item.user_id];
+                    item['activity_type'] = 'settleUp'
+                    return item;
+                  })
+                  
+                  let allResponseData = [...settleUpResponseData,...groupResponseData]
+                  allResponseData.sort((a,b)=>b['created_at'] - a['created_at'])
+                  allResponseData = allResponseData.map(item=>{
+                    item['created_at'] = item['created_at'].toLocaleDateString('en-GB')
+                    return item;
+                  })
+                  console.log(allResponseData)
+                  setActivities(allResponseData);
+                  
                 }
               }
             },(userError)=>{
               console.log(userError);
             })
-            }
+            
             
         }
         // setCurrencyList(res.data.message)
@@ -72,16 +90,21 @@ const Activities = () => {
   },[]);
 
   const renderActivities = () => {
-    return activities.map((activity) => {
+    return activities.map((activity,index) => {
       let amountStyle = styles.amountNegative;
       let formattedAmount = `- $${Math.abs(activity.amount).toFixed(2)}`;
       let formattedLabel = `You Owe`;
-      
-      if(ownUserID === activity.spent_by){
-        amountStyle = styles.amountPositive;
-        formattedAmount = `+ $${Math.abs(activity.amount).toFixed(2)}`;
-        formattedLabel = 'You Get Back'
+      if(activity.activity_type === 'expense' && ownUserID === activity.spent_by){
+          amountStyle = styles.amountPositive;
+          formattedAmount = `+ $${Math.abs(activity.amount).toFixed(2)}`;
+          formattedLabel = 'You Get Back'
+        
+      }else if(activity.activity_type === 'settleUp'){
+        amountStyle = styles.settleUpAmount;
+        formattedAmount = `$${Math.abs(activity.amount).toFixed(2)}`
+        formattedLabel = 'You Settled With'
       }
+      
       
 
       return (
@@ -90,8 +113,8 @@ const Activities = () => {
       //   source={require('./assets/download.jpeg')} 
       //   style={styles.profileImage} 
       // />
-        <View key={activity.expense_id} style={styles.activity}>
-          <Text style={styles.title}>{activity.user_name} "{activity.description}".</Text>
+        <View key={index} style={styles.activity}>
+          {activity.activity_type === 'expense' ? <Text style={styles.title}>{activity.user_name} "{activity.description}".</Text>: <Text style={styles.title}>With {activity.user_name} in Group "{activity.group_name}".</Text>}
           <Text style={styles.date}>{activity.created_at}</Text>
           <Text style={amountStyle}>{formattedLabel}  {formattedAmount}</Text>
         </View>
@@ -99,6 +122,8 @@ const Activities = () => {
       );
     });
   };
+
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -154,6 +179,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'red',
   },
+  settleUpAmount: {
+    fontSize: 16,
+    color: 'black',
+  }
 });
 
 export default Activities;

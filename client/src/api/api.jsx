@@ -109,7 +109,7 @@ const FetchOtherUserProfile = async (data, onSuccess, onError) => {
   }
 }
 
-const FetchProfileEmail = async (data, onSuccess, onError) => {
+const FetchProfileEmail = async (onSuccess, onError) => {
   try {
     const res = await instance.get("/profile/email", {
       headers: { "Content-Type": "application/json" },
