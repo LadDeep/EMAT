@@ -39,6 +39,14 @@ def whoOwesWhat():
             for other_expense in other_spent:
                 other_expense["total"] = (user_spent["total"]/len(participants)) - (other_expense["total"]/len(participants))
             
+            # when some users have settled up #
+            user_object = User.objects.get_or_404(user_id=user_id_verified)
+            for expense in other_spent:
+                expense_user_id = expense['_id']
+                settledUpExpenseObjects = user_object.settleUp.filter(user_id=expense_user_id,group_id=group_id)
+                for settledUpExpenseObject in settledUpExpenseObjects:
+                    expense["total"] -= settledUpExpenseObject['amount']
+
             result["status"] = True
             result["response"] = other_spent
         except Exception as e:
