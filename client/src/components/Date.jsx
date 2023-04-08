@@ -9,7 +9,6 @@ const ExpenseDate = ({ createdOn }) => {
     <View center>
       <Text>{MONTHS[date.getMonth()]}</Text>
       <Text>{date.getDate()}</Text>
-      <Text>{date.getDay()}</Text>
     </View>
   );
 };
