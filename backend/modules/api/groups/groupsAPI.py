@@ -5,7 +5,7 @@ from modules.models.User import User
 from modules.utils.utilFunctions import createObjectWithRequiredFields,generate_verification_code,sendEmail
 import json
 import traceback
-
+import uuid
 
 group = Blueprint('group',__name__)
 
@@ -23,6 +23,15 @@ def registerGroup():
                 required_fields = ['group_name','group_currency']
                 participants = json_data.get("participants",None)
                 group = Group()
+                flag = True
+                unique_group_id = None
+                while flag:
+                    group_id=uuid.uuid4()
+                    group_obj = Group.objects(group_id=group_id)
+                    if not group_obj:
+                        unique_group_id = group_id
+                        flag = False
+                group.group_id=unique_group_id
                 joiningToken = generate_verification_code()
                 description = json_data.get("group_description",None)
                 group.created_by = user_id_verified
@@ -31,19 +40,24 @@ def registerGroup():
                     group.group_description = description
                 
                 if participants is not None:
-                    users = User.objects.filter(email__in=participants)
+                    
+                    users = User.objects(email__in=participants)
                     users = [json.loads(x.to_json()) for x in users]
+
                     emails_registered = [x['email'] for x in users if x.get('email') is not None]
                     email_not_registered = [x for x in participants if x not in emails_registered]
-                    created_user_object = next(filter(lambda item: item['user_id'] == user_id_verified, users), None)
+                    created_user_object = User.objects.get_or_404(user_id=user_id_verified)
+                    created_user_object = json.loads(created_user_object.to_json())
                     if created_user_object is not None:
                         created_email = created_user_object.get("email",None)
                         if created_email is not None:
                             registered_email_object = {"subject": f"{created_email} invited you to {json_data.get('group_name','Group')} on EMAT","message":f"Group Verification Code: {joiningToken}"}
-                            for email in emails_registered:                    
+                            for email in emails_registered:
+                                print(registered_email_object)                    
                                 sendEmail(registered_email_object,email)
                             
                             for email in email_not_registered:
+                                print(registered_email_object)                    
                                 sendEmail(registered_email_object,email)
                         
                     participants = [x['user_id'] for x in users if x.get('user_id') is not None]

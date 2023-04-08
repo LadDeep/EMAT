@@ -63,12 +63,19 @@ def register():
                 return jsonify({"status": status, "error": "User with the email has already existed"}), 409
             
             verification_code = generate_verification_code()
-            user_id=uuid.uuid4()
+            flag = True
+            unique_user_id = None
+            while flag:
+                user_id=uuid.uuid4()
+                userObj = User.objects(user_id=user_id)
+                if not userObj:
+                    unique_user_id = user_id
+                    flag = False
             
             mail_object = {'subject': 'EMAT - Registration', 'message': f'Verification Code: "{verification_code}"'}
             sendEmail(mail_object,email)
 
-            newUser = User(user_id=user_id, first_name=first_name,
+            newUser = User(user_id=unique_user_id, first_name=first_name,
                            last_name=last_name, email=email, currency = currency,verificationToken=verification_code,monthly_budget_amount=monthly_budget_amount,warning_budget_amount=warning_budget_amount)
 
             newUser.hash_password(password)
