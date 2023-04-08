@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   TextInput, StyleSheet, ScrollView, TouchableOpacity, Text,
@@ -8,14 +8,13 @@ import {
 import {
   Avatar,
   Button,
-
   Picker,
   Checkbox,
   DateTimePicker,
 } from "react-native-ui-lib";
 import { RegisterGroup, UserDetails } from "../api/api";
 import { FetchDetailedCurrencyList } from "../api/api";
-
+import GroupContext from "../Context/GroupContext";
 export const GroupRegistrationForm = () => {
   const [emails, setEmails] = useState([]);
   const [emailInput, setEmailInput] = useState('');
@@ -25,6 +24,7 @@ export const GroupRegistrationForm = () => {
   const [isTemporary, setIsTemporary] = useState(false);
   const [destructionDate, setDestructionDate] = useState(new Date());
   const [currencyList, setCurrencyList] = useState(null);
+  const { setGroupState } = useContext(GroupContext);
   const navigation = useNavigation();
   useEffect(() => {
 
@@ -60,7 +60,7 @@ export const GroupRegistrationForm = () => {
 
 
   const handleRegistration = () => {
-
+    setGroupState(true)
     if (groupName.length === 0) {
       alert("Group Name cannot be empty");
     } else if (emails.length === 0) {

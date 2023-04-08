@@ -23,6 +23,7 @@ import accountDetails from "./src/components/pages/accountInfo";
 import ChartDisplay from "./src/components/pages/ChartDisplay";
 import ExpenseDisplay from "./src/components/ExpenseDisplay";
 import UpdateExpense from "./src/components/UpdateExpense";
+import GroupProvider from "./src/Context/GroupProvider";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const GroupStack = createNativeStackNavigator();
@@ -67,14 +68,14 @@ const GroupScreen = () => {
         name="JoinGroup"
         component={JoinGroup}
       />
-      
+
       <GroupStack.Screen
         name="GroupDetails"
         component={GroupDetailsComponent}
       />
       <GroupStack.Screen name="AddExpense" component={RegisterExpense} />
-      <GroupStack.Screen name="Expense" component={ExpenseDisplay}/>
-      <GroupStack.Screen name="Edit Expense" component={UpdateExpense}/>
+      <GroupStack.Screen name="Expense" component={ExpenseDisplay} />
+      <GroupStack.Screen name="Edit Expense" component={UpdateExpense} />
     </GroupStack.Navigator>
   );
 };
@@ -149,17 +150,19 @@ export default function App() {
   };
   return (
     <NavigationContainer>
-      <RootStack.Navigator screenOptions={{ headerShown: false }}>
-        {!isUserLoggedIn ? (
-          <RootStack.Screen
-            name="Authentication"
-            component={AuthenticationScreen}
-            initialParams={{ handleLogin }}
-          />
-        ) : (
-          <RootStack.Screen name="Root" initialParams={{ handleLogout }} component={TabNavigation} />
-        )}
-      </RootStack.Navigator>
+      <GroupProvider>
+        <RootStack.Navigator screenOptions={{ headerShown: false }}>
+          {!isUserLoggedIn ? (
+            <RootStack.Screen
+              name="Authentication"
+              component={AuthenticationScreen}
+              initialParams={{ handleLogin }}
+            />
+          ) : (
+            <RootStack.Screen name="Root" initialParams={{ handleLogout }} component={TabNavigation} />
+          )}
+        </RootStack.Navigator>
+      </GroupProvider>
     </NavigationContainer>
   );
 }

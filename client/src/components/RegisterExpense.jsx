@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useContext, useState } from "react";
 import { Button, TextField, View, Text, Toast } from "react-native-ui-lib";
 import { DateTimePicker } from "react-native-ui-lib/src/components/dateTimePicker";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -6,15 +6,17 @@ import { Alert, StyleSheet } from "react-native";
 import { CreateExpense } from "../api/api";
 import { useNavigation } from "@react-navigation/native";
 import MONTHS from "../constants/constants";
+import GroupContext from "../Context/GroupContext";
 
 const RegisterExpense = ({ route }) => {
   const [description, setDescription] = useState();
   const [date, setDate] = useState(new Date());
   const [amount, setAmount] = useState()
-  const {groupId} = route.params;
+  const { groupId } = route.params;
+  const { setGroupState } = useContext(GroupContext)
   const navigation = useNavigation();
 
-  const handleExpense = ()=>{
+  const handleExpense = () => {
     if (description !== "" && amount !== undefined) {
       let creationDate =
         date.getDate() +
@@ -43,10 +45,11 @@ const RegisterExpense = ({ route }) => {
                 console.log(res.data.status);
                 if (res.data.status) {
                   // TODO: Show toast for successfull creation
+                  setGroupState(true)
                   navigation.goBack();
                 }
               },
-              (err) => {}
+              (err) => { console.log(err) }
             );
           },
         },
@@ -106,9 +109,9 @@ const styles = StyleSheet.create({
   input: {
     width: "80%",
     marginHorizontal: 8,
-    marginVertical:0,
+    marginVertical: 0,
   },
-  icon:{
+  icon: {
     paddingHorizontal: 16
   }
 });

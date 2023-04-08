@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useLayoutEffect } from "react";
+import { React, useState, useEffect, useLayoutEffect, useContext } from "react";
 import { Avatar, Text, View, Button, Card } from "react-native-ui-lib";
 import GroupActivitiesList from "./GroupActivitiesList";
 import { ActivityIndicator, StyleSheet } from "react-native";
@@ -6,7 +6,8 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { FAB } from "@rneui/themed";
 import { getValueFor } from "../secureStore";
-import { FetchGroups, FetchOtherUserProfile, GroupStatsApi } from '../api/api'
+import { FetchGroups, FetchOtherUserProfile, GroupStatsApi, UpdatedExpenseList } from '../api/api'
+import GroupContext from "../Context/GroupContext";
 
 export const GroupDetailsComponent = ({ route }) => {
   const navigation = useNavigation();
@@ -17,13 +18,12 @@ export const GroupDetailsComponent = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [Spending, setSpending] = useState()
   const [lending, setLending] = useState()
+  const { groupState } = useContext(GroupContext)
+  console.log("THIS IS GROUPSTATE CHANGED IN GROUPDETAILCOMPONENT", groupState)
   const handleAddExpense = () => {
     // navigate to Add Expense page
     navigation.push("AddExpense", { groupId: selectedGroup.group_id, userId: userId });
-    console.log("This is Selected Group", selectedGroup)
-    if (setExpense !== undefined) {
-      setExpenses(setExpense)
-    }
+
 
   }
   const primaryColor = '#E44343';
@@ -49,7 +49,6 @@ export const GroupDetailsComponent = ({ route }) => {
       },
       (err) => { console.log(err) }
     );
-
     GroupStatsApi(selectedGroup.group_id
       , (response) => {
         if (response.data.status) {
@@ -62,7 +61,17 @@ export const GroupDetailsComponent = ({ route }) => {
       }, error => {
         console.log(error);
       })
-  }, [navigation.isFocused]);
+
+    UpdatedExpenseList(selectedGroup.group_id,
+      (res) => {
+        console.log("This is response of updated Expenses", res.data.response)
+        setExpenses(res.data.response)
+      },
+      (err) => { console.log("err", err) })
+
+
+
+  }, [groupState]);
   useEffect(() => {
     const exp = selectedGroup.expenses.map((expense) => {
       const details =
@@ -76,7 +85,23 @@ export const GroupDetailsComponent = ({ route }) => {
     });
     setExpenses(exp);
     setIsLoading(false);
-  }, [userId, userIdMap, navigation.isFocused]);
+  }, [userId, userIdMap]);
+
+  useEffect(() => {
+
+    const exp = selectedGroup.expenses.map((expense) => {
+      const details =
+        userIdMap?.has(expense.spent_by) && userIdMap.get(expense.spent_by);
+      const name =
+        expense.spent_by === userId
+          ? "You"
+          : details?.first_name + " " + details?.last_name;
+      const lent_or_borrowed_amount = expense.amount - expense.amount / selectedGroup.participants.length;
+      return { ...expense, spent_by_name: name, lent_or_borrowed_amount };
+    });
+    setExpenses(exp);
+    setIsLoading(false);
+  }, [])
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -100,8 +125,6 @@ export const GroupDetailsComponent = ({ route }) => {
   }
   return (
     <>
-
-
       <View style={styles.container}>
 
         <View flex row centerV spread>
