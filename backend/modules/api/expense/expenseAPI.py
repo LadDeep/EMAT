@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import traceback
 import json
 import datetime
+import uuid
 
 expense = Blueprint('expense',__name__)
 
@@ -76,7 +77,16 @@ def createExpense():
                     if user_id_verified in groups_dict['participants']:
                         amount = json_data['amount']
                         date = datetime.datetime.strptime(json_data['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
-                        expense = Expense(group_id=group_id,spent_by=user_id_verified,amount=amount,created_at=date)
+                        flag = True
+                        unique_expense_id = None
+                        while flag:
+                            expense_id=uuid.uuid4()
+                            expense_obj = group.expenses.filter(expense_id=expense_id)
+                            if not expense_obj:
+                                unique_user_id = expense_id
+                                flag = False
+                        
+                        expense = Expense(expense_id=expense_id,group_id=group_id,spent_by=user_id_verified,amount=amount,created_at=date)
                         if 'description' in json_keys:
                             expense.description = json_data['description']
                         group.expenses.append(expense)

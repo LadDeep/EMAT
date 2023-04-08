@@ -5,7 +5,7 @@ from modules.models.User import User
 from modules.utils.utilFunctions import createObjectWithRequiredFields,generate_verification_code,sendEmail
 import json
 import traceback
-
+import uuid
 
 group = Blueprint('group',__name__)
 
@@ -23,6 +23,15 @@ def registerGroup():
                 required_fields = ['group_name','group_currency']
                 participants = json_data.get("participants",None)
                 group = Group()
+                flag = True
+                unique_group_id = None
+                while flag:
+                    group_id=uuid.uuid4()
+                    group_obj = Group.objects(group_id=group_id)
+                    if not group_obj:
+                        unique_group_id = group_id
+                        flag = False
+                group.group_id=unique_group_id
                 joiningToken = generate_verification_code()
                 description = json_data.get("group_description",None)
                 group.created_by = user_id_verified
