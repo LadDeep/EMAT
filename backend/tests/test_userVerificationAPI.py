@@ -27,7 +27,7 @@ def test_send_verification_email():
 # check if success message is returned
 
 def test_user_registration_mail(client):
-    response = client.post('/userRegistrationMail', data={"email": "emat@example.com"})
+    response = client.post('/userRegistrationMail', data={"email": "Emat@example.com"})
     assert response.status_code == 200
     assert b'"success":true' in response.data  
     
