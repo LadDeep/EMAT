@@ -45,21 +45,21 @@ const FetchGroups = async (onSuccess, onError) => {
   }
 }
 
-const RegisterGroup = async(data, onSuccess, onError)=>{
-  try{
-    const res = await instance.post("/group/register", data,{
-      headers:{"Content-Type":"application/json"},
+const RegisterGroup = async (data, onSuccess, onError) => {
+  try {
+    const res = await instance.post("/group/register", data, {
+      headers: { "Content-Type": "application/json" },
     });
     onSuccess && onSuccess(res);
-  } catch(err){
+  } catch (err) {
     onError && onError(err);
   }
 }
 
-const FetchCurrencyList = async(onSuccess, onError)=>{
-  try{
-    const res = await instance.get("/currency/list",{
-      headers:{"Content-Type":"application/json"},
+const FetchCurrencyList = async (onSuccess, onError) => {
+  try {
+    const res = await instance.get("/currency/list", {
+      headers: { "Content-Type": "application/json" },
     });
     onSuccess && onSuccess(res);
   } catch (err) {
@@ -121,7 +121,7 @@ const FetchProfileEmail = async (onSuccess, onError) => {
 };
 
 
-const JoinGroupApi = async (verification_code,onSuccess, onError)=>{
+const JoinGroupApi = async (verification_code, onSuccess, onError) => {
   try {
     const res = await instance.get(`/group/join-group?verification_code=${verification_code}`, {
       headers: { "Content-Type": "application/json" },
@@ -133,49 +133,59 @@ const JoinGroupApi = async (verification_code,onSuccess, onError)=>{
 }
 const OverallGroupStandings = async (groupId, onSuccess, onError) => {
 
-   try {
-  
- const res = await instance.get(`${"/settleUp?group_id="+groupId}`, {
-  
- headers: { "Content-Type": "application/json" },
-  
-});
-  
-onSuccess && onSuccess(res);
-  
+  try {
+
+    const res = await instance.get(`${"/settleUp?group_id=" + groupId}`, {
+
+      headers: { "Content-Type": "application/json" },
+
+    });
+
+    onSuccess && onSuccess(res);
+
   } catch (err) {
-  
-onError && onError(err);
-  
-   }
-  
-  };
-  
-  
-  
-  
-  const CreateExpense = async (data, onSuccess, onError) => {
-  
-try {
-  
-const res = await instance.post("/expense/create", data, {
-  
-headers: { "Content-Type": "application/json" },
-  
-});
-  
- onSuccess && onSuccess(res);
-  
-  } catch (err) {
-  
+
     onError && onError(err);
-  
+
   }
-  
-  };
-const GroupStatsApi = async (group_id,onSuccess, onError)=>{
+
+};
+
+
+
+
+const CreateExpense = async (data, onSuccess, onError) => {
+
+  try {
+
+    const res = await instance.post("/expense/create", data, {
+
+      headers: { "Content-Type": "application/json" },
+
+    });
+
+    onSuccess && onSuccess(res);
+
+  } catch (err) {
+
+    onError && onError(err);
+
+  }
+
+};
+const GroupStatsApi = async (group_id, onSuccess, onError) => {
   try {
     const res = await instance.get(`/group/stats?group_id=${group_id}`, {
+      headers: { "Content-Type": "application/json" },
+    });
+    onSuccess && onSuccess(res);
+  } catch (err) {
+    onError && onError(err);
+  }
+}
+const UpdatedExpenseList = async (group_id, onSuccess, onError) => {
+  try {
+    const res = await instance.get(`/expense/list?group_id=${group_id}`, {
       headers: { "Content-Type": "application/json" },
     });
     onSuccess && onSuccess(res);
@@ -199,5 +209,6 @@ export {
   OverallGroupStandings,
   CreateExpense,
   JoinGroupApi,
-  GroupStatsApi
+  GroupStatsApi,
+  UpdatedExpenseList
 };
