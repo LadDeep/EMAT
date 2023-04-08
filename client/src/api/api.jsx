@@ -120,27 +120,69 @@ const FetchProfileEmail = async (onSuccess, onError) => {
   }
 };
 
-const OverallGroupStandings = async (groupId, onSuccess, onError) => {
-  try {
-    const res = await instance.get(`${"/settleUp?group_id="+groupId}`, {
-      headers: { "Content-Type": "application/json" },
-    });
-    onSuccess && onSuccess(res);
-  } catch (err) {
-    onError && onError(err);
-  }
-};
 
-const CreateExpense = async (data, onSuccess, onError) => {
+const JoinGroupApi = async (verification_code,onSuccess, onError)=>{
   try {
-    const res = await instance.post("/expense/create", data, {
+    const res = await instance.get(`/group/join-group?verification_code=${verification_code}`, {
       headers: { "Content-Type": "application/json" },
     });
     onSuccess && onSuccess(res);
   } catch (err) {
     onError && onError(err);
   }
-};
+}
+const OverallGroupStandings = async (groupId, onSuccess, onError) => {
+
+   try {
+  
+ const res = await instance.get(`${"/settleUp?group_id="+groupId}`, {
+  
+ headers: { "Content-Type": "application/json" },
+  
+});
+  
+onSuccess && onSuccess(res);
+  
+  } catch (err) {
+  
+onError && onError(err);
+  
+   }
+  
+  };
+  
+  
+  
+  
+  const CreateExpense = async (data, onSuccess, onError) => {
+  
+try {
+  
+const res = await instance.post("/expense/create", data, {
+  
+headers: { "Content-Type": "application/json" },
+  
+});
+  
+ onSuccess && onSuccess(res);
+  
+  } catch (err) {
+  
+    onError && onError(err);
+  
+  }
+  
+  };
+const GroupStatsApi = async (group_id,onSuccess, onError)=>{
+  try {
+    const res = await instance.get(`/group/stats?group_id=${group_id}`, {
+      headers: { "Content-Type": "application/json" },
+    });
+    onSuccess && onSuccess(res);
+  } catch (err) {
+    onError && onError(err);
+  }
+}
 
 export {
   CreateUser,
@@ -156,4 +198,6 @@ export {
   FetchProfileEmail,
   OverallGroupStandings,
   CreateExpense,
+  JoinGroupApi,
+  GroupStatsApi
 };

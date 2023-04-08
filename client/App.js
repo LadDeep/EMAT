@@ -11,6 +11,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useState } from "react";
 import { GroupsTab } from "./src/components/pages/GroupsTab";
 import Activities from "./ActivitiesTab";
+import JoinGroup from "./src/components/JoinGroup";
 import { GroupDetailsComponent } from "./src/components/GroupDetailsComponent";
 import { GroupRegistrationForm } from "./src/components/GroupRegistrationForm";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -62,6 +63,11 @@ const GroupScreen = () => {
         name="GroupRegistration"
         component={GroupRegistrationForm}
       />
+      <GroupStack.Screen
+        name="JoinGroup"
+        component={JoinGroup}
+      />
+      
       <GroupStack.Screen
         name="GroupDetails"
         component={GroupDetailsComponent}

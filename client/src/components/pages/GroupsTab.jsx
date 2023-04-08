@@ -1,13 +1,23 @@
 import { useState, useCallback, React } from "react";
-import { StyleSheet } from "react-native";
-import { View, Button, Colors } from "react-native-ui-lib";
+import { StyleSheet,Text, Modal, TouchableOpacity } from "react-native";
+import { View, Button, Colors, } from "react-native-ui-lib";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { GroupList } from "../GroupList";
-import { FAB } from "@rneui/themed";
+import GroupIcon from '../GroupIcon';
+
 import { FetchGroups } from "../../api/api";
 export const GroupsTab = () => {
   const [groups, setGroups] = useState(null);
   const navigation = useNavigation();
+  const [showModal, setShowModal] = useState(false);
+
+  const handlePress = () => {
+      setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+      setShowModal(false);
+  };
 
   useFocusEffect(useCallback(() => {
     FetchGroups(
@@ -24,7 +34,13 @@ export const GroupsTab = () => {
   }, []));
 
   const handleGroupRegistration = () => {
+    handleCloseModal();
     navigation.push("GroupRegistration");
+  };
+
+  const handleJoinGroup = () => {
+    handleCloseModal();
+    navigation.push("JoinGroup");
   };
   return (
     <>
@@ -44,12 +60,21 @@ export const GroupsTab = () => {
           </View>
         </View>
       </View>
-      <FAB
-        icon={{ name: "group-add", color: "white" }}
-        color="blue"
-        placement="right"
-        onPress={handleGroupRegistration}
-      />
+      <GroupIcon onPress={handlePress} />
+      <Modal visible={showModal} animationType="slide" onRequestClose={handleCloseModal}>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text>Choose an option:</Text>
+              <TouchableOpacity style={{ marginTop: 20 }} onPress={handleGroupRegistration}>
+                  <Text>Create a Group</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ marginTop: 20 }} onPress={handleJoinGroup}>
+                  <Text>Join a Group</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleCloseModal} style={{ marginTop: 20 }}>
+                  <Text>Close</Text>
+              </TouchableOpacity>
+          </View>
+      </Modal>
     </>
   );
 };

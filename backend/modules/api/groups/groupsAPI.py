@@ -234,7 +234,7 @@ def joinGroup():
         if verification_token is not None:
             try:
                 group_array = Group.objects.filter(joiningToken=verification_token)
-                if not group:
+                if not group_array:
                     abort(404)
                 else:
                     group = group_array[0]

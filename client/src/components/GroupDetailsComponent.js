@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useLayoutEffect } from "react";
-import { Avatar, Text, View, Button } from "react-native-ui-lib";
+import { Avatar, Text, View, Button,Card } from "react-native-ui-lib";
 import GroupActivitiesList from "./GroupActivitiesList";
 import groupData from "../../api-mock-data.json";
 import OverallExpenseDisplay from "./OverallExpenseDisplay";
@@ -8,7 +8,8 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { FAB } from "@rneui/themed";
 import { getValueFor } from "../secureStore";
-import {FetchOtherUserProfile } from '../api/api'
+import {FetchOtherUserProfile,GroupStatsApi } from '../api/api'
+
 export const GroupDetailsComponent = ({ route }) => {
   const navigation = useNavigation();
   const { selectedGroup } = route.params;
@@ -20,7 +21,8 @@ export const GroupDetailsComponent = ({ route }) => {
     // navigate to Add Expense page
     navigation.push("AddExpense", {groupId:selectedGroup.group_id});
   };
-
+  const primaryColor = '#E44343';
+  const secondaryColor = '#27AE60';
   const fetchUserIdFromSecureStore = async () => {
     let ownUser = await getValueFor("USER_ID");
     setUserId(ownUser);
@@ -41,6 +43,14 @@ export const GroupDetailsComponent = ({ route }) => {
       },
       (err) => {}
     );
+
+    GroupStatsApi(selectedGroup.group_id,(response)=>{
+      if(response.data.status){
+        console.log("Group Stats",response.data);
+      }
+    },error=>{
+      console.log(error);
+    })
   }, []);
 
   useEffect(() => {
@@ -80,14 +90,27 @@ export const GroupDetailsComponent = ({ route }) => {
   }
   return (
     <>
+
+          
       <View style={styles.container}>
-        <View flex row marginV-16>
+        
+          <View flex row centerV spread>
+          <Text style={styles.fontTitle}>{selectedGroup.group_name}</Text>
           <Avatar size={76} source={{ uri: selectedGroup.imageUrl }} />
-          <View paddingL-24 center>
-            <Text style={styles.fontTitle}>{selectedGroup.group_name}</Text>
           </View>
-        </View>
-        <OverallExpenseDisplay />
+ 
+        <View style={styles.cardContainer}>
+        <Card style={[styles.card, { backgroundColor: primaryColor }]}>
+          <Text white>Least Spending</Text>
+          <Text white>$120</Text>
+        </Card>
+        <Card style={[styles.card, { backgroundColor: secondaryColor }]}>
+          <Text white>Most Spending</Text>
+          <Text white>$140</Text>
+        </Card>
+      </View>  
+        
+        
         <View flex row center>
           <Button label={"Settle Up"} style={{ margin: 12 }}></Button>
           <Button label={"Notify"} style={{ margin: 12 }}></Button>
@@ -114,9 +137,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "F7F7F2",
-    marginHorizontal: 48,
+    marginHorizontal: 24,
   },
   detailsContainer: { flexDirection: "row", marginVertical: 16 },
   buttonGroup: { flexDirection: "row", justifyContent: "center" },
   fontTitle: { fontWeight: "bold", fontSize: 24 },
+  cardContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // paddingHorizontal: 20,
+    // paddingTop: 20,
+  },
+  card: {
+    width: '47%',
+    height: 80,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
