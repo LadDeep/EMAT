@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route('/settleUp', method = ['POST'])
 
 #function to calculate expense and total users in a group
- def netAmount():
+def netAmount():
 
     expenses = request.json.get('expenses')
     group = request.json.get('group')
@@ -22,7 +22,7 @@ app = Flask(__name__)
     totalUsers = len(group)
 
     # amount owed by individual user
-    netAmounts = = {}
+    netAmounts = {}
     for user in group:
         if user in expenses:
             netAmounts[user] = expenses[user] - (totalExpense / totalUsers)

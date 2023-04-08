@@ -90,13 +90,29 @@ def listGroups():
         try:
             groups = Group.objects.filter(participants__in=[user_id_verified])
             groups = [json.loads(group.to_json()) for group in groups]
+            user_id_vo = User.objects.get_or_404(user_id=user_id_verified)
+            user_id_vo = json.loads(user_id_vo.to_json())
             for group in groups:
                 user_names = User.objects.filter(user_id__in=group['participants'])
                 user_names = [json.loads(x.to_json()) for x in user_names]
-                print(user_names)
+                group_object = next(filter(lambda x: x['group_id'] == group.get('group_id'),user_id_vo.get('settleUp',[])),None)
+                
+                print(user_id_verified)
+                print(group.get('group_id'))
                 spent = sum([expense.get("amount",0) for expense in group.get("expenses",[]) if expense.get('spent_by',None) == user_id_verified])
                 owed = sum([expense.get("amount",0) for expense in group.get("expenses",[]) if expense.get('spent_by',None) != user_id_verified])
-                group['standing_amount'] = spent - owed
+                
+                spent -= spent/len(group.get('participants'))
+                owed = owed/len(group.get('participants'))
+                group['standing_amount'] = spent - owed  
+                if group_object is not None:
+                    if group_object.get('settling') is True:
+                        group['standing_amount'] -= abs(group_object.get('amount',0))
+                    elif group_object.get('settler') is True:
+                        group['standing_amount'] += abs(group_object.get('amount',0))
+                
+                  
+
                 for expense in group['expenses']:
                     user_object = next(filter(lambda x: x['user_id'] == expense['spent_by'],user_names),None)
                     expense['user_name'] = f"{user_object['first_name']} {user_object['last_name']}"

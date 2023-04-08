@@ -6,20 +6,13 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { FAB } from "@rneui/themed";
 import { getValueFor } from "../secureStore";
-<<<<<<< HEAD
-import { FetchGroups, FetchOtherUserProfile, GroupStatsApi, UpdatedExpenseList } from '../api/api'
-=======
 import { GroupStatsApi, UpdatedExpenseList } from '../api/api'
->>>>>>> EMAT-52
 import GroupContext from "../Context/GroupContext";
 
 export const GroupDetailsComponent = ({ route }) => {
   const navigation = useNavigation();
   const { selectedGroup, setExpense } = route.params;
-<<<<<<< HEAD
-  const [userIdMap, setUserIdMap] = useState();
-=======
->>>>>>> EMAT-52
+  
   const [expenses, setExpenses] = useState();
   const [userId, setUserId] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -50,22 +43,10 @@ export const GroupDetailsComponent = ({ route }) => {
   useEffect(() => {
     //TODO: api call for fetching overall expense list here
     fetchUserIdFromSecureStore();
-    FetchOtherUserProfile(
-      { user_id: selectedGroup.participants },
-      (res) => {
-        if (res.data.status) {
-          const map = new Map();
-          res.data.response.forEach((element) => {
-            map.set(element.user_id, element);
-          });
-          setUserIdMap(map);
-        }
-      }, error => {
-        console.log(error);
-      })
     GroupStatsApi(selectedGroup.group_id
       , (response) => {
         if (response.data.status) {
+          console.log("Group Stats", response.data.response);
           console.log("Group Stats", response.data.response);
           console.log("Group Max", response.data.response.max.total);
           setSpending(response.data.response.max.total)
@@ -83,7 +64,7 @@ export const GroupDetailsComponent = ({ route }) => {
       },
       (err) => { console.log("err", err) })
 
-
+      setIsLoading(false)
 
   }, [groupState]);
 

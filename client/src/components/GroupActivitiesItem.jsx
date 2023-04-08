@@ -19,8 +19,7 @@ const GroupActivitiesItem = ({groupId, activity }) => {
               {activity.description}
             </Text>
             <Text>
-              Spent by {activity.user_name} $
-              {parseFloat(activity.amount).toFixed(2)}
+              Spent by {activity.user_name}
             </Text>
           </View>
         </View>
@@ -29,7 +28,7 @@ const GroupActivitiesItem = ({groupId, activity }) => {
             color: `${activity.user_name === "You" ? "green" : "red"}`,
           }}
         >
-          ${parseFloat(activity.lent_or_borrowed_amount).toFixed(2)}
+          ${parseFloat(activity.amount).toFixed(2)}
         </Text>
       </View>
     </ListItem>

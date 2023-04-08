@@ -79,6 +79,7 @@ def notify():
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
     json_data = request.json
+    print(json_data)
     if content_type == 'application/json':
         try:
             user = User.objects.get_or_404(user_id=user_id_verified)
@@ -95,7 +96,7 @@ def notify():
                     index = notify_user_ids.index(notify_user_obj.get("user_id"))
                     obj = notify_users[index]
                     mail_object["message"] = f'You owe amount {obj.get("amount","undefined")} {notify_user_obj.get("currency","undefined")} to {user.first_name} in {group.get("group_name","undefined")}'
-                    sendEmail(mail_object,notify_user_obj.email)
+                    sendEmail(mail_object,notify_user_obj.get("email"))
             
             result["status"] = True
             result["response"] = "Users notified"
