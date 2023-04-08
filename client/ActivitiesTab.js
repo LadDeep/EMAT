@@ -97,7 +97,7 @@ const Activities = () => {
       if(activity.activity_type === 'expense' && ownUserID === activity.spent_by){
           amountStyle = styles.amountPositive;
           formattedAmount = `+ $${Math.abs(activity.amount).toFixed(2)}`;
-          formattedLabel = 'You Get Back'
+          formattedLabel = 'You Paid'
         
       }else if(activity.activity_type === 'settleUp'){
         amountStyle = styles.settleUpAmount;
