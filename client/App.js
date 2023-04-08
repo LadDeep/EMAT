@@ -21,9 +21,11 @@ import { deleteKey, getValueFor } from "./src/secureStore";
 import AccountInfoScreen from "./src/components/pages/accountInfoScreen";
 import accountDetails from "./src/components/pages/accountInfo";
 import ChartDisplay from "./src/components/pages/ChartDisplay";
+import SettleUpScreen from "./src/components/SettleUpScreen";
 import ExpenseDisplay from "./src/components/ExpenseDisplay";
 import UpdateExpense from "./src/components/UpdateExpense";
 import GroupProvider from "./src/Context/GroupProvider";
+import NotifyUsersScreen from "./src/components/NotifyUsersScreen";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const GroupStack = createNativeStackNavigator();
@@ -53,8 +55,7 @@ const AuthenticationScreen = ({ route }) => {
 const GroupScreen = () => {
   const navigation = useNavigation();
   return (
-    <GroupStack.Navigator
-    >
+    <GroupStack.Navigator>
       <GroupStack.Screen
         name="GroupsTab"
         component={GroupsTab}
@@ -74,8 +75,10 @@ const GroupScreen = () => {
         component={GroupDetailsComponent}
       />
       <GroupStack.Screen name="AddExpense" component={RegisterExpense} />
-      <GroupStack.Screen name="Expense" component={ExpenseDisplay} />
-      <GroupStack.Screen name="Edit Expense" component={UpdateExpense} />
+      <GroupStack.Screen name="SettleUp" component={SettleUpScreen} />
+      <GroupStack.Screen name="Expense" component={ExpenseDisplay}/>
+      <GroupStack.Screen name="Edit Expense" component={UpdateExpense}/>
+      <GroupStack.Screen name="Notify" component={NotifyUsersScreen}/>
     </GroupStack.Navigator>
   );
 };
