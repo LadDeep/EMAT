@@ -1,5 +1,6 @@
 from flask import Blueprint,request
 from modules.models.Group import Group
+from modules.models.User import User
 from modules.models.Expense import Expense
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import traceback
@@ -116,6 +117,33 @@ def createExpense():
         status = 415
     return result,status
 
+@expense.route('/list',methods=['GET'])
+@jwt_required()
+def expenseList():
+    group_id = request.args.get('group_id')
+    result = {"status": False}
+    if group_id is not None:
+        try:
+            group = Group.objects.get_or_404(group_id=group_id)
+            group = json.loads(group.to_json())
+
+            for expense in group.get('expenses',[]):
+                user_object = User.objects.get_or_404(user_id=expense.get('spent_by'))
+                expense['user_name'] = f'{user_object.first_name} {user_object.last_name}'
+            
+            result['status'] = True
+            result['response'] = group.get('expenses',[])
+        except Exception as e:
+            traceback_message = traceback.format_exc()
+            print(traceback_message)
+            result['error'] = f"{e.__class__.__name__} occured"
+            result['traceback'] = traceback_message
+    else:
+        result['response'] = f'Incomplete Query Parameters: "group_id" cannot be empty'
+    
+    return result
+
+    
 @expense.route('/update',methods=['PUT'])
 @jwt_required()
 def updateExpense():

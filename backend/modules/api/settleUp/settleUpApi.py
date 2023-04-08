@@ -127,41 +127,44 @@ def settle():
     if content_type == 'application/json':
         required_fields = ['group_id','user_id','amount','last_settled_at']
         json_data = request.json
-        if set(required_fields) == set(list(json_data.keys())):
-            user_id_settling = json_data.get('user_id')
-            group_id = json_data.get('group_id')
-            last_settled_at_as_string = json_data.get('last_settled_at')
-            amount = json_data.get('amount')
-            last_settled_at = datetime.datetime.strptime(last_settled_at_as_string, "%Y-%m-%dT%H:%M:%S.%fZ")
-            user_settling = User.objects.get_or_404(user_id=user_id_settling)
-            user_called_settled = User.objects.get_or_404(user_id=user_id_verified)
-            
-            try:            
-                settling_object = SettleUp(user_id=user_id_verified,group_id=group_id,last_settled_at=last_settled_at,amount=0-amount,settling=True)
-                user_settling.settleUp.append(settling_object)
+        print(json_data)
+        for transaction in json_data.get('transactions',[]):
+            if set(required_fields) == set(list(transaction.keys())):
+                user_id_settling = transaction.get('user_id')
+                group_id = transaction.get('group_id')
+                last_settled_at_as_string = transaction.get('last_settled_at')
+                amount = transaction.get('amount')
+                last_settled_at = datetime.datetime.strptime(last_settled_at_as_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+                user_settling = User.objects.get_or_404(user_id=user_id_settling)
+                user_called_settled = User.objects.get_or_404(user_id=user_id_verified)
+                
+                try:            
+                    settling_object = SettleUp(user_id=user_id_verified,group_id=group_id,last_settled_at=last_settled_at,amount=0-amount,settling=True)
+                    user_settling.settleUp.append(settling_object)
 
-                called_settle_object = SettleUp(user_id=user_id_settling,group_id=group_id,last_settled_at=last_settled_at,amount=amount,settler=True)
-                user_called_settled.settleUp.append(called_settle_object)
+                    called_settle_object = SettleUp(user_id=user_id_settling,group_id=group_id,last_settled_at=last_settled_at,amount=amount,settler=True)
+                    user_called_settled.settleUp.append(called_settle_object)
 
-                user_settling.save()
-                user_called_settled.save()
-                result['status'] = True
-                result['response'] = f'{user_id_verified} and {user_id_settling} settled up'
-            except Exception as e:
-                traceback_message = traceback.format_exc()
-                print(traceback_message)
-                result['error'] = f"{e.__class__.__name__} occured"
-                result['traceback'] = traceback_message
-            # storing settle up data in
-        else:
-            json_body_keys_list = list(json_data.keys())
-            unavailable_keys = [x for x in required_fields if x not in json_body_keys_list]
-            error_message = []
-            for key in unavailable_keys:
-                error_message.append(f'{key} does not exist in request body')
-            
-            error_msg_as_string = ', '.join(error_message)
-            result['response'] = f'Incomplete JSON body: {error_message}'
+                    user_settling.save()
+                    user_called_settled.save()
+                    result['status'] = True
+                    result['response'] = f'{user_id_verified} and {user_id_settling} settled up'
+                except Exception as e:
+                    traceback_message = traceback.format_exc()
+                    print(traceback_message)
+                    result['error'] = f"{e.__class__.__name__} occured"
+                    result['traceback'] = traceback_message
+                # storing settle up data in
+            else:
+                json_body_keys_list = list(transaction.keys())
+                unavailable_keys = [x for x in required_fields if x not in json_body_keys_list]
+                error_message = []
+                for key in unavailable_keys:
+                    error_message.append(f'{key} does not exist in request body')
+                
+                error_msg_as_string = ', '.join(error_message)
+                result['response'] = f'Incomplete JSON body: {error_msg_as_string}'
+        
     else:
         result["response"] = f"Unsupported Content-Type: {content_type}"
     
