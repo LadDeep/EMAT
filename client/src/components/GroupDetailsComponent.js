@@ -6,13 +6,12 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { FAB } from "@rneui/themed";
 import { getValueFor } from "../secureStore";
-import { FetchGroups, FetchOtherUserProfile, GroupStatsApi, UpdatedExpenseList } from '../api/api'
+import { GroupStatsApi, UpdatedExpenseList } from '../api/api'
 import GroupContext from "../Context/GroupContext";
 
 export const GroupDetailsComponent = ({ route }) => {
   const navigation = useNavigation();
   const { selectedGroup, setExpense } = route.params;
-  const [userIdMap, setUserIdMap] = useState();
   const [expenses, setExpenses] = useState();
   const [userId, setUserId] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -28,6 +27,13 @@ export const GroupDetailsComponent = ({ route }) => {
   }
   const primaryColor = '#E44343';
   const secondaryColor = '#27AE60';
+
+  const handleSettleUp = ()=>{
+    navigation.push("SettleUp", {groupId: selectedGroup.group_id, userId})
+  }
+  const handleNotify = ()=>{
+    navigation.push("Notify", {groupId: selectedGroup.group_id, userId})
+  }
   const fetchUserIdFromSecureStore = async () => {
     let ownUser = await getValueFor("USER_ID");
     setUserId(ownUser);
@@ -36,19 +42,7 @@ export const GroupDetailsComponent = ({ route }) => {
   useEffect(() => {
     //TODO: api call for fetching overall expense list here
     fetchUserIdFromSecureStore();
-    FetchOtherUserProfile(
-      { user_id: selectedGroup.participants },
-      (res) => {
-        if (res.data.status) {
-          const map = new Map();
-          res.data.response.forEach((element) => {
-            map.set(element.user_id, element);
-          });
-          setUserIdMap(map);
-        }
-      },
-      (err) => { console.log(err) }
-    );
+    
     GroupStatsApi(selectedGroup.group_id
       , (response) => {
         if (response.data.status) {
@@ -69,39 +63,18 @@ export const GroupDetailsComponent = ({ route }) => {
       },
       (err) => { console.log("err", err) })
 
-
-
   }, [groupState]);
+  
   useEffect(() => {
     const exp = selectedGroup.expenses.map((expense) => {
-      const details =
-        userIdMap?.has(expense.spent_by) && userIdMap.get(expense.spent_by);
-      const name =
-        expense.spent_by === userId
-          ? "You"
-          : details?.first_name + " " + details?.last_name;
-      const lent_or_borrowed_amount = expense.amount - expense.amount / selectedGroup.participants.length;
-      return { ...expense, spent_by_name: name, lent_or_borrowed_amount };
+      const lent_or_borrowed_amount =
+        expense.amount - expense.amount / selectedGroup.participants.length;
+      return { ...expense, lent_or_borrowed_amount };
     });
     setExpenses(exp);
     setIsLoading(false);
-  }, [userId, userIdMap]);
+  }, []);
 
-  useEffect(() => {
-
-    const exp = selectedGroup.expenses.map((expense) => {
-      const details =
-        userIdMap?.has(expense.spent_by) && userIdMap.get(expense.spent_by);
-      const name =
-        expense.spent_by === userId
-          ? "You"
-          : details?.first_name + " " + details?.last_name;
-      const lent_or_borrowed_amount = expense.amount - expense.amount / selectedGroup.participants.length;
-      return { ...expense, spent_by_name: name, lent_or_borrowed_amount };
-    });
-    setExpenses(exp);
-    setIsLoading(false);
-  }, [])
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -145,13 +118,13 @@ export const GroupDetailsComponent = ({ route }) => {
 
 
         <View flex row center>
-          <Button label={"Settle Up"} style={{ margin: 12 }}></Button>
-          <Button label={"Notify"} style={{ margin: 12 }}></Button>
+          <Button label={"Settle Up"} style={{ margin: 12 }} onPress={handleSettleUp}></Button>
+          <Button label={"Notify"} style={{ margin: 12 }}  onPress={handleNotify}></Button>
         </View>
       </View>
       <View flex center>
         {expenses && expenses.length !== 0 ? (
-          <GroupActivitiesList groupId={selectedGroup.group_id} activities={expenses} />
+          <GroupActivitiesList groupId={selectedGroup.group_id} noOfParticipants={selectedGroup.participants.length} userId={userId} activities={expenses} />
         ) : (
           <Text>No expenses</Text>
         )}
