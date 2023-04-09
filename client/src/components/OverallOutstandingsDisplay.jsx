@@ -21,34 +21,34 @@ const OverallOutstandingsDisplay = ({
                   marginH-16
                   style={{ justifyContent: "space-between" }}
                 >
-                <Checkbox
-                  value={item.isChecked}
-                  label={item.user_name}
-                  isDisabled={item.isDisabled}
-                  onValueChange={(value) =>
-                    handleCheckboxChange(item._id, value)
-                  }
-                />
-                <View row centerV>
-                  {item.amount >= 0 ? (
-                    item.amount === 0 ? (
-                      <Text>You're settled</Text>
+                  <Checkbox
+                    value={item.isChecked}
+                    label={item.user_name}
+                    isDisabled={item.isDisabled}
+                    onValueChange={(value) =>
+                      handleCheckboxChange(item._id, value)
+                    }
+                  />
+                  <View row centerV>
+                    {item.amount >= 0 ? (
+                      item.amount === 0 ? (
+                        <Text>You're settled</Text>
                       ) : (
                         <>
-                        <Text>Get Back </Text>
-                        <Text style={{ color: "green" }}>
+                          <Text>Get Back </Text>
+                          <Text style={{ color: "green" }}>
+                            ${parseFloat(item.amount).toFixed(2)}
+                          </Text>
+                        </>
+                      )
+                    ) : (
+                      <>
+                        <Text>Pay Back </Text>
+                        <Text style={{ color: "red" }}>
                           ${parseFloat(item.amount).toFixed(2)}
                         </Text>
                       </>
-                    )
-                    ) : (
-                    <>
-                      <Text>Pay Back </Text>
-                      <Text style={{ color: "red" }}>
-                        ${parseFloat(item.amount).toFixed(2)}
-                      </Text>
-                    </>
-                  )}
+                    )}
                   </View>
                 </View>
               </ListItem>
