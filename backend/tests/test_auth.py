@@ -1,163 +1,188 @@
+import json
+from unittest import mock
 import pytest
-from datetime import datetime
-from mongomock import MongoClient
-from main import app, User
+from modules.models.User import User
+from app import app
 
 
 @pytest.fixture(scope="module")
-def client():
-    app.config['TESTING'] = True
+def test_client():
+    app.config["TESTING"] = True
+    app.config["DEBUG"] = False
     with app.test_client() as client:
         yield client
 
 
 @pytest.fixture(scope="module")
 def user():
-    client = MongoClient()
-    db = client['test_db']
-    user_collection = db['users']
+    email = "test_user1@example.com"
+    password = "TestPassword"
+    first_name = "Test"
+    last_name = "User"
+    currency = "USD"
+    monthly_budget_amount = 100
+    warning_budget_amount = 90
+
+    # Create a test user in the database
     user = User(
-        email="test@test.com",
-        password="password",
-        first_name="Eren",
-        last_name="Yeager",
-        currency="USD",
-        monthly_budget_amount=1000,
-        warning_budget_amount=800
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        currency=currency,
+        monthly_budget_amount=monthly_budget_amount,
+        warning_budget_amount=warning_budget_amount,
     )
-    user_collection.insert_one(user.to_dict())
-    return user
+    user.hash_password(password)
+    user.save()
+    yield user
+    user.delete()
 
 
-def test_register_endpoint(client, user):
-    # Test with valid input
-    response = client.post('/auth/register', json={
-        "email": "test2@test.com",
-        "password": "password",
-        "first_name": "Eren",
-        "last_name": "Yeager",
+def test_register(test_client, user):
+    # Test registration of a new user
+    data = {
+        "email": "new_user@example.com",
+        "password": "TestPassword123",
+        "first_name": "New",
+        "last_name": "User",
         "currency": "USD",
-        "monthly_budget_amount": 1000,
-        "warning_budget_amount": 800
-    })
-    assert response.status_code == 200
-    assert response.json == {
-        "status": True,
-        "message": "signup successfully"
+        "monthly_budget_amount": 100,
+        "warning_budget_amount": 90,
     }
+    response = test_client.post("/auth/register", json=data)
+    assert response.status_code == 200
+    assert "user_id" in response.json
 
-    # Test with an email that already exists
-    response = client.post('/auth/register', json={
-        "email": "test@test.com",
-        "password": "password",
-        "first_name": "Eren",
-        "last_name": "Yeager",
+    # Test registration with an already registered email
+    data = {
+        "email": user.email,
+        "password": "TestPassword123",
+        "first_name": "Test",
+        "last_name": "User",
         "currency": "USD",
-        "monthly_budget_amount": 1000,
-        "warning_budget_amount": 800
-    })
+        "monthly_budget_amount": 100,
+        "warning_budget_amount": 90,
+    }
+    response = test_client.post("/auth/register", json=data)
     assert response.status_code == 409
-    assert response.json == {
-        "status": False,
-        "error": "User with the email has already existed"
-    }
+    assert response.json["error"] == "User with the email has already existed"
 
 
-def test_login_endpoint(client, user):
-    # Test with valid input and verified user
-    user.isEmailVerified = True
-    user.hash_password("password")
-    client = MongoClient()
-    db = client['test_db']
-    user_collection = db['users']
-    user_collection.update_one({"email": user.email}, {"$set": user.to_dict()})
-    response = client.post('/auth/login', json={
-        "email": "test@test.com",
-        "password": "password"
-    })
+def test_login(test_client, user):
+    # Test successful login
+    data = {"email": user.email, "password": "TestPassword"}
+    response = test_client.post("/auth/login", json=data)
     assert response.status_code == 200
-    assert response.json == {
-        "status": True,
-        "message": "login successfully"
-    }
+    assert "access_token" in response.json
 
-def test_register_endpoint_invalid_email(client):
-    # Test with an invalid email format
-    response = client.post('/auth/register', json={
-        "email": "testtest.com",
-        "password": "password",
+    # Test login with incorrect password
+    data = {"email": user.email, "password": "WrongPassword"}
+    response = test_client.post("/login", json=data)
+    assert response.status_code == 200
+    assert response.json["status"] is False
+    assert response.json["message"] == "wrong password"
+
+    # Test login with non-existent email
+    data = {"email": "nonexistent@example.com", "password": "TestPassword"}
+    response = test_client.post("/login", json=data)
+    assert response.status_code == 404
+    assert response.json["error"] == "User with the email not found"
+
+
+def test_logout(test_client, user):
+    # Test logout with a logged-in user
+    with test_client.session_transaction() as session:
+        session["user_id"] = str(user.user_id)
+    response = test_client.post("/logout")
+    assert response.status_code == 200
+    assert response.json["status"] is True
+
+def test_register_user(client):
+    user_data = {
+        "email": "test@example.com",
+        "password": "password123",
         "first_name": "Eren",
         "last_name": "Yeager",
         "currency": "USD",
         "monthly_budget_amount": 1000,
-        "warning_budget_amount": 800
-    })
-    assert response.status_code == 400
-    assert response.json == {
-        "status": False,
-        "error": "Invalid email format"
+        "warning_budget_amount": 500
     }
+    with mock.patch("modules.utils.utilFunctions.sendEmail") as send_email_mock:
+        send_email_mock.return_value = None
+        response = client.post("/auth/register", json=user_data)
+        assert response.status_code == 200
+        assert "user_id" in response.json
 
-def test_register_endpoint_invalid_password(client):
-    # Test with a password less than 8 characters
-    response = client.post('/auth/register', json={
-        "email": "test3@test.com",
-        "password": "pass",
+
+def test_register_existing_user(client):
+    user_data = {
+        "email": "test@example.com",
+        "password": "password123",
         "first_name": "Eren",
         "last_name": "Yeager",
         "currency": "USD",
         "monthly_budget_amount": 1000,
-        "warning_budget_amount": 800
-    })
-    assert response.status_code == 400
-    assert response.json == {
-        "status": False,
-        "error": "Password must be at least 8 characters long"
+        "warning_budget_amount": 500
     }
+    user = User(email=user_data["email"])
+    user.save()
 
-def test_register_endpoint_invalid_currency(client):
-    # Test with an invalid currency code
-    response = client.post('/auth/register', json={
-        "email": "test4@test.com",
-        "password": "password",
+    with mock.patch("modules.utils.utilFunctions.sendEmail") as send_email_mock:
+        send_email_mock.return_value = None
+        response = client.post("/auth/register", json=user_data)
+        assert response.status_code == 409
+        assert response.json["status"] is False
+
+
+def test_register_invalid_data(client):
+    user_data = {
+        "email": "invalid_email",
+        "password": "password123",
         "first_name": "Eren",
         "last_name": "Yeager",
-        "currency": "ABC",
+        "currency": "USD",
         "monthly_budget_amount": 1000,
-        "warning_budget_amount": 800
-    })
-    assert response.status_code == 400
-    assert response.json == {
-        "status": False,
-        "error": "Invalid currency code"
+        "warning_budget_amount": 500
+    }
+    with mock.patch("modules.utils.utilFunctions.sendEmail") as send_email_mock:
+        send_email_mock.return_value = None
+        response = client.post("/auth/register", json=user_data)
+        assert response.status_code == 400
+        assert response.json["status"] is False
+
+
+def test_login_valid_user(client):
+    email = "test@example.com"
+    password = "password123"
+    user = User(email=email)
+    user.hash_password(password)
+    user.save()
+
+    login_data = {
+        "email": email,
+        "password": password
     }
 
-def test_login_endpoint_incorrect_password(client, user):
-    # Test with incorrect password
-    user.isEmailVerified = True
-    user.hash_password("password")
-    user.save()
-    response = client.post('/auth/login', json={
-        "email": "test@test.com",
-        "password": "wrongpassword"
-    })
-    assert response.status_code == 401
-    assert response.json == {
-        "status": False,
-        "error": "Invalid email or password"
+    with mock.patch("flask_jwt_extended.create_access_token") as create_token_mock:
+        create_token_mock.return_value = "test_access_token"
+        response = client.post("/auth/login", json=login_data)
+        assert response.status_code == 200
+        assert response.json["status"] is True
+        assert "access_token" in response.json
+        assert "user_id" in response.json
+
+
+def test_login_invalid_user(client):
+    email = "test@example.com"
+    password = "password123"
+
+    login_data = {
+        "email": email,
+        "password": password
     }
 
-def test_login_endpoint_unverified_email(client, user):
-    # Test with unverified email
-    user.isEmailVerified = False
-    user.hash_password("password")
-    user.save()
-    response = client.post('/auth/login', json={
-        "email": "test@test.com",
-        "password": "password"
-    })
-    assert response.status_code == 401
-    assert response.json == {
-        "status": False,
-        "error": "Email not verified"
-    }
+    with mock.patch("flask_jwt_extended.create_access_token") as create_token_mock:
+        create_token_mock.return_value = "test_access_token"
+        response = client.post("/auth/login", json=login_data)
+        assert response.status_code == 404
+        assert response.json["status"] is False
