@@ -9,7 +9,7 @@ activities_bp = Blueprint('activities',__name__)
 
 @activities_bp.route('/list',methods=['GET'])
 @jwt_required()
-def listUserActivities():
+def list_user_activities():
     user_id_verified = get_jwt_identity()
     result = {"status": False}
     status = None
@@ -19,7 +19,7 @@ def listUserActivities():
             groups = Group.objects.filter(participants__in=[user_id_verified])
             groups = [json.loads(group.to_json()) for group in groups]
             userObject = User.objects.get_or_404(user_id=user_id_verified)
-            response = createGroupActivityResponse(groups)
+            response = create_group_activity_response(groups)
             
             settleUpList = [json.loads(x.to_json()) for x in userObject.settleUp]
             for settleUpObject in settleUpList:
@@ -43,7 +43,7 @@ def listUserActivities():
     return result,status
 
 
-def createGroupActivityResponse(groups):
+def create_group_activity_response(groups):
     response = []
     for group in groups:
         for expense in group["expenses"]:

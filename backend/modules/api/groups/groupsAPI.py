@@ -234,7 +234,7 @@ def get_group_stats():
             result['error'] = f"{e.__class__.__name__} occured"
             result['traceback'] = traceback_message
     else:
-        result["response"] = f"Incomplete Query Parameters: 'group_id' is missing"
+        result["response"] = "Incomplete Query Parameters: 'group_id' is missing"
 
     return result
             

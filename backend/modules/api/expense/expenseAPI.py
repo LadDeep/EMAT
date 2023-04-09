@@ -37,10 +37,10 @@ def detail_expense():
                 
             else:
                 if expense_id is None:
-                    result['error'] = f"Expense ID cannot be null in the request params"
+                    result['error'] = "Expense ID cannot be null in the request params"
 
                 if group_id is None:
-                    result['error'] = f"Group ID cannot be null in the request params"
+                    result['error'] = "Group ID cannot be null in the request params"
                 status = 400
         except Exception as e:
             traceback_message = traceback.format_exc()
@@ -134,7 +134,7 @@ def expense_list():
             result['error'] = f"{e.__class__.__name__} occured"
             result['traceback'] = traceback_message
     else:
-        result['response'] = f'Incomplete Query Parameters: "group_id" cannot be empty'
+        result['response'] = 'Incomplete Query Parameters: "group_id" cannot be empty'
     
     return result
 
