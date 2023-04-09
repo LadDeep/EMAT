@@ -16,7 +16,7 @@ const GroupActivitiesList = ({ groupId, noOfParticipants, userId, activities }) 
     <GridList
       horizontal={false}
       data={expenses}
-      renderItem={({item} ) => (<GroupActivitiesItem groupId={groupId} activity={item} />)}
+      renderItem={({item} ) => (<GroupActivitiesItem groupId={groupId} userId={userId} activity={item} />)}
       numColumns={1}
     />
   );
