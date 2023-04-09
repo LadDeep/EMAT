@@ -1,4 +1,4 @@
-import apport
+import app
 import pytest
 from unittest import mock
 from datetime import datetime
@@ -9,7 +9,7 @@ from unittest.mock import patch, Mock
 @pytest.fixture(scope="module")
 def client():
     app.config['TESTING'] = True
-    with apport.test_client() as client:
+    with app.test_client() as client:
         yield client
 
 
@@ -21,7 +21,7 @@ def test_register_endpoint(mock_sendEmail, client):
         "email": "test@test.com",
         "password": "password",
         "first_name": "John",
-        "last_name": "Doe",
+        "last_name": "Yeager",
         "currency": "USD",
         "monthly_budget_amount": 1000,
         "warning_budget_amount": 800
@@ -37,8 +37,8 @@ def test_register_endpoint(mock_sendEmail, client):
     user = User(
         email="test@test.com",
         password="password",
-        first_name="John",
-        last_name="Doe",
+        first_name="Eren",
+        last_name="Yeager",
         currency="USD",
         monthly_budget_amount=1000,
         warning_budget_amount=800
@@ -47,8 +47,8 @@ def test_register_endpoint(mock_sendEmail, client):
     response = client.post('/register', json={
         "email": "test@test.com",
         "password": "password",
-        "first_name": "John",
-        "last_name": "Doe",
+        "first_name": "Eren",
+        "last_name": "Yeager",
         "currency": "USD",
         "monthly_budget_amount": 1000,
         "warning_budget_amount": 800
@@ -66,8 +66,8 @@ def test_login_endpoint(client):
     user = User(
         email="test@test.com",
         password="password",
-        first_name="John",
-        last_name="Doe",
+        first_name="Eren",
+        last_name="Yeager",
         currency="USD",
         monthly_budget_amount=1000,
         warning_budget_amount=800,
@@ -91,8 +91,8 @@ def test_login_endpoint(client):
     user = User(
         email="test@test.com",
         password="password",
-        first_name="John",
-        last_name="Doe",
+        first_name="Eren",
+        last_name="Yeager",
         currency="USD",
         monthly_budget_amount=1000,
         warning_budget_amount=800,
@@ -116,18 +116,18 @@ def test_get_user_data(mock_get):
     # Mock response from the API
     mock_response = Mock()
     mock_response.json.return_value = {
-        'name': 'John Smith',
+        'name': 'Eren Smith',
         'age': 30,
-        'email': 'john.smith@example.com'
+        'email': 'Eren.smith@example.com'
     }
     mock_get.return_value = mock_response
     
     # Test case 1: Valid user ID
     result = get_user_data(123)
     assert result == {
-        'name': 'John Smith',
+        'name': 'Eren Smith',
         'age': 30,
-        'email': 'john.smith@example.com'
+        'email': 'Eren.smith@example.com'
     }
     
     # Test case 2: Invalid user ID
