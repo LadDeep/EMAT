@@ -97,7 +97,7 @@ export const GroupDetailsComponent = ({ route }) => {
 
         <View flex row centerV spread>
           <Text style={styles.fontTitle}>{selectedGroup.group_name}</Text>
-          <Avatar size={76} source={{ uri: selectedGroup.imageUrl }} />
+          <Avatar size={76} source={require("../../assets/group/3.png")} />
         </View>
 
         <View style={styles.cardContainer}>

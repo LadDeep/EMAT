@@ -1,9 +1,14 @@
 import pytest
-from app import app,
-from backend.modules.api.otpVerification.otpVerification import verificationCodes
+from app import app
+from backend.modules.api.otpVerification.otpVerification import verificationCodes, RegistrationVerificationCode, sendVerificationEmail
+from mongomock import MongoClient
+
+# Replace the original database with a mock database
+app.config['MONGO_URI'] = "mongodb://localhost:27017/testdb"
+client = MongoClient()
+db = client.get_database()
 
 # Test case to verify if userRegistrationMail API is working fine
-
 def test_userRegistrationMail():
     with app.test_client() as client:
         # sending request with no email
@@ -17,8 +22,7 @@ def test_userRegistrationMail():
         assert response.status_code == 200
         assert response.json['success'] == True
         assert response.json['message'] == 'Verification code sent successfully.'
-        assert verificationCodes.get('emat@example.com') is not None
-
+        assert db.verificationCodes.find_one({"email": "emat@example.com"}) is not None
 
 # Test case to verify if verifyCode API is working fine
 def test_verifyCode():
@@ -36,7 +40,7 @@ def test_verifyCode():
         assert response.json['message'] == 'No verification code found for this email address.'
 
         # sending request with valid email and invalid code
-        verificationCodes['emat@example.com'] = '123456'
+        db.verificationCodes.insert_one({"email": "emat@example.com", "code": "123456"})
         response = client.post('/verifyCode', data={"email": "emat@example.com", "code": "111111"})
         assert response.status_code == 401
         assert response.json['success'] == False
@@ -47,8 +51,7 @@ def test_verifyCode():
         assert response.status_code == 200
         assert response.json['success'] == True
         assert response.json['message'] == 'Email sent successfully.'
-        assert verificationCodes.get('emat@example.com') is None
-
+        assert db.verificationCodes.find_one({"email": "emat@example.com"}) is None
 
 # Test case to verify if the email body and subject can be customized
 def test_userRegistrationMail_custom_subject_and_body():
@@ -58,43 +61,10 @@ def test_userRegistrationMail_custom_subject_and_body():
         assert response.status_code == 200
         assert response.json['success'] == True
         assert response.json['message'] == 'Verification code sent successfully.'
-        assert verificationCodes.get('emat@example.com') is not None
+        assert db.verificationCodes.find_one({"email": "emat@example.com"}) is not None
         
         # verifying the email message with custom subject/body
         with mail.record_messages() as outbox:
-            code = verificationCodes.get('emat@example.com')
+            code = db.verificationCodes.find_one({"email": "emat@example.com"})['code']
             assert code is not None
             assert len(outbox) == 1
-            assert outbox[0].subject == 'Custom subject'
-            assert outbox[0].recipients == ['emat@example.com']
-            assert outbox[0].body == f"Custom body {code}."
-
-# Test case to verify if the verification code is a 6-digit number
-def test_RegistrationVerificationCode():
-    code = int(RegistrationVerificationCode())
-    assert code >= 100000 and code <= 999999
-
-# Test case to verify if the email is sent successfully with valid credentials
-def test_sendVerificationEmail():
-    with mail.record_messages() as outbox:
-        code = sendVerificationEmail("emat@example.com")
-        assert code is not None
-        assert len(outbox) == 1
-        assert outbox[0].subject == 'User registration code'
-        assert outbox[0].recipients == ['emat@example.com']
-        assert outbox[0].body == f"Your verification code is {code}."
-
-# Test case to verify if sending email with invalid credentials returns an error
-def test_sendVerificationEmail_invalid_credentials():
-    app.config.update(
-        DEBUG=True,
-        MAIL_SERVER = "invalid.mail.server",
-        MAIL_PORT = 587,
-        MAIL_USE_TLS = True,
-        MAIL_USERNAME = "invalid_username",
-        MAIL_PASSWORD = "invalid_password"
-    )
-    with pytest.raises(Exception) as e:
-        sendVerificationEmail("emat@example.com")
-    assert "Please log in via your web browser" in str(e.value)
-

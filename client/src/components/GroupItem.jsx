@@ -15,7 +15,7 @@ export const GroupItem = ({item}) => {
     <ListItem flex style={styles.listItem} onPress={handleGroupItemClick}>
       <View flex row paddingL-24 style={{ alignItems: "center" }}>
         <Avatar
-          source={""}
+          source={require("../../assets/group/3.png")}
           containerStyle={{ marginRight: 12 }}
         />
         <Text style={styles.textBold}>{item.group_name}</Text>

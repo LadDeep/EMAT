@@ -163,13 +163,12 @@ def resetPasswordWithToken():
             return jsonify({"message": "missing email"})
 
         db_user = User.objects.get(email=email)
-
         # if not db_user:
         #     raise CustError("User with the email not found", 404)
 
         reset_token = create_access_token(identity=str(db_user.user_id), expires_delta=datetime.timedelta(hours=12))
-        send_email(reset_token, db_user)
-        return {"status": "success", "message": "email has been sent", "reset_token": reset_token}, 200
+        sendEmail({"subject":"EMAT - password reset","message":f"RESET_TOKEN -{reset_token}"},email)
+        return {"status": True, "message": "email has been sent", "reset_token": reset_token}, 200
 
     except DoesNotExist:
         return jsonify({"error": "User with the email not found"}), 404
@@ -177,10 +176,9 @@ def resetPasswordWithToken():
         return jsonify({"error": str(e)}), 500
 
 
-@auth.route("/reset/<reset_token>", methods=["POST", "GET"])
+@auth.route("/reset/<reset_token>", methods=["POST"])
 def resetPassword(reset_token):
     if request.method == "POST":
-
         try:
             data = request.get_json()
             newPassword = data["password"]
@@ -193,7 +191,7 @@ def resetPassword(reset_token):
             if user:
                 user.update(password=generate_password_hash(newPassword))
                 user.save()
-                return {"status": "success", "message": "password reset successfully"}, 200
+                return {"status": True, "message": "password reset successfully"}, 200
 
             else:
                 return jsonify("message", "the reset token is not valid"), 400
