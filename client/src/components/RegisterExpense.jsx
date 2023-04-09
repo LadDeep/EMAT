@@ -13,7 +13,7 @@ const RegisterExpense = ({ route }) => {
   const [date, setDate] = useState(new Date());
   const [amount, setAmount] = useState()
   const { groupId } = route.params;
-  const { setGroupState } = useContext(GroupContext)
+  const { setGroupState, groupState } = useContext(GroupContext)
   const navigation = useNavigation();
 
   const handleExpense = () => {
@@ -45,12 +45,13 @@ const RegisterExpense = ({ route }) => {
                 console.log(res.data.status);
                 if (res.data.status) {
                   // TODO: Show toast for successfull creation
-                  setGroupState(true)
+                  setGroupState(!groupState)
                   navigation.goBack();
                 }
               },
               (err) => { console.log(err) }
             );
+
           },
         },
       ]);
