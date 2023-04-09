@@ -35,6 +35,7 @@ unit-test-job:
     - ls
     - pwd
     - cd backend/
+    - pip install coverage
     - coverage run --source='.' -m pytest /tests/
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
 
@@ -50,6 +51,9 @@ coverage-job:
     - echo "Generating test coverage report..."
     - cd build/
     - coverage report --fail-under=80
+artifacts:
+    paths:
+      - build/    
 
 deploy-job:
   stage: deploy
