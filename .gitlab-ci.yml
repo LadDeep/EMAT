@@ -10,6 +10,8 @@ build-job:
   script:
     - echo "Building the app..."
     - mkdir build/
+    - ls
+    - pwd
     - cp -r app.py build/
     - cd build/app
     - pip install --upgrade pip
