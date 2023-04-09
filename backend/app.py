@@ -23,16 +23,12 @@ def create_app():
 
     app.config["JWT_SECRET_KEY"] = "secret-key"  # need to change this key and export in the env
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
-    app.config["SMTP_SERVER"] = "smtp.gmail.com"
-    app.config["SMTP_USERNAME"] = "username@google.com"
-    app.config["SMTP_PASSWORD"] = "temppassword"
+    
     app.config["JSON-CONTENT-TYPE"] = "application/json"
     app.config["SMTP_PORT"] = 587
-    app.config["SMTP_TLS"] = True
 
-    jwt = JWTManager(app)
-    mail = Mail(app)
-    app.mail = mail
+    JWTManager(app)
+   
 
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(profile,url_prefix='/profile')
