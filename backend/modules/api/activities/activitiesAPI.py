@@ -18,19 +18,19 @@ def list_user_activities():
         try:
             groups = Group.objects.filter(participants__in=[user_id_verified])
             groups = [json.loads(group.to_json()) for group in groups]
-            userObject = User.objects.get_or_404(user_id=user_id_verified)
+            user_object = User.objects.get_or_404(user_id=user_id_verified)
             response = create_group_activity_response(groups)
             
-            settleUpList = [json.loads(x.to_json()) for x in userObject.settleUp]
-            for settleUpObject in settleUpList:
-                group_object = next(filter(lambda item: item['group_id'] == settleUpObject['group_id'], groups), None)
+            settle_up_list = [json.loads(x.to_json()) for x in user_object.settleUp]
+            for settle_up_obj in settle_up_list:
+                group_object = next(filter(lambda item: item['group_id'] == settle_up_obj['group_id'], groups), None)
                 
                 if group_object is not None:
-                    settleUpObject['group_name'] = group_object['group_name']
+                    settle_up_obj['group_name'] = group_object['group_name']
                 else:
-                    settleUpObject['group_name'] = group_object['group_id']
+                    settle_up_obj['group_name'] = group_object['group_id']
 
-            result['response'] = {'groups': response, 'settleUps': settleUpList}
+            result['response'] = {'groups': response, 'settleUps': settle_up_list}
             result['status'] = True    
             status = 200
         except Exception as e:
