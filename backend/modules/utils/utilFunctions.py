@@ -39,7 +39,7 @@ def send_email(mail_object, receiver_address):
             session.sendmail(sender_address, receiver_address, text)
             session.quit()
             result = True
-        except Exception as e:
+        except:
                 import traceback
                 print(traceback.format_exc())
     
