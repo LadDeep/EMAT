@@ -18,7 +18,6 @@ auth = Blueprint('auth', __name__)
 def register():
     status = True
     if request.method == "POST":
-        result = {"status": False}
         try:
             data = request.get_json()
             email = data["email"]

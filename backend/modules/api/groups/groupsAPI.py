@@ -38,10 +38,10 @@ def register_group():
                         flag = False
 
                 group.group_id=unique_group_id
-                joiningToken = generate_verification_code()
+                joining_token = generate_verification_code()
                 description = json_data.get("group_description",None)
                 group.created_by = user_id_verified
-                group.joiningToken = joiningToken
+                group.joiningToken = joining_token
                 if description is not None:
                     group.group_description = description
                 

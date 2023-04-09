@@ -51,9 +51,9 @@ def who_owes_what():
             user_object = User.objects.get_or_404(user_id=user_id_verified)
             for expense in other_spent:
                 expense_user_id = expense['_id']
-                settledUpExpenseObjects = user_object.settleUp.filter(user_id=expense_user_id,group_id=group_id)
-                for settledUpExpenseObject in settledUpExpenseObjects:
-                    expense["total"] -= settledUpExpenseObject['amount']
+                settled_up_expense_objs = user_object.settleUp.filter(user_id=expense_user_id,group_id=group_id)
+                for settled_up_expense_object in settled_up_expense_objs:
+                    expense["total"] -= settled_up_expense_object['amount']
 
             
             for expense in other_spent:
