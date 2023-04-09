@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { CreateUser, FetchDetailedCurrencyList } from '../../api/api'
-import { Slider } from "react-native-ui-lib";
+import { Slider, Image } from "react-native-ui-lib";
 import { useNavigation } from "@react-navigation/native";
 
 const SignUp = () => {
@@ -64,8 +64,14 @@ const SignUp = () => {
   }
 
   return (
+    <ScrollView>
+
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+      <Image
+        style={styles.img}
+        source={require("../../../assets/pict--expenses-calculation-management.png")}
+      />
+      <Text style={styles.title}>Register to EMAT</Text>
       <TextInput
         style={styles.input}
         placeholder="First Name"
@@ -110,11 +116,10 @@ const SignUp = () => {
           ))}
       </Picker>
       <View>
-
         <TextInput
           style={styles.input}
-          keyboardType='numeric'
-          placeholder='Monthly Budget'
+          keyboardType="numeric"
+          placeholder="Monthly Budget"
           value={monthlyBudget}
           onChangeText={handleMonthlyBudgetChange}
         />
@@ -122,12 +127,15 @@ const SignUp = () => {
         <Slider
           minimumValue={0}
           maximumValue={monthlyBudget}
-          onValueChange={(val) => { handleAlertValueChange(val) }}
+          onValueChange={(val) => {
+            handleAlertValueChange(val);
+          }}
         />
         <Text style={styles.alertText}>Alert Value: {alertValue}</Text>
       </View>
       <Button title="Submit" onPress={handleSubmit} />
     </View>
+    </ScrollView>
   );
 };
 
@@ -157,6 +165,11 @@ const styles = StyleSheet.create({
   },
   slider: {
     marginBottom: 10,
+  },
+  img: {
+    width: 90,
+    height: 90,
+    marginVertical: 40,
   },
 });
 

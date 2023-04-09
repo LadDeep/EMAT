@@ -5,7 +5,7 @@ function LaunchPage({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={require('../../../assets/download.jpeg')} style={styles.logo} />
+        <Image source={require('../../../assets/pict--expenses-calculation-management.png')} style={styles.logo} />
       </View>
       <Text style={styles.title}>Welcome to E-MAT</Text>
       <View style={styles.buttonContainer}>
