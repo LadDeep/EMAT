@@ -13,7 +13,7 @@ const UpdateExpense = ({ route }) => {
   const [description, setDescription] = useState(activity.description);
   const [date, setDate] = useState(new Date(parseInt(activity.created_at["$date"])));
   const [amount, setAmount] = useState(activity.amount)
-  const { setGroupState } = useContext(GroupContext)
+  const { setGroupState, groupState } = useContext(GroupContext)
   const navigation = useNavigation();
   console.log("This is Activity", activity)
 
