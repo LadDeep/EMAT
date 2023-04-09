@@ -1,5 +1,6 @@
 import pytest
-from app import app, verificationCodes
+from app import app,
+from backend.modules.api.otpVerification.otpVerification import verificationCodes
 
 # Test case to verify if userRegistrationMail API is working fine
 
