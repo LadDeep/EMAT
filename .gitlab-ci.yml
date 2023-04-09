@@ -13,7 +13,7 @@ before_script:
   - pwd
   - cd backend/
   - pip install -r requirements.txt
-  - cd ..  
+  - cd ..
 
 build-job:
   stage: build
@@ -51,9 +51,9 @@ coverage-job:
     - echo "Generating test coverage report..."
     - cd build/
     - coverage report --fail-under=80
-artifacts:
-    paths:
-      - build/    
+    artifacts:
+      paths:
+        - build/
 
 deploy-job:
   stage: deploy
@@ -63,4 +63,3 @@ deploy-job:
     - cd build/app
     - gunicorn app:app -b 0.0.0.0:5000 --daemon
     - echo "Application successfully deployed."
-    
