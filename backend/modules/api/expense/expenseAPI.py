@@ -12,7 +12,7 @@ expense = Blueprint('expense',__name__)
 
 @expense.route('/detail',methods=['GET'])
 @jwt_required()
-def detailExpense():
+def detail_expense():
     result = {"status": False}
     user_id_verified = get_jwt_identity()
     # print(dict(request.headers))
@@ -55,7 +55,7 @@ def detailExpense():
 
 @expense.route('/create',methods=['POST'])
 @jwt_required()
-def createExpense():
+def create_expense():
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
     result = {"status": False}
@@ -114,7 +114,7 @@ def createExpense():
 
 @expense.route('/list',methods=['GET'])
 @jwt_required()
-def expenseList():
+def expense_list():
     group_id = request.args.get('group_id')
     result = {"status": False}
     if group_id is not None:
@@ -141,7 +141,7 @@ def expenseList():
     
 @expense.route('/update',methods=['PUT'])
 @jwt_required()
-def updateExpense():
+def update_expense():
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
     result = {"status": False}
