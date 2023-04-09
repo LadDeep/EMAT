@@ -49,7 +49,7 @@ const SignIn = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <Image style={styles.img} source={require('../../../assets/pict--expenses-calculation-management.png')} />
-      <Text style={styles.title}>Welcome to E-Mat</Text>
+      <Text style={styles.title}>Sign In to E-Mat</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
