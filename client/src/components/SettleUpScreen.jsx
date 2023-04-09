@@ -72,7 +72,7 @@ const SettleUpScreen = ({route}) => {
     <View flex marginH-48>
       <Text style={{fonWeight: "bold", fontSize: 24}}>Select members to record transcation</Text>
       <OverallOutstandingsDisplay userStandingDetails={userStandingDetails} handleCheckboxChange={handleChange}/>
-      <View row center>
+      <View row centerV>
         <Icon style={styles.icon} name="calendar-today" size={24} />
         <DateTimePicker
           style={styles.input}

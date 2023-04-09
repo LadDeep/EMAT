@@ -14,7 +14,13 @@ const OverallOutstandingsDisplay = ({
             horizontal={false}
             data={userStandingDetails}
             renderItem={({ item }) => (
-              <ListItem spread marginH-24>
+              <ListItem style={{ width: "80%" }}>
+                <View
+                  flex
+                  row
+                  marginH-16
+                  style={{ justifyContent: "space-between" }}
+                >
                 <Checkbox
                   value={item.isChecked}
                   label={item.user_name}
@@ -23,7 +29,7 @@ const OverallOutstandingsDisplay = ({
                     handleCheckboxChange(item._id, value)
                   }
                 />
-                <View centerV>
+                <View row centerV>
                   {item.amount >= 0 ? (
                     item.amount === 0 ? (
                       <Text>You're settled</Text>
@@ -43,6 +49,7 @@ const OverallOutstandingsDisplay = ({
                       </Text>
                     </>
                   )}
+                  </View>
                 </View>
               </ListItem>
             )}
