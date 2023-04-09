@@ -9,8 +9,9 @@ build-job:
   stage: build
   script:
     - echo "Building the app..."
+    - cd backend/
     - mkdir build/
-    - cp -r app.py build/
+    - cp app.py build/
     - cd build/app
     - pip install --upgrade pip
     - pip install -r requirements.txt
@@ -23,8 +24,8 @@ unit-test-job:
   stage: test
   script:
     - echo "Running unit tests..."
-    - cd build/app
-    - coverage run --source='.' -m pytest group04/backend/tests/
+    - cd backend/
+    - coverage run --source='.' -m pytest /tests/
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
 
 lint-test-job:
