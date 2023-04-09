@@ -15,7 +15,7 @@ settleUp = Blueprint('settleUp', __name__)
 # get user profile
 @settleUp.route("", methods=["GET"])
 @jwt_required()
-def whoOwesWhat():
+def who_owes_what():
     result = {"status": False}
     user_id_verified = get_jwt_identity()
     group_id = request.args.get("group_id")
