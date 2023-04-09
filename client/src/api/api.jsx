@@ -223,8 +223,30 @@ const UpdateExpenseInfo = async (data, onSuccess, onError) => {
     onError && onError(err);
   }
 };
+const ForgotPassword = async (data, onSuccess, onError) => {
+  try {
+    const res = await instance.post("auth/reset", data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    onSuccess && onSuccess(res);
+  } catch (err) {
+    onError && onError(err);
+  }
+};
+const UpdatePassword = async (token, password, onSuccess, onError) => {
+  try {
+    const res = await instance.post(`/auth/reset/${token}`, password, {
+      headers: { "Content-Type": "application/json" },
+    });
+    onSuccess && onSuccess(res);
+  } catch (err) {
+    onError && onError(err);
+  }
+}
 
 export {
+  ForgotPassword,
+  UpdatePassword,
   CreateUser,
   LoginUser,
   FetchGroups,
