@@ -40,7 +40,7 @@ const accountDetails = ({ route }) => {
       <View style={styles.header}>
         <Image
           style={styles.avatar}
-          source={require('../../../assets/download.jpeg')}
+          source={require('../../../assets/group/1.png')}
         />
         <View style={styles.userDetails}>
           <Text style={styles.name}>{userDetail?.first_name} {userDetail?.last_name}</Text>
@@ -53,7 +53,7 @@ const accountDetails = ({ route }) => {
           >Edit</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.details}>
+      {/* <View style={styles.details}>
         <View style={styles.heading}>
           <Text style={styles.headingText}>Expense Tracking</Text>
         </View>
@@ -93,7 +93,7 @@ const accountDetails = ({ route }) => {
           />
           <Text style={styles.value1}>Rate Us</Text>
         </View>
-      </View>
+      </View> */}
       <TouchableOpacity style={styles.logoutButton} onPress={handleUserLogout}>
         <Text style={styles.logoutButtonText}  >Logout</Text>
       </TouchableOpacity>
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   logoutButton: {
-    backgroundColor: '#ff5733',
+    backgroundColor: "blue",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
