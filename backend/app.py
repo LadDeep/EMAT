@@ -45,8 +45,6 @@ def create_app():
     app.register_blueprint(settleUp,url_prefix='/settleUp')
 
     return app
-# def ping():
-#     return {"status": True, "response": 'pong'}
 
 if __name__ == '__main__':
     app = create_app()
