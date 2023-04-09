@@ -14,8 +14,8 @@ def get_profile():
 
     try:
 
-        userId = get_jwt_identity()
-        user = User.objects.get_or_404(user_id = userId)
+        user_id = get_jwt_identity()
+        user = User.objects.get_or_404(user_id = user_id)
         if not user:
             return jsonify({"status": False, "error": "the user does not exist"}), 404
     
@@ -88,8 +88,8 @@ def get_user_email():
 
     try:
         data = request.get_json()
-        userId = data["user_id"]
-        user = User.objects(user_id=userId)
+        user_id = data["user_id"]
+        user = User.objects(user_id=user_id)
 
         return jsonify({"status": True, "message": user.email}), 200
     except Exception as e:
