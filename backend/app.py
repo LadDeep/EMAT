@@ -27,6 +27,7 @@ def create_app():
     app.config["SMTP_SERVER"] = "smtp.gmail.com"
     app.config["SMTP_USERNAME"] = "username@google.com"
     app.config["SMTP_PASSWORD"] = "temppassword"
+    app.config["JSON-CONTENT-TYPE"] = "application/json"
     app.config["SMTP_PORT"] = 587
     app.config["SMTP_TLS"] = True
 

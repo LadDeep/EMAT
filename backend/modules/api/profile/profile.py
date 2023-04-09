@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 
 from modules.models.User import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -33,7 +33,7 @@ def update_user():
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
     result = {"status": False}
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
         if user_id_verified:
             try:
                 user = User.objects.get_or_404(user_id = user_id_verified)
@@ -99,7 +99,7 @@ def getUserEmail():
 def getOtherUserDetails():
     result = {"status":False}
     content_type = request.headers.get('Content-Type')
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
         json_body = request.json
         user_ids = json_body.get('user_id',None)
     if user_ids is not None:

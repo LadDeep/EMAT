@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request,current_app
 
 from modules.models.User import User
 from modules.models.Group import Group
@@ -80,7 +80,7 @@ def notify():
     user_id_verified = get_jwt_identity()
     json_data = request.json
     print(json_data)
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
         try:
             user = User.objects.get_or_404(user_id=user_id_verified)
             group_id = json_data.get("group_id",None)
@@ -125,7 +125,7 @@ def settle():
     result = {"status": False}
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
         required_fields = ['group_id','user_id','amount','last_settled_at']
         json_data = request.json
         print(json_data)

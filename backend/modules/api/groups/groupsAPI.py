@@ -1,4 +1,4 @@
-from flask import Blueprint,request,abort
+from flask import Blueprint,request,abort,current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from modules.models.Group import Group
 from modules.models.User import User
@@ -16,7 +16,7 @@ def registerGroup():
     user_id_verified = get_jwt_identity()
     result = {"status": False}
     status = None
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
         if user_id_verified:
             try:
                 json_data = request.json
@@ -141,7 +141,7 @@ def deleteGroup():
     result = {"status": False}
     status = None
     
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
         
         if user_id_verified:
             try:
@@ -174,7 +174,7 @@ def updateGroup():
     user_id_verified = get_jwt_identity()
     result = {"status": False}
     status = None
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
         if user_id_verified:
             try:
                 json_data = request.json

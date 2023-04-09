@@ -1,4 +1,4 @@
-from flask import Blueprint,request
+from flask import Blueprint,request, current_app
 from modules.models.Group import Group
 from modules.models.User import User
 from modules.models.Expense import Expense
@@ -61,7 +61,7 @@ def createExpense():
     result = {"status": False}
     status = None
     
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
      
         if user_id_verified:
             try:
@@ -151,7 +151,7 @@ def updateExpense():
     user_id_verified = get_jwt_identity()
     result = {"status": False}
     status = None
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
         if user_id_verified:
             try:
                 json_data = request.json
