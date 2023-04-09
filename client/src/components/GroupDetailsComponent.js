@@ -62,7 +62,10 @@ export const GroupDetailsComponent = ({ route }) => {
     UpdatedExpenseList(selectedGroup.group_id,
       (res) => {
         console.log("This is response of updated Expenses", res.data.response)
-        setExpenses(res.data.response)
+        let expenseList = res.data.response;
+        expenseList.sort((a, b)=>(b.created_at["$date"] - a.created_at["$date"]))
+        setExpenses(expenseList)
+        setIsLoading(false)
       },
       (err) => { console.log("err", err) })
 
