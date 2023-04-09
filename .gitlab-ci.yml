@@ -11,14 +11,14 @@ build-job:
     - echo "Building the app..."
     - cd backend/
     - mkdir build/
-    - cp -r app.py build/
-    - cd build/app
+    - cp app.py build/
+    - cd build/
     - pip install --upgrade pip
     - pip install -r requirements.txt
     - echo "Build complete."
   artifacts:
     paths:
-      - build/app/
+      - build/
 
 unit-test-job:
   stage: test
@@ -40,7 +40,7 @@ coverage-job:
   stage: test
   script:
     - echo "Generating test coverage report..."
-    - cd build/app
+    - cd build/
     - coverage report --fail-under=80
 
 deploy-job:
