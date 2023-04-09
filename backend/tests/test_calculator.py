@@ -17,9 +17,10 @@ class Calculator:
         return a / b
 
 
-@pytest.fixture
-def calculator():
-    return Calculator()
+
+# @pytest.fixture
+# def calculator():
+#     return Calculator()
 
 
 def test_add(calculator):
