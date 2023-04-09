@@ -63,10 +63,10 @@ export const GroupDetailsComponent = ({ route }) => {
       (res) => {
         console.log("This is response of updated Expenses", res.data.response)
         setExpenses(res.data.response)
+        setIsLoading(false)
       },
       (err) => { console.log("err", err) })
 
-      setIsLoading(false)
 
   }, [groupState]);
 
@@ -112,12 +112,13 @@ export const GroupDetailsComponent = ({ route }) => {
         </View>
 
 
-        <View flex row center>
-          <Button label={"Settle Up"} style={{ margin: 12 }} onPress={handleSettleUp}></Button>
-          <Button label={"Notify"} style={{ margin: 12 }}  onPress={handleNotify}></Button>
+        <View flex row center style={{justifyContent: "space-around"}}>
+          <Button label={"Settle Up"} style={styles.button} onPress={handleSettleUp}></Button>
+          <Button label={"Notify"} style={styles.button}  onPress={handleNotify}></Button>
         </View>
       </View>
       <View flex center>
+        <Text style={styles.fontTitle}>Activities</Text>
         {expenses && expenses.length !== 0 ? (
           <GroupActivitiesList groupId={selectedGroup.group_id} noOfParticipants={selectedGroup.participants.length} userId={userId} activities={expenses} />
         ) : (
@@ -137,12 +138,14 @@ export const GroupDetailsComponent = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "F7F7F2",
-    marginHorizontal: 24,
+    backgroundColor: "#E1E1E1",
+    paddingHorizontal: 24,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16
   },
   detailsContainer: { flexDirection: "row", marginVertical: 16 },
   buttonGroup: { flexDirection: "row", justifyContent: "center" },
-  fontTitle: { fontWeight: "bold", fontSize: 24 },
+  fontTitle: { fontWeight: "bold", fontSize: 24, marginVertical: 12 },
   cardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -158,5 +161,10 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight:"bold"
-  }
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 12,
+    width: "40%",
+  },
 });

@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { save } from "../../secureStore";
+import { Button } from "react-native-ui-lib";
 
 const SignIn = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
@@ -67,15 +68,10 @@ const SignIn = ({ navigation, route }) => {
         value={password}
         secureTextEntry
       />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
+        <Button label="Login" style={styles.button} onPress={() => {
           setIsLoading(true);
           handleSignIn();
-        }}
-      >
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+        }}/>
       <Text onPress={() => navigation.push("PasswordRecovery")}>
         Forgot Password?
       </Text>
@@ -100,25 +96,27 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginBottom: 16,
+    fontWeight: "bold",
   },
   input: {
     width: "80%",
     height: 40,
     borderWidth: 1,
     borderColor: "gray",
-    padding: 8,
+    padding: 10,
     marginBottom: 16,
+    borderRadius: 16,
   },
   button: {
     backgroundColor: "blue",
     padding: 12,
-    width: "80%",
+    width: "50%",
   },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
-    textAlign: "center",
-  },
+  // buttonText: {
+  //   color: "white",
+  //   fontSize: 18,
+  //   textAlign: "center",
+  // },
   error: {
     color: "red",
   }

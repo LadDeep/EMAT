@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
-  TextInput, StyleSheet, ScrollView, TouchableOpacity, Text,
-  View
+  TextInput, StyleSheet, ScrollView, TouchableOpacity, Text,ActivityIndicator
 } from "react-native";
 // import ReactChipsInput from 'react-native-chips';
 import {
@@ -11,6 +10,7 @@ import {
   Picker,
   Checkbox,
   DateTimePicker,
+  View
 } from "react-native-ui-lib";
 import { RegisterGroup, UserDetails } from "../api/api";
 import { FetchDetailedCurrencyList } from "../api/api";
@@ -24,6 +24,7 @@ export const GroupRegistrationForm = () => {
   const [isTemporary, setIsTemporary] = useState(false);
   const [destructionDate, setDestructionDate] = useState(new Date());
   const [currencyList, setCurrencyList] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { setGroupState } = useContext(GroupContext);
   const navigation = useNavigation();
   useEffect(() => {
@@ -32,6 +33,7 @@ export const GroupRegistrationForm = () => {
       (res) => {
         console.log(res.data.message)
         setCurrencyList(res.data.message)
+        setIsLoading(false);
       },
       (err) => {
         console.log(err);
@@ -89,10 +91,17 @@ export const GroupRegistrationForm = () => {
   };
   console.log("baseCurrency", baseCurrency)
 
+  if(isLoading){
+    return (
+      <View flex center>
+        <ActivityIndicator size="large" color="blue"/>
+      </View>
+    )
+  }
 
   return (
     <ScrollView>
-      <View style={{ padding: 60 }} >
+      <View style={{ padding: 60 }}>
         <View>
           <Text style={styles.title}>Create a Group</Text>
           <Avatar
@@ -183,12 +192,13 @@ export const GroupRegistrationForm = () => {
             onChange={(date) => setDestructionDate(date)}
           />
         )}
-
-        <Button
-          style={styles.button}
-          label={"Done"}
-          onPress={handleRegistration}
-        />
+        <View centerH>
+          <Button
+            style={styles.button}
+            label={"Done"}
+            onPress={handleRegistration}
+          />
+        </View>
       </View>
     </ScrollView>
   );
@@ -210,7 +220,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "blue",
     padding: 12,
-    width: "80%",
+    // width: "80%",
   },
   buttonText: {
     color: "white",
@@ -244,14 +254,18 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
+    justifyContent: "space-between"
   },
   input: {
     flex: 1,
+    borderWidth: 1,
     backgroundColor: '#f2f2f2',
     borderRadius: 20,
+    padding: 10,
+    // marginBottom: 16,
   },
   addButton: {
-    backgroundColor: '#007aff',
+    backgroundColor: 'blue',
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,

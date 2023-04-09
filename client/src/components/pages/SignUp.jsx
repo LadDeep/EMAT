@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from "react-native";
+import { Text, TextInput, StyleSheet, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { CreateUser, FetchDetailedCurrencyList } from '../../api/api'
-import { Slider, Image } from "react-native-ui-lib";
+import { View, Slider, Image, Button } from "react-native-ui-lib";
 import { useNavigation } from "@react-navigation/native";
 
 const SignUp = () => {
@@ -64,58 +64,56 @@ const SignUp = () => {
   }
 
   return (
-    <ScrollView>
-
-    <View style={styles.container}>
-      <Image
-        style={styles.img}
-        source={require("../../../assets/pict--expenses-calculation-management.png")}
-      />
-      <Text style={styles.title}>Register to EMAT</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        value={firstName}
-        onChangeText={(text) => setFirstName(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        value={lastName}
-        onChangeText={(text) => setLastName(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        keyboardType="email-address"
-        onChangeText={(text) => setEmail(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry={true}
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        value={phoneNumber}
-        keyboardType="phone-pad"
-        onChangeText={(text) => setPhoneNumber(text)}
-      />
-      <Picker
-        selectedValue={baseCurrency}
-        style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setBaseCurrency(itemValue)}
-      >
-        {currencyList &&
-          currencyList.map((currency, index) => (
-            <Picker.Item label={currency.name} value={currency.code} />
-          ))}
-      </Picker>
-      <View>
+    <ScrollView style={{ flex: 1 }}>
+      <View flex center marginV-24>
+        <Image
+          style={styles.img}
+          source={require("../../../assets/pict--expenses-calculation-management.png")}
+        />
+        <Text style={styles.title}>Register to EMAT</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={(text) => setFirstName(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Last Name"
+          value={lastName}
+          onChangeText={(text) => setLastName(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          keyboardType="email-address"
+          onChangeText={(text) => setEmail(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry={true}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Phone Number"
+          value={phoneNumber}
+          keyboardType="phone-pad"
+          onChangeText={(text) => setPhoneNumber(text)}
+        />
+        <Picker
+          selectedValue={baseCurrency}
+          style={styles.picker}
+          onValueChange={(itemValue, itemIndex) => setBaseCurrency(itemValue)}
+        >
+          {currencyList &&
+            currencyList.map((currency, index) => (
+              <Picker.Item label={currency.name} value={currency.code} />
+            ))}
+        </Picker>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
@@ -124,17 +122,18 @@ const SignUp = () => {
           onChangeText={handleMonthlyBudgetChange}
         />
 
-        <Slider
-          minimumValue={0}
-          maximumValue={monthlyBudget}
-          onValueChange={(val) => {
-            handleAlertValueChange(val);
-          }}
-        />
-        <Text style={styles.alertText}>Alert Value: {alertValue}</Text>
+        <View style={{ width: "70%" }}>
+          <Slider
+            minimumValue={0}
+            maximumValue={monthlyBudget}
+            onValueChange={(val) => {
+              handleAlertValueChange(val);
+            }}
+          />
+          <Text style={styles.alertText}>Alert Value: {alertValue}</Text>
+        </View>
+        <Button label="Submit" style={styles.button} onPress={handleSubmit} />
       </View>
-      <Button title="Submit" onPress={handleSubmit} />
-    </View>
     </ScrollView>
   );
 };
@@ -151,25 +150,33 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    width: 200,
+    // width: 200,
+    width: "70%",
     height: 44,
     padding: 10,
     borderWidth: 1,
     borderColor: "black",
     marginBottom: 10,
+    borderRadius: 16,
   },
   picker: {
-    width: 200,
+    width: "70%",
     height: 44,
     marginBottom: 20,
   },
   slider: {
+    width: "70%",
     marginBottom: 10,
   },
   img: {
     width: 90,
     height: 90,
-    marginVertical: 40,
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 12,
+    width: "50%",
+    marginVertical: 24
   },
 });
 

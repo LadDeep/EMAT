@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, Button, StyleSheet } from 'react-native';
-import { Slider } from "react-native-ui-lib";
+import { Text, Image, TextInput, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { View, Button, Slider } from "react-native-ui-lib";
 import { UpdateUser, UserDetails } from '../../api/api';
 
 const AccountInfoScreen = () => {
@@ -60,9 +61,11 @@ const AccountInfoScreen = () => {
 
 
   return (
-    <View style={styles.container}>
+    <ScrollView>
+
+    <View margin-24 style={styles.container}>
       <Image
-        source={require('../../../assets/download.jpeg')}
+        source={require('../../../assets/group/1.png')}
         style={styles.profileImage}
       />
       <Text style={styles.title}>Account Information</Text>
@@ -109,8 +112,10 @@ const AccountInfoScreen = () => {
 
         <Text style={styles.alertText}>Alert Value: {alertValue}</Text>
       </View>
-      <Button title="Save" onPress={handleSave} />
+      <Button label="Save" style={styles.button} onPress={handleSave} />
     </View>
+    </ScrollView>
+
   );
 };
 
@@ -144,10 +149,16 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 8,
+    borderRadius: 16,
+    padding: 10,
     fontSize: 16,
     width: '100%',
+    
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 12,
+    width: "50%",
   },
 });
 

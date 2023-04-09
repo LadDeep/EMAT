@@ -1,10 +1,9 @@
 import { useState, useCallback, React, useContext, useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { View, Button, Colors, Modal, Text, TouchableOpacity } from "react-native-ui-lib";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { GroupList } from "../GroupList";
 import GroupIcon from '../GroupIcon';
-
 import { FetchGroups } from "../../api/api";
 import { FAB } from "@rneui/base";
 import GroupContext from "../../Context/GroupContext";
@@ -14,6 +13,7 @@ export const GroupsTab = () => {
   const [showModal, setShowModal] = useState(false);
   const { groupState } = useContext(GroupContext);
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(true);
   console.log("Group State in GroupTab Value", groupState)
 
   const handlePress = () => {
@@ -32,6 +32,7 @@ export const GroupsTab = () => {
         if (res.data.status) {
           console.log("------------------------------------------", res.data.response);
           setGroups(res.data.response);
+          setIsLoading(false);
         }
       },
       (err) => {
@@ -45,6 +46,7 @@ export const GroupsTab = () => {
         if (res.data.status) {
           console.log("++++++++++++++++++++++++++++++++++++++++", res.data.response);
           setGroups(res.data.response);
+          setIsLoading(false);
         }
       },
       (err) => {
@@ -64,6 +66,13 @@ export const GroupsTab = () => {
     navigation.push("JoinGroup");
   };
 
+  if(isLoading){
+    return (
+      <View flex center>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
 
   return (
     <>

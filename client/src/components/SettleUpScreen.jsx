@@ -64,14 +64,21 @@ const SettleUpScreen = ({route}) => {
   
   console.log("userStandingDetails", userStandingDetails)
   if(isLoading){
-    <View flex center>
-      <ActivityIndicator size="large"/>
-    </View>
+   return (
+     <View flex center>
+       <ActivityIndicator size="large" color="blue"/>
+     </View>
+   );
   }
   return (
     <View flex marginH-48>
-      <Text style={{fonWeight: "bold", fontSize: 24}}>Select members to record transcation</Text>
-      <OverallOutstandingsDisplay userStandingDetails={userStandingDetails} handleCheckboxChange={handleChange}/>
+      <Text style={{ fonWeight: "bold", fontSize: 24 }}>
+        Select members to record transcation
+      </Text>
+      <OverallOutstandingsDisplay
+        userStandingDetails={userStandingDetails}
+        handleCheckboxChange={handleChange}
+      />
       <View row centerV>
         <Icon style={styles.icon} name="calendar-today" size={24} />
         <DateTimePicker
@@ -82,7 +89,13 @@ const SettleUpScreen = ({route}) => {
           onChange={(date) => setDate(date)}
         />
       </View>
-      <Button label="Settle Transactions" onPress={handleSettleUp} />
+      <View center>
+        <Button
+          label="Settle"
+          style={styles.button}
+          onPress={handleSettleUp}
+        />
+      </View>
     </View>
   );
 }
@@ -95,7 +108,12 @@ const styles = StyleSheet.create({
   },
   icon:{
     paddingHorizontal: 16
-  }
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 12,
+    width: "50%",
+  },
 });
 
 export default SettleUpScreen

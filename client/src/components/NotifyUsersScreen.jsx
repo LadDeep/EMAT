@@ -63,14 +63,21 @@ const NotifyUsersScreen = ({route}) => {
   
   console.log("userStandingDetails", userStandingDetails)
   if(isLoading){
-    <View flex center>
-      <ActivityIndicator size="large"/>
-    </View>
+    return (
+      <View flex center>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
   }
   return (
     <View flex marginH-48>
-      <Text style={{fonWeight: "bold", fontSize: 24}}>Select members to notify</Text>
-      <OverallOutstandingsDisplay userStandingDetails={userStandingDetails} handleCheckboxChange={handleChange}/>
+      <Text style={{ fonWeight: "bold", fontSize: 24 }}>
+        Select members to notify
+      </Text>
+      <OverallOutstandingsDisplay
+        userStandingDetails={userStandingDetails}
+        handleCheckboxChange={handleChange}
+      />
       <View row centerV>
         <Icon style={styles.icon} name="calendar-today" size={24} />
         <DateTimePicker
@@ -81,7 +88,9 @@ const NotifyUsersScreen = ({route}) => {
           onChange={(date) => setDate(date)}
         />
       </View>
-      <Button label="Notify" onPress={handleNotify} />
+      <View center>
+        <Button label="Notify" style={styles.button} onPress={handleNotify} />
+      </View>
     </View>
   );
 }
@@ -94,7 +103,12 @@ const styles = StyleSheet.create({
   },
   icon:{
     paddingHorizontal: 16
-  }
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 12,
+    width: "50%",
+  },
 });
 
 export default NotifyUsersScreen

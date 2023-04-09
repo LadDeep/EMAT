@@ -39,7 +39,7 @@ const AuthenticationScreen = ({ route }) => {
   const { handleLogin } = route.params
   return (
     <AuthStack.Navigator>
-      <AuthStack.Screen name="Launch" component={LaunchPage} />
+      <AuthStack.Screen name="Launch" component={LaunchPage} options={{headerShown: false}}/>
       <AuthStack.Screen
         name="SignIn"
         component={SignIn}

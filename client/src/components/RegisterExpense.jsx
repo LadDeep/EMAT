@@ -61,6 +61,7 @@ const RegisterExpense = ({ route }) => {
   return (
     <View flex marginV-12>
       <View center margin-24>
+        <Text style={styles.fontTitle}>Add Expense</Text>
         <View row center>
           <Icon style={styles.icon} name="receipt" size={24} />
           <TextField
@@ -97,11 +98,13 @@ const RegisterExpense = ({ route }) => {
             onChange={(date) => setDate(date)}
           />
         </View>
-        <Text style={{ marginBottom: 16 }}>
-          Paid by You and splitted equally
-        </Text>
+        <View row center>
+          <Text style={styles.body}>Paid by </Text>
+          <Text style={styles.bodyBold}>You </Text>
+          <Text style={styles.body}> and splitted equally</Text>
+        </View>
+        <Button label="Add" style={styles.button} onPress={handleExpense} />
       </View>
-      <Button label="Add" onPress={handleExpense} />
     </View>
   );
 };
@@ -114,6 +117,21 @@ const styles = StyleSheet.create({
   },
   icon: {
     paddingHorizontal: 16
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 12,
+    width: "50%",
+  },
+  fontTitle: { fontWeight: "bold", fontSize: 24, marginVertical: 12 },
+  body:{
+    fontSize: 18,
+    marginVertical: 8,
+  },
+  bodyBold:{
+    fontWeight: "bold",
+    fontSize: 18,
+    marginVertical: 8,
   }
 });
 

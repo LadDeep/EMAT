@@ -1,13 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
+import { Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { UserDetails } from "../../api/api";
-
+import { Button, View } from "react-native-ui-lib";
 
 
 const accountDetails = ({ route }) => {
   const [userDetail, setUserDetail] = useState()
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(true);
   const { handleLogout } = route.params
 
   const editAccountDetails = () => {
@@ -20,7 +21,7 @@ const accountDetails = ({ route }) => {
         if (res.data.status) {
           setUserDetail(res.data.message)
           console.log(res.data.message)
-
+          setIsLoading(false);
         }
       },
       (err) => {
@@ -34,24 +35,32 @@ const accountDetails = ({ route }) => {
     console.log("LOGOUT BUTTON is triggered")
     handleLogout()
   }
+  if(isLoading){
+    return (
+      <View flex center>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
   return (
-
-    <View style={styles.container}>
+    <View margin-24>
       <View style={styles.header}>
         <Image
           style={styles.avatar}
-          source={require('../../../assets/group/1.png')}
+          source={require("../../../assets/group/1.png")}
         />
         <View style={styles.userDetails}>
-          <Text style={styles.name}>{userDetail?.first_name} {userDetail?.last_name}</Text>
+          <Text style={styles.name}>
+            {userDetail?.first_name} {userDetail?.last_name}
+          </Text>
           <Text style={styles.value}>{userDetail?.email}</Text>
-
         </View>
-        <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.editButtonText}
-            onPress={editAccountDetails}
-          >Edit</Text>
-        </TouchableOpacity>
+        {/* <TouchableOpacity style={styles.editButton}>
+          <Text style={styles.editButtonText} onPress={editAccountDetails}>
+            Edit
+          </Text>
+        </TouchableOpacity> */}
+        <Button label="Edit" style={styles.editButton} onPress={editAccountDetails}/>
       </View>
       {/* <View style={styles.details}>
         <View style={styles.heading}>
@@ -94,9 +103,16 @@ const accountDetails = ({ route }) => {
           <Text style={styles.value1}>Rate Us</Text>
         </View>
       </View> */}
-      <TouchableOpacity style={styles.logoutButton} onPress={handleUserLogout}>
+      {/* <TouchableOpacity style={styles.logoutButton} onPress={handleUserLogout}>
         <Text style={styles.logoutButtonText}  >Logout</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <View center>
+        <Button
+          label="Logout"
+          style={styles.button}
+          onPress={handleUserLogout}
+        />
+      </View>
     </View>
   );
 };
@@ -133,7 +149,7 @@ const styles = StyleSheet.create({
 
   },
   editButton: {
-    backgroundColor: '#eee',
+    backgroundColor: "darkgray",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
@@ -178,17 +194,22 @@ const styles = StyleSheet.create({
   value1: {
     fontSize: 17,
   },
-  logoutButton: {
+  // logoutButton: {
+  //   backgroundColor: "blue",
+  //   paddingVertical: 10,
+  //   paddingHorizontal: 20,
+  //   borderRadius: 5,
+  //   alignItems: 'center',
+  // },
+  // logoutButtonText: {
+  //   color: '#fff',
+  //   fontSize: 18,
+  //   fontWeight: 'bold',
+  // },
+  button: {
     backgroundColor: "blue",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  logoutButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    padding: 12,
+    width: "50%",
   },
 });
 

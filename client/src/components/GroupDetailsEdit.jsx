@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     height: 44,
     padding: 10,
     // marginBottom: 10,
+    borderRadius: 16,
   },
   picker: {
     width: 200,

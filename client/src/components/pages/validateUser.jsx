@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Alert, StyleSheet } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { ValidateUserRegistration } from '../../api/api';
+import { Button } from 'react-native-ui-lib';
 function valdateUser({ route }) {
     const [token, setToken] = useState('');
     const { response } = route.params;
@@ -59,7 +60,8 @@ function valdateUser({ route }) {
                 keyboardType="text"
             />
             <Button
-                title="Submit"
+                label="Submit"
+                style={styles.button}
                 onPress={handleSubmit}
             />
         </View>
@@ -72,6 +74,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
     },
+    button: {
+        backgroundColor: "blue",
+        padding: 12,
+        width: "50%",
+      },
 });
 
 export default valdateUser;

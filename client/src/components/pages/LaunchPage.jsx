@@ -1,42 +1,28 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, Image } from 'react-native';
+import { Text, StyleSheet, Image } from 'react-native';
+import {View, Button } from 'react-native-ui-lib';
 
 function LaunchPage({ navigation }) {
   return (
-    <View style={styles.container}>
-      <View style={styles.logoContainer}>
+    <View flex center>
         <Image source={require('../../../assets/pict--expenses-calculation-management.png')} style={styles.logo} />
-      </View>
       <Text style={styles.title}>Welcome to E-MAT</Text>
-      <View style={styles.buttonContainer}>
         <Button
-          title="Login"
+          label="Login"
           onPress={() => navigation.push("SignIn")}
-          style={styles.button1}
+          style={styles.button}
         />
-        </View>
         <Text style={styles.title1}>or</Text>
-      <View style={styles.buttonContainer}>
         <Button
-          title="Register"
+          label="Register"
           onPress={() => navigation.push("SignUp")}
-          style={styles.button2}
-        />
-      </View>
+          style={styles.button}
+          />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
   logo: {
     width: 100,
     height: 100,
@@ -51,18 +37,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     margin:10
   },
-  buttonContainer: {
-    alignContent:"center",
-    justifyContent:'center',
-    width:150,
-
-  },
-  button1: {
-    margin: 20,
-
-  },
-  button2: {
-    margin: 20,
+  button: {
+    backgroundColor: "blue",
+    width: "50%",
   },
 });
 
