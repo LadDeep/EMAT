@@ -19,17 +19,7 @@ def listUserActivities():
             groups = Group.objects.filter(participants__in=[user_id_verified])
             groups = [json.loads(group.to_json()) for group in groups]
             userObject = User.objects.get_or_404(user_id=user_id_verified)
-            response = []
-            for group in groups:
-                each_group_activities = []
-                for expense in group["expenses"]:
-                    activity = {}
-                    activity["group_name"] = group["group_name"]
-                    activity["group_id"] = group["group_id"]
-                    for key in list(expense.keys()):
-                        activity[key] = expense[key]
-                    each_group_activities.append(activity)
-                response.extend(each_group_activities)
+            response = createGroupActivityResponse(groups)
             
             settleUpList = [json.loads(x.to_json()) for x in userObject.settleUp]
             for settleUpObject in settleUpList:
@@ -51,3 +41,17 @@ def listUserActivities():
             status = 500
     
     return result,status
+
+
+def createGroupActivityResponse(groups):
+    response = []
+    for group in groups:
+        for expense in group["expenses"]:
+            activity = {}
+            activity["group_name"] = group["group_name"]
+            activity["group_id"] = group["group_id"]
+            for key in list(expense.keys()):
+                activity[key] = expense[key]
+            response.append(activity)
+        
+    return response
