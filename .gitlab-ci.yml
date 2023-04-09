@@ -5,6 +5,12 @@ stages:
   - test
   - deploy
 
+before_script:
+  - python -m venv venv
+  - source venv/bin/activate
+  - pip install --upgrade pip
+  - pip install -r requirements.txt  
+
 build-job:
   stage: build
   script:
@@ -13,8 +19,6 @@ build-job:
     - mkdir build/
     - cp app.py build/
     - cd build/
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
     - echo "Build complete."
   artifacts:
     paths:
