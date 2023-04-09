@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import {CreateUser, FetchDetailedCurrencyList} from '../../api/api'
+import { CreateUser, FetchDetailedCurrencyList } from '../../api/api'
 import { Slider } from "react-native-ui-lib";
 import { useNavigation } from "@react-navigation/native";
 
@@ -11,7 +11,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [baseCurrency, setBaseCurrency] = useState("USD");  
+  const [baseCurrency, setBaseCurrency] = useState("USD");
   const [monthlyBudget, setMonthlyBudget] = useState(10);
   const [alertValue, setAlertValue] = useState(0);
   const [currencyList, setCurrencyList] = useState()
@@ -27,7 +27,7 @@ const SignUp = () => {
         console.log(err);
       }
     );
-  },[]);
+  }, []);
   const handleSubmit = () => {
     let payload = {
       email: email,
@@ -38,18 +38,18 @@ const SignUp = () => {
       monthly_budget_amount: monthlyBudget,
       warning_budget_amount: alertValue,
     };
-  console.log("This is payload",payload)
+    console.log("This is payload", payload)
     CreateUser(
       payload,
       (res) => {
-       console.log("This is response of registered user",res)
-       alert("Registered Successfully")
-       navigation.navigate("SignIn")
-          },
-          (err) => {
-            console.log(JSON.stringify(err,null,4));
-          }
-        );
+        console.log("This is response of registered user", res)
+        alert("Registered Successfully")
+        navigation.navigate("validateUser", { response: res.data.user_id })
+      },
+      (err) => {
+        console.log(JSON.stringify(err, null, 4));
+      }
+    );
   };
 
 
@@ -59,8 +59,8 @@ const SignUp = () => {
   }
 
   const handleAlertValueChange = (val) => {
-   setAlertValue(parseInt(val))
-   console.log(parseInt(val))
+    setAlertValue(parseInt(val))
+    console.log(parseInt(val))
   }
 
   return (
@@ -111,21 +111,21 @@ const SignUp = () => {
       </Picker>
       <View>
 
-      <TextInput
-       style={styles.input}
-        keyboardType='numeric'
-        placeholder='Monthly Budget'
-        value={monthlyBudget}
-        onChangeText={handleMonthlyBudgetChange}
-      />
-  
-      <Slider
-  minimumValue={0}
-  maximumValue={monthlyBudget}
-  onValueChange={(val) =>{handleAlertValueChange(val)} }
-/>
-      <Text style={styles.alertText}>Alert Value: {alertValue}</Text>
-    </View>
+        <TextInput
+          style={styles.input}
+          keyboardType='numeric'
+          placeholder='Monthly Budget'
+          value={monthlyBudget}
+          onChangeText={handleMonthlyBudgetChange}
+        />
+
+        <Slider
+          minimumValue={0}
+          maximumValue={monthlyBudget}
+          onValueChange={(val) => { handleAlertValueChange(val) }}
+        />
+        <Text style={styles.alertText}>Alert Value: {alertValue}</Text>
+      </View>
       <Button title="Submit" onPress={handleSubmit} />
     </View>
   );

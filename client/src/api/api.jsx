@@ -178,6 +178,17 @@ const UpdatedExpenseList = async (group_id, onSuccess, onError) => {
     onError && onError(err);
   }
 }
+// auth/verify-user?user_id=${UID}&verification_code=${vc}
+const ValidateUserRegistration = async (UID, vc, onSuccess, onError) => {
+  try {
+    const res = await instance.get(`/auth/verify-user?user_id=${UID}&verification_code=${vc}`, {
+      headers: { "Content-Type": "application/json" },
+    });
+    onSuccess && onSuccess(res);
+  } catch (err) {
+    onError && onError(err);
+  }
+}
 
 
 const SettleUpExpenses = async (data, onSuccess, onError) => {
@@ -220,5 +231,6 @@ export {
   NotifyUsers,
   JoinGroupApi,
   GroupStatsApi,
-  UpdatedExpenseList
+  UpdatedExpenseList,
+  ValidateUserRegistration
 };
