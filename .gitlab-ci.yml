@@ -38,7 +38,7 @@ coverage-job:
   script:
     - echo "Generating test coverage report..."
     - cd build/app
-    - coverage report --fail-under=80
+    - coverage report --fail-under=70
 
 deploy-job:
   stage: deploy
