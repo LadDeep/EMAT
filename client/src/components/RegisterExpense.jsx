@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { Alert, StyleSheet } from "react-native";
 import { CreateExpense } from "../api/api";
 import { useNavigation } from "@react-navigation/native";
-import MONTHS from "../constants/constants";
+import {MONTHS} from "../constants/constants";
 import GroupContext from "../Context/GroupContext";
 
 const RegisterExpense = ({ route }) => {
