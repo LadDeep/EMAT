@@ -44,20 +44,20 @@ def register():
             unique_user_id = None
             while flag:
                 user_id=uuid.uuid4()
-                userObj = User.objects(user_id=user_id)
-                if not userObj:
+                user_obj = User.objects(user_id=user_id)
+                if not user_obj:
                     unique_user_id = user_id
                     flag = False
             
             mail_object = {'subject': 'EMAT - Registration', 'message': f'Verification Code: "{verification_code}"'}
             send_email(mail_object,email)
 
-            newUser = User(user_id=unique_user_id, first_name=first_name,
+            new_user = User(user_id=unique_user_id, first_name=first_name,
                            last_name=last_name, email=email, currency = currency,verificationToken=verification_code,monthly_budget_amount=monthly_budget_amount,warning_budget_amount=warning_budget_amount)
 
-            newUser.hash_password(password)
+            new_user.hash_password(password)
 
-            newUser.save()
+            new_user.save()
             return jsonify({
                 "user_id": user_id,
                 "status": status,
@@ -138,15 +138,15 @@ def reset_password(reset_token):
     if request.method == "POST":
         try:
             data = request.get_json()
-            newPassword = data["password"]
-            if not newPassword or not reset_token:
+            new_password = data["password"]
+            if not new_password or not reset_token:
                 return jsonify({"message": "The reset password and token are not provided"}), 400
 
             user_id = decode_token(reset_token)["sub"]
             user = User.objects.get(user_id=user_id)
 
             if user:
-                user.update(password=generate_password_hash(newPassword))
+                user.update(password=generate_password_hash(new_password))
                 user.save()
                 return {"status": True, "message": "password reset successfully"}, 200
 
@@ -198,7 +198,7 @@ def verify_user():
 
 
 def authenticate_user(db_user,password):
-    result = {"status": True,"user_id": db_user.user_id,}
+    result = {"status": True,"user_id": db_user.user_id}
     if db_user.check_password(password):
         if db_user.isEmailVerified is True:
             session["user_id"] = db_user.user_id
@@ -213,29 +213,3 @@ def authenticate_user(db_user,password):
         result["message"] = "wrong password"
         
     return result
-            
-
-
-# def send_email(reset_token, user):
-#     url = request.base_url
-#     # user_token = user.get_reset_token()
-#     message = Message(subject="Reset Password", recipients=[user.email], sender="noreply@google.com")
-#     message.body = f''' 
-    
-#     A password reset for your account was requested.
-#     Please click the link below to change your password.
-
-#     {url + "/" + reset_token}
-
-#     Note that this link is valid for 12 hours. After the time limit has expired, you will have to resubmit the request for a password reset.
-    
-    
-#     '''
-
-#     try:
-#         current_app.mail.send(message)
-#     except (SMTPAuthenticationError, SMTPServerDisconnected, SMTPException):
-#         return jsonify({"error": "Mail server does not work"}), 400
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
-
