@@ -10,7 +10,7 @@ profile = Blueprint('profile', __name__)
 # get user profile
 @profile.route("/user", methods=["GET"])
 @jwt_required()
-def getProfile():
+def get_profile():
 
     try:
 
@@ -65,7 +65,7 @@ def update_user():
 # delete user
 @profile.route("/delete_user")
 @jwt_required()
-def deleteUser():
+def delete_user():
 
     try:
         user = User.objects(user_id=get_jwt_identity())
@@ -84,7 +84,7 @@ def deleteUser():
 
 
 @profile.route("/email", methods=["GET"])
-def getUserEmail():
+def get_user_email():
 
     try:
         data = request.get_json()
@@ -96,7 +96,7 @@ def getUserEmail():
         return jsonify({"status": False, "error": str(e)}), 500
 
 @profile.route("/other_user_details", methods=["POST"])
-def getOtherUserDetails():
+def get_other_user_details():
     result = {"status":False}
     content_type = request.headers.get('Content-Type')
     if content_type == current_app.config["JSON-CONTENT-TYPE"]:
