@@ -41,6 +41,8 @@ lint-test-job:
   script:
     - pip install pylint
     - echo "Linting code..."
+    - ls
+    - pwd
     - pylint app/*.py
 
 coverage-job:
