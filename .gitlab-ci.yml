@@ -9,7 +9,11 @@ before_script:
   - python -m venv venv
   - source venv/bin/activate
   - pip install --upgrade pip
-  - pip install -r requirements.txt  
+  - ls
+  - pwd
+  - cd backend/
+  - pip install -r requirements.txt
+  - cd ..  
 
 build-job:
   stage: build
