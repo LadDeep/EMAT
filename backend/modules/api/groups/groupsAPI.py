@@ -11,7 +11,7 @@ group = Blueprint('group',__name__)
 
 @group.route("/register",methods=['POST'])
 @jwt_required()
-def registerGroup():
+def register_group():
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
     result = {"status": False}
@@ -49,7 +49,7 @@ def registerGroup():
                     
                     users = User.objects(email__in=participants)
                     users = [json.loads(x.to_json()) for x in users]
-                    inviteUsersToJoinGroup(users,participants,user_id_verified,json_data)
+                    invite_users_to_join_group(users,participants,user_id_verified,json_data)
 
                         
                     participants = [x['user_id'] for x in users if x.get('user_id') is not None]
@@ -73,7 +73,7 @@ def registerGroup():
 
 @group.route("/list",methods=['GET'])
 @jwt_required()
-def listGroups():
+def list_groups():
     result = {"status": True}
     user_id_verified = get_jwt_identity()
     status = None
@@ -126,7 +126,7 @@ def listGroups():
 
 @group.route("/delete",methods=['POST'])
 @jwt_required()
-def deleteGroup():
+def delete_group():
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
 
@@ -161,7 +161,7 @@ def deleteGroup():
 
 @group.route("/update",methods=['PUT'])
 @jwt_required()
-def updateGroup():
+def update_group():
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
     result = {"status": False}
@@ -200,7 +200,7 @@ def updateGroup():
 
 @group.route("/stats",methods=['GET'])
 @jwt_required()
-def getGroupStats():
+def get_group_stats():
     result = {"status": False}
     group_id = request.args.get("group_id")
     pipeline = [{ "$unwind": "$expenses" }, { "$group": { "_id": "$expenses.spent_by", "total": { "$sum": "$expenses.amount" } } }]
@@ -223,7 +223,7 @@ def getGroupStats():
             
             result["status"] = True
             if len(user_ids) > 0:
-                group_stats_json = setUserDetailsInGroupStats(user_ids,group_stats_json)
+                group_stats_json = set_user_details_in_group_stats(user_ids,group_stats_json)
                 
                 result["response"] = {"max": max(group_stats_json,key=lambda x: x['total']),"min":min(group_stats_json,key=lambda x: x['total'])}
             else:
@@ -240,7 +240,7 @@ def getGroupStats():
             
 @group.route("/join-group",methods=['GET'])
 @jwt_required()
-def joinGroup():
+def join_group():
     user_id_verified = get_jwt_identity()
     result = {"status": False}
     verification_token = request.args.get("verification_code")
@@ -274,7 +274,7 @@ def joinGroup():
     return result
 
 
-def inviteUsersToJoinGroup(users,participants,user_id_verified,json_data):
+def invite_users_to_join_group(users,participants,user_id_verified,json_data):
     emails_registered = [x['email'] for x in users if x.get('email') is not None]
     email_not_registered = [x for x in participants if x not in emails_registered]
     created_user_object = User.objects.get_or_404(user_id=user_id_verified)
@@ -291,7 +291,7 @@ def inviteUsersToJoinGroup(users,participants,user_id_verified,json_data):
                 print(registered_email_object)                    
                 sendEmail(registered_email_object,email)
 
-def setUserDetailsInGroupStats(user_ids,group_stats_json):
+def set_user_details_in_group_stats(user_ids,group_stats_json):
     users = User.objects.filter(user_id__in=user_ids)
     users = [json.loads(x.to_json()) for x in users]
     keys_needed = ['first_name','last_name','email']
