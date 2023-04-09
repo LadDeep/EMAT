@@ -33,7 +33,7 @@ unit-test-job:
     - cd backend/
     - pip install coverage
     - pip install pytest
-    - coverage run --source='.' -m pytest /builds/courses/2023-winter/csci-5308/group04/backend/tests/
+    - coverage run --source='.' -m pytest /builds/courses/2023-winter/csci-5308/group04/backend/tests/ --catch-clear
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
 
 lint-test-job:
