@@ -110,28 +110,8 @@ def login():
 
             # check the user and password
             db_user = User.objects.get(email=email)
-
-            if db_user.check_password(password):
-                if db_user.isEmailVerified is True:
-                    session["user_id"] = db_user.user_id
-                    access_token = create_access_token(identity=db_user.user_id)
-                    if access_token:
-                        return jsonify({
-                            "status": status,
-                            "user_id": db_user.user_id,
-                            "message": "login successfully",
-                            "access_token": access_token
-                        }), 200
-                else:
-                    return jsonify({
-                            "status": status,
-                            "user_id": db_user.user_id,
-                            "message": "User is not Verified"
-                        }), 200
-            else:
-                status = False
-                return jsonify({"status": status, "message": "wrong password"})
-
+            result = authenticateUser(db_user,password)
+            return result
         except DoesNotExist:
             status = False
             return jsonify({"status": status, "error": "User with the email not found"}), 404
@@ -238,6 +218,26 @@ def verifyUser():
         result["response"] = f"Incomplete Query Parameters: {' and '.join(error_messages)} in query parameters"
 
     return result
+
+
+def authenticateUser(db_user,password):
+    result = {"status": True,"user_id": db_user.user_id,}
+    if db_user.check_password(password):
+        if db_user.isEmailVerified is True:
+            session["user_id"] = db_user.user_id
+            access_token = create_access_token(identity=db_user.user_id)
+            if access_token:    
+                result["message"]= "login successfully"
+                result["access_token"] =  access_token
+        else:
+            result["message"] = "User is not Verified"
+    else:
+        result["status"] = False
+        result["message"] = "wrong password"
+        
+    return result
+            
+
 
 # def send_email(reset_token, user):
 #     url = request.base_url
