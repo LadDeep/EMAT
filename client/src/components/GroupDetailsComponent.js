@@ -16,8 +16,8 @@ export const GroupDetailsComponent = ({ route }) => {
   const [expenses, setExpenses] = useState();
   const [userId, setUserId] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [Spending, setSpending] = useState()
-  const [lending, setLending] = useState()
+  const [mostSpender, setMostSpender] = useState()
+  const [leastSpender, setLeastSpender] = useState()
   const { groupState } = useContext(GroupContext)
   console.log("THIS IS GROUPSTATE CHANGED IN GROUPDETAILCOMPONENT", groupState)
   const handleAddExpense = () => {
@@ -49,8 +49,10 @@ export const GroupDetailsComponent = ({ route }) => {
           console.log("Group Stats", response.data.response);
           console.log("Group Stats", response.data.response);
           console.log("Group Max", response.data.response.max.total);
-          setSpending(response.data.response.max.total)
-          setLending(response.data.response.min.total)
+          let mostSpender = response.data.response.max.first_name+" "+response.data.response.max.last_name;
+          let leastSpender = response.data.response.min.first_name+" "+response.data.response.min.last_name
+          setMostSpender(mostSpender)
+          setLeastSpender(leastSpender)
           console.log("Group Max", response.data.response.min.total);
         }
       }, error => {
@@ -101,11 +103,11 @@ export const GroupDetailsComponent = ({ route }) => {
         <View style={styles.cardContainer}>
           <Card style={[styles.card, { backgroundColor: primaryColor }]}>
             <Text white>Least Spending</Text>
-            <Text white>{lending}</Text>
+            <Text white style={styles.boldText}>{leastSpender}</Text>
           </Card>
           <Card style={[styles.card, { backgroundColor: secondaryColor }]}>
             <Text white>Most Spending</Text>
-            <Text white>{Spending}</Text>
+            <Text white style={styles.boldText}>{mostSpender}</Text>
           </Card>
         </View>
 
@@ -154,4 +156,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  boldText: {
+    fontWeight:"bold"
+  }
 });
