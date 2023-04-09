@@ -28,6 +28,7 @@ import GroupProvider from "./src/Context/GroupProvider";
 import NotifyUsersScreen from "./src/components/NotifyUsersScreen";
 import { ValidateUserRegistration } from "./src/api/api";
 import valdateUser from "./src/components/pages/validateUser";
+import EnterToken from "./src/components/EnterToken";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const GroupStack = createNativeStackNavigator();
@@ -56,6 +57,7 @@ const AuthenticationScreen = ({ route }) => {
       />
       <AuthStack.Screen name="PasswordRecovery" component={PasswordRecovery} />
       <AuthStack.Screen name="PasswordReset" component={PasswordReset} />
+      <AuthStack.Screen name="EnterToken" component={EnterToken} />
     </AuthStack.Navigator>
   );
 };

@@ -1,10 +1,13 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Image } from 'react-native';
+import { UpdatePassword } from '../api/api';
 
-function PasswordReset() {
+function PasswordReset({ route }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const navigation = useNavigation();
+  const { token } = route.params
   const handleResetPassword = () => {
     if (password !== confirmPassword) {
       alert('Passwords do not match');
@@ -12,6 +15,17 @@ function PasswordReset() {
     }
 
     // Code to reset password
+    console.log("TOKEN++++++", token);
+    console.log("PASWORD", password)
+    let payload = { password: password }
+    UpdatePassword(token, payload,
+      (res) => {
+        console.log("Response From Updated Paassword", res.data)
+        navigation.navigate("SignIn")
+
+      }, (err) => {
+        console.log("err", err)
+      });
     alert('Password has been reset');
   };
 
