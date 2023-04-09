@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native-ui-lib";
-import MONTHS from "../constants/constants";
+import {MONTHS} from "../constants/constants";
 
 const ExpenseDate = ({ createdOn }) => {
   const date = new Date(parseInt(createdOn));
