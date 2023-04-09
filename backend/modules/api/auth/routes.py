@@ -27,11 +27,7 @@ def register():
             currency = data["currency"]
             monthly_budget_amount = data["monthly_budget_amount"]
             warning_budget_amount = data["warning_budget_amount"]
-            ## not needed email & password will be validated on the frontend
-            # validate_email(email)
-            # if not validate_password(password):
-            #     return jsonify({"error": "Password is not valid"}), 400
-
+           
             db_user = User.objects(email=email)
             # check if the user exists
             if db_user:
@@ -63,13 +59,11 @@ def register():
                 "message": "signup successfully"
             }), 200
 
-        # except (EmailNotValidError, EmailSyntaxError):
-        #     return jsonify({"error": "Email is not valid"}), 400
+       
         except FieldDoesNotExist as e:
             status = False
             return jsonify({"status": status, "error": str(e)}), 400
-        # except ValidationError as e:
-        #     return jsonify({"error": str(e)}), 400
+       
         except Exception as e:
             status = False
             return jsonify({"status": status, "error": str(e)}), 500
@@ -119,8 +113,6 @@ def reset_password_with_token():
             return jsonify({"message": "missing email"})
 
         db_user = User.objects.get(email=email)
-        # if not db_user:
-        #     raise CustError("User with the email not found", 404)
 
         reset_token = create_access_token(identity=str(db_user.user_id), expires_delta=datetime.timedelta(hours=12))
         send_email({"subject":"EMAT - password reset","message":f"RESET_TOKEN -{reset_token}"},email)

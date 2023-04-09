@@ -15,7 +15,6 @@ expense = Blueprint('expense',__name__)
 def detail_expense():
     result = {"status": False}
     user_id_verified = get_jwt_identity()
-    # print(dict(request.headers))
     status = None
         
     if user_id_verified:
