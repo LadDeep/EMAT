@@ -1,4 +1,4 @@
-import app
+from backend.app import app
 import pytest
 
 # Test for checking whether the flask app is running or not
