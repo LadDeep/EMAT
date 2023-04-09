@@ -1,18 +1,22 @@
+# Define the Docker image to use as the build environment
 image: python:3.9
 
+# Define the stages of the pipeline
 stages:
   - build
   - test
   - deploy
 
+# Define a common set of commands to execute before each job
 before_script:
   - python -m venv venv
   - source venv/bin/activate
   - pip install --upgrade pip
   - cd backend/
   - pip install -r requirements.txt
-  - cd ..  
+  - cd ..
 
+# Define the build job
 build-job:
   stage: build
   script:
@@ -26,6 +30,7 @@ build-job:
     paths:
       - build/
 
+# Define the unit test job
 unit-test-job:
   stage: test
   script:
@@ -36,7 +41,8 @@ unit-test-job:
     - coverage run --source='.' -m pytest /builds/courses/2023-winter/csci-5308/group04/backend/tests/
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
 
-lint-test-job:
+# Define the lint job
+lint-job:
   stage: test
   script:
     - pip install pylint
@@ -44,23 +50,25 @@ lint-test-job:
     - pylint --fail-under=9.0 /builds/courses/2023-winter/csci-5308/group04/backend/*.py
   allow_failure: true
 
+# Define the coverage report job
 coverage-job:
   stage: test
   script:
     - echo "Generating test coverage report..."
-    - cd /builds/courses/2023-winter/csci-5308/group04/backend/build/
+    - cd backend/
+    - pip install coverage
     - coverage html
   artifacts:
     paths:
-      - htmlcov/
+      - backend/htmlcov/
 
-
+# Define the deploy job
 deploy-job:
   stage: deploy
   environment: production
   script:
     - echo "Deploying application..."
-    - cd build/app
+    - cd backend/build/
     - gunicorn app:app -b 0.0.0.0:5000 --daemon
     - echo "Application successfully deployed."
-    
+
