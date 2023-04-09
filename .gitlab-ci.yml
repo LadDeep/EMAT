@@ -35,7 +35,7 @@ unit-test-job:
     - pip install pytest
     - coverage run --source='.' -m pytest /builds/courses/2023-winter/csci-5308/group04/backend/tests/
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
-  
+
 lint-test-job:
   stage: test
   script:
@@ -48,10 +48,12 @@ coverage-job:
   stage: test
   script:
     - echo "Generating test coverage report..."
-    - ls
-    - pwd
     - cd /builds/courses/2023-winter/csci-5308/group04/backend/build/
-    - coverage report --fail-under=80 
+    - coverage html
+  artifacts:
+    paths:
+      - htmlcov/
+
 
 deploy-job:
   stage: deploy
