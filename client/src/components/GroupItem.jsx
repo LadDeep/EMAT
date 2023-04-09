@@ -32,7 +32,7 @@ export const GroupItem = ({item}) => {
           color: `${item.standing_amount > 0 ? "green" : "red"}`,
           }}
         >
-          ${item.standing_amount}
+          ${parseFloat(item.standing_amount).toFixed(2)}
         </Text>
       )}
     </ListItem>
