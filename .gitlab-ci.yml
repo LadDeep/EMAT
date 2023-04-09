@@ -41,9 +41,7 @@ lint-test-job:
   script:
     - pip install pylint
     - echo "Linting code..."
-    - ls
-    - pwd
-    - pylint app/*.py
+    - pylint /builds/courses/2023-winter/csci-5308/group04/backend/*.py
 
 coverage-job:
   stage: test
