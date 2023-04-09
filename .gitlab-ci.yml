@@ -30,8 +30,6 @@ unit-test-job:
   stage: test
   script:
     - echo "Running unit tests..."
-    - ls
-    - pwd
     - cd backend/
     - pip install coverage
     - pip install pytest
@@ -41,6 +39,7 @@ unit-test-job:
 lint-test-job:
   stage: test
   script:
+    - pip install pylint
     - echo "Linting code..."
     - pylint app/*.py
 
@@ -48,7 +47,7 @@ coverage-job:
   stage: test
   script:
     - echo "Generating test coverage report..."
-    - cd build/
+    - cd /builds/courses/2023-winter/csci-5308/group04/backend/build/
     - coverage report --fail-under=80 
 
 deploy-job:
