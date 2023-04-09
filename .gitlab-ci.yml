@@ -11,7 +11,7 @@ build-job:
     - echo "Building the app..."
     - cd backend/
     - mkdir build/
-    - cp app.py build/
+    - cp -r app.py build/
     - cd build/app
     - pip install --upgrade pip
     - pip install -r requirements.txt
@@ -24,6 +24,8 @@ unit-test-job:
   stage: test
   script:
     - echo "Running unit tests..."
+    - ls
+    - pwd
     - cd backend/
     - coverage run --source='.' -m pytest /tests/
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'

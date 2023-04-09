@@ -7,20 +7,20 @@ import { StyleSheet } from 'react-native';
 
 const ExpenseDisplay = ({route}) => {
     const navigation = useNavigation();
-    const { groupId, activity } =route.params;
+    const { groupId, userId, activity } =route.params;
     const handleEdit = ()=>{
-        navigation.push("Edit Expense", {groupId, activity})
+        navigation.push("Edit Expense", {groupId, userId, activity})
     }
     const date = new Date(parseInt(activity.created_at["$date"]));
   return (
-    <View flex center>
-        <Text style={{fontWeight: "bold", fontSize: 24}}>Expense Details</Text>
+    <View flex>
+      <Text style={{ fontWeight: "bold", fontSize: 24 }}>Expense Details</Text>
       <View margin-24>
         <View row centerV>
           <Icon style={styles.icon} name="receipt" size={24} />
           <Text>{activity.description}</Text>
         </View>
-        <View row center>
+        <View row centerV>
           <Icon style={styles.icon} name="attach-money" size={24} />
 
           <Text>{activity.amount}</Text>
@@ -35,6 +35,10 @@ const ExpenseDisplay = ({route}) => {
               date.getFullYear()}
           </Text>
         </View>
+          <Text>
+            Added by 
+            {userId === activity.spent_by ? "You" : activity.user_name}
+          </Text>
       </View>
       <Button label="Edit" onPress={handleEdit} />
     </View>

@@ -26,6 +26,8 @@ import ExpenseDisplay from "./src/components/ExpenseDisplay";
 import UpdateExpense from "./src/components/UpdateExpense";
 import GroupProvider from "./src/Context/GroupProvider";
 import NotifyUsersScreen from "./src/components/NotifyUsersScreen";
+import { ValidateUserRegistration } from "./src/api/api";
+import valdateUser from "./src/components/pages/validateUser";
 const RootStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const GroupStack = createNativeStackNavigator();
@@ -45,6 +47,11 @@ const AuthenticationScreen = ({ route }) => {
       <AuthStack.Screen
         name="SignUp"
         component={SignUp}
+        initialParams={{ handleLogin }}
+      />
+      <AuthStack.Screen
+        name="validateUser"
+        component={valdateUser}
         initialParams={{ handleLogin }}
       />
       <AuthStack.Screen name="PasswordRecovery" component={PasswordRecovery} />
@@ -76,9 +83,9 @@ const GroupScreen = () => {
       />
       <GroupStack.Screen name="AddExpense" component={RegisterExpense} />
       <GroupStack.Screen name="SettleUp" component={SettleUpScreen} />
-      <GroupStack.Screen name="Expense" component={ExpenseDisplay}/>
-      <GroupStack.Screen name="Edit Expense" component={UpdateExpense}/>
-      <GroupStack.Screen name="Notify" component={NotifyUsersScreen}/>
+      <GroupStack.Screen name="Expense" component={ExpenseDisplay} />
+      <GroupStack.Screen name="Edit Expense" component={UpdateExpense} />
+      <GroupStack.Screen name="Notify" component={NotifyUsersScreen} />
     </GroupStack.Navigator>
   );
 };

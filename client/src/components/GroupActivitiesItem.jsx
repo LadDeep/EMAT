@@ -4,10 +4,10 @@ import Date from "./Date";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const GroupActivitiesItem = ({groupId, activity }) => {
+const GroupActivitiesItem = ({groupId, userId, activity }) => {
   const navigation = useNavigation();
   const handleExpenseDescription = ()=>{
-    navigation.push("Expense", {groupId, activity});
+    navigation.push("Expense", {groupId, userId, activity});
   }
   return (
     <ListItem style={styles.listItem} onPress={handleExpenseDescription}>
@@ -19,7 +19,7 @@ const GroupActivitiesItem = ({groupId, activity }) => {
               {activity.description}
             </Text>
             <Text>
-              Spent by {activity.user_name}
+            ${activity.amount} Spent by {activity.user_name}
             </Text>
           </View>
         </View>
@@ -28,7 +28,7 @@ const GroupActivitiesItem = ({groupId, activity }) => {
             color: `${activity.user_name === "You" ? "green" : "red"}`,
           }}
         >
-          ${parseFloat(activity.amount).toFixed(2)}
+          ${parseFloat(activity.lent_or_borrowed_amount).toFixed(2)}
         </Text>
       </View>
     </ListItem>
