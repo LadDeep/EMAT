@@ -223,14 +223,7 @@ def getGroupStats():
             
             result["status"] = True
             if len(user_ids) > 0:
-                users = User.objects.filter(user_id__in=user_ids)
-                users = [json.loads(x.to_json()) for x in users]
-                keys_needed = ['first_name','last_name','email']
-                for user in users:
-                    group_index = next((index for (index,d) in enumerate(group_stats_json) if d['_id'] == user['user_id']),None)
-                    if group_index is not None:
-                        for key in keys_needed:
-                            group_stats_json[group_index][key] = user[key]
+                group_stats_json = setUserDetailsInGroupStats(user_ids,group_stats_json)
                 
                 result["response"] = {"max": max(group_stats_json,key=lambda x: x['total']),"min":min(group_stats_json,key=lambda x: x['total'])}
             else:
@@ -297,3 +290,15 @@ def inviteUsersToJoinGroup(users,participants,user_id_verified,json_data):
             for email in email_not_registered:
                 print(registered_email_object)                    
                 sendEmail(registered_email_object,email)
+
+def setUserDetailsInGroupStats(user_ids,group_stats_json):
+    users = User.objects.filter(user_id__in=user_ids)
+    users = [json.loads(x.to_json()) for x in users]
+    keys_needed = ['first_name','last_name','email']
+    for user in users:
+        group_index = next((index for (index,d) in enumerate(group_stats_json) if d['_id'] == user['user_id']),None)
+        if group_index is not None:
+            for key in keys_needed:
+                group_stats_json[group_index][key] = user[key]
+    
+    return group_stats_json
