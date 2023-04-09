@@ -3,7 +3,7 @@ import { Button, TextField, View, Text, Toast } from "react-native-ui-lib";
 import { DateTimePicker } from "react-native-ui-lib/src/components/dateTimePicker";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Alert, StyleSheet } from "react-native";
-import { CreateExpense } from "../api/api";
+import { UpdateExpenseInfo } from "../api/api";
 import { useNavigation } from "@react-navigation/native";
 import MONTHS from "../constants/constants";
 
@@ -11,7 +11,7 @@ const UpdateExpense = ({ route }) => {
   const {groupId, activity} = route.params;
   const [description, setDescription] = useState(activity.description);
   const [date, setDate] = useState(new Date(parseInt(activity.created_at["$date"])));
-  const [amount, setAmount] = useState(parseInt(activity.amount))
+  const [amount, setAmount] = useState(activity.amount)
   const navigation = useNavigation();
 
   const handleEditExpense = ()=>{
@@ -32,12 +32,13 @@ const UpdateExpense = ({ route }) => {
         {
           text: "Save",
           onPress: () => {
-            CreateExpense(
+            UpdateExpenseInfo(
               {
+                expense_id: activity.expense_id,
+                group_id: groupId,
                 description: description,
                 amount: parseFloat(amount),
-                group_id: groupId,
-                date,
+                created_at: date,
               },
               (res) => {
                 console.log(res.data.status);

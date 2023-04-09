@@ -202,6 +202,17 @@ const NotifyUsers = async (data, onSuccess, onError) => {
   }
 };
 
+const UpdateExpenseInfo = async (data, onSuccess, onError) => {
+  try {
+    const res = await instance.put("/expense/update", data, {
+      headers: { "Content-Type": "application/json" },
+    });
+    onSuccess && onSuccess(res);
+  } catch (err) {
+    onError && onError(err);
+  }
+};
+
 export {
   CreateUser,
   LoginUser,
@@ -220,5 +231,6 @@ export {
   NotifyUsers,
   JoinGroupApi,
   GroupStatsApi,
-  UpdatedExpenseList
+  UpdatedExpenseList,
+  UpdateExpenseInfo
 };
