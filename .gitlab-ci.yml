@@ -47,6 +47,8 @@ coverage-job:
   stage: test
   script:
     - echo "Generating test coverage report..."
+    - ls
+    - pwd
     - cd /builds/courses/2023-winter/csci-5308/group04/backend/build/
     - coverage report --fail-under=80 
 
