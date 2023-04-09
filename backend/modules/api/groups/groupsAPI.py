@@ -25,12 +25,18 @@ def registerGroup():
                 group = Group()
                 flag = True
                 unique_group_id = None
+
+                # Below While Loop is needed to ensure uuids are unique 
+                # tried with uuid1 and uuid4, since uuid1 is based on machine time, 
+                # went ahead with uuid4 as characters in it are random
+
                 while flag:
                     group_id=uuid.uuid4()
                     group_obj = Group.objects(group_id=group_id)
                     if not group_obj:
                         unique_group_id = group_id
                         flag = False
+
                 group.group_id=unique_group_id
                 joiningToken = generate_verification_code()
                 description = json_data.get("group_description",None)
@@ -43,22 +49,8 @@ def registerGroup():
                     
                     users = User.objects(email__in=participants)
                     users = [json.loads(x.to_json()) for x in users]
+                    inviteUsersToJoinGroup(users,participants,user_id_verified,json_data)
 
-                    emails_registered = [x['email'] for x in users if x.get('email') is not None]
-                    email_not_registered = [x for x in participants if x not in emails_registered]
-                    created_user_object = User.objects.get_or_404(user_id=user_id_verified)
-                    created_user_object = json.loads(created_user_object.to_json())
-                    if created_user_object is not None:
-                        created_email = created_user_object.get("email",None)
-                        if created_email is not None:
-                            registered_email_object = {"subject": f"{created_email} invited you to {json_data.get('group_name','Group')} on EMAT","message":f"Group Verification Code: {joiningToken}"}
-                            for email in emails_registered:
-                                print(registered_email_object)                    
-                                sendEmail(registered_email_object,email)
-                            
-                            for email in email_not_registered:
-                                print(registered_email_object)                    
-                                sendEmail(registered_email_object,email)
                         
                     participants = [x['user_id'] for x in users if x.get('user_id') is not None]
                     participants.append(user_id_verified)
@@ -266,16 +258,16 @@ def joinGroup():
                 group_array = Group.objects.filter(joiningToken=verification_token)
                 if not group_array:
                     abort(404)
+                
+                group = group_array[0]
+                if user_id_verified not in group.participants:
+                    group.participants.append(user_id_verified)
+                    group.save()
                 else:
-                    group = group_array[0]
-                    if user_id_verified not in group.participants:
-                        group.participants.append(user_id_verified)
-                        group.save()
-                    else:
-                        print(f"User Exists: {user_id_verified} in {group.participants}")
-                    
-                    result['status'] = True
-                    result['response'] = f'User {user_id_verified} has joined group {group.name}'
+                    print(f"User Exists: {user_id_verified} in {group.participants}")
+                
+                result['status'] = True
+                result['response'] = f'User {user_id_verified} has joined group {group.name}'
             except Exception as e:
                 traceback_message = traceback.format_exc()
                 print(traceback_message)
@@ -287,3 +279,21 @@ def joinGroup():
             result['response'] = "Verification Token: verification_code should be set in query parameters"
     
     return result
+
+
+def inviteUsersToJoinGroup(users,participants,user_id_verified,json_data):
+    emails_registered = [x['email'] for x in users if x.get('email') is not None]
+    email_not_registered = [x for x in participants if x not in emails_registered]
+    created_user_object = User.objects.get_or_404(user_id=user_id_verified)
+    created_user_object = json.loads(created_user_object.to_json())
+    if created_user_object is not None:
+        created_email = created_user_object.get("email",None)
+        if created_email is not None:
+            registered_email_object = {"subject": f"{created_email} invited you to {json_data.get('group_name','Group')} on EMAT","message":f"Group Verification Code: {joiningToken}"}
+            for email in emails_registered:
+                print(registered_email_object)                    
+                sendEmail(registered_email_object,email)
+            
+            for email in email_not_registered:
+                print(registered_email_object)                    
+                sendEmail(registered_email_object,email)
