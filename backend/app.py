@@ -1,5 +1,4 @@
 from flask import Flask
-from modules.api.users.usersAPI import users
 from database.database import db
 from modules.api.auth.routes import auth
 from modules.api.groups.groupsAPI import group
@@ -35,7 +34,6 @@ def create_app():
     mail = Mail(app)
     app.mail = mail
 
-    app.register_blueprint(users,url_prefix='/users')
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(profile,url_prefix='/profile')
     app.register_blueprint(currency, url_prefix='/currency')
