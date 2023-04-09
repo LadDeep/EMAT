@@ -4,19 +4,19 @@ from email.mime.text import MIMEText
 import random
 import string
 
-def create_object_with_required_fields(modelInstance,required_fields,request_data,result):
+def create_object_with_required_fields(model_instance,required_fields,request_data,result):
     for field in required_fields:
         field_value = request_data.get(field,None)
         if field_value is not None:
-            modelInstance[field] = field_value
+            model_instance[field] = field_value
         else:
             result["error"] = f"{field} is required"
             break
         
     if result.get("error",None) is None:
-            modelInstance.save()
+            model_instance.save()
             result["status"] = True
-            result["response"] = f"{modelInstance.__class__.__name__} saved"
+            result["response"] = f"{model_instance.__class__.__name__} saved"
     
     return result
 
