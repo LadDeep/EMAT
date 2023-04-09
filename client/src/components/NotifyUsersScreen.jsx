@@ -31,16 +31,14 @@ const NotifyUsersScreen = ({route}) => {
     );
   }
   const handleChange = (id, value)=>{
-    let userDetail = userStandingDetails.filter((user) => user.id === id);
+    let userDetail = userStandingDetails.filter((user) => user._id === id);
     userDetail[0]["isChecked"] = value;
-    console.log("userDetail", userDetail);
     const userDetails = userStandingDetails.map((user) =>
-      user.id === id ? userDetail[0] : user
+      user._id === id ? userDetail[0] : user
     );
     setUserStandingDetails(userDetails);
   }
 
-  console.log("userStandingDetails: ",userStandingDetails)
   useEffect(() => {
     OverallGroupStandings(
       groupId,
@@ -73,7 +71,7 @@ const NotifyUsersScreen = ({route}) => {
     <View flex marginH-48>
       <Text style={{fonWeight: "bold", fontSize: 24}}>Select members to notify</Text>
       <OverallOutstandingsDisplay userStandingDetails={userStandingDetails} handleCheckboxChange={handleChange}/>
-      <View row center>
+      <View row centerV>
         <Icon style={styles.icon} name="calendar-today" size={24} />
         <DateTimePicker
           style={styles.input}

@@ -33,11 +33,10 @@ const SettleUpScreen = ({route}) => {
       );
   }
   const handleChange = (id, value)=>{
-    let userDetail = userStandingDetails.filter((user) => user.id === id);
+    let userDetail = userStandingDetails.filter((user) => user._id === id);
     userDetail[0]["isChecked"] = value;
-    console.log("userDetail", userDetail);
     const userDetails = userStandingDetails.map((user) =>
-      user.id === id ? userDetail[0] : user
+      user._id === id ? userDetail[0] : user
     );
     setUserStandingDetails(userDetails);
   }
@@ -47,8 +46,6 @@ const SettleUpScreen = ({route}) => {
     OverallGroupStandings(
       groupId,
       (res) => { if(res.data.status){
-        console.log("Overall Group standing",res.data.response)
-
         const details = res.data.response.map((overallExpense) => {
             return {
               ...overallExpense,
@@ -75,7 +72,7 @@ const SettleUpScreen = ({route}) => {
     <View flex marginH-48>
       <Text style={{fonWeight: "bold", fontSize: 24}}>Select members to record transcation</Text>
       <OverallOutstandingsDisplay userStandingDetails={userStandingDetails} handleCheckboxChange={handleChange}/>
-      <View row center>
+      <View row centerV>
         <Icon style={styles.icon} name="calendar-today" size={24} />
         <DateTimePicker
           style={styles.input}

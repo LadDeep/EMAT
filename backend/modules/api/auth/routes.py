@@ -82,6 +82,7 @@ def register():
 
             newUser.save()
             return jsonify({
+                "user_id": user_id,
                 "status": status,
                 "message": "signup successfully"
             }), 200
@@ -111,16 +112,22 @@ def login():
             db_user = User.objects.get(email=email)
 
             if db_user.check_password(password):
-                
-                session["user_id"] = db_user.user_id
-                access_token = create_access_token(identity=db_user.user_id)
-                if access_token:
+                if db_user.isEmailVerified is True:
+                    session["user_id"] = db_user.user_id
+                    access_token = create_access_token(identity=db_user.user_id)
+                    if access_token:
+                        return jsonify({
+                            "status": status,
+                            "user_id": db_user.user_id,
+                            "message": "login successfully",
+                            "access_token": access_token
+                        }), 200
+                else:
                     return jsonify({
-                        "status": status,
-                        "user_id": db_user.user_id,
-                        "message": "login successfully",
-                        "access_token": access_token
-                    }), 200
+                            "status": status,
+                            "user_id": db_user.user_id,
+                            "message": "User is not Verified"
+                        }), 200
             else:
                 status = False
                 return jsonify({"status": status, "message": "wrong password"})
@@ -213,9 +220,10 @@ def verifyUser():
                 db_user["isEmailVerified"] = True
                 db_user.save()
                 result["status"] = True
-                result["response"] = "User successfully verified"
+                result["response"] = {"verified": True,"message":"User successfully verified"}
             else:
-                result["response"] = "Verification Token does not match for user {user_id}"
+                result["response"] = {"verified": False,"message":"Verification Token does not match for user {user_id}"}
+                
         except Exception as e:
             traceback_message = traceback.format_exc()
             print(traceback_message)
