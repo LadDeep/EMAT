@@ -4,7 +4,7 @@ from modules.models.User import User
 
 def test_register_with_json_data(client):
     headers = {'Content-Type': 'application/json'}
-    data = {'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe'}
+    data = {'email': 'test@example.com', 'first_name': 'Eren', 'last_name': 'Ywegar'}
     response = client.post('/register', headers=headers, json=data)
     assert response.status_code == 200
     assert response.content_type == 'application/json'
@@ -12,7 +12,7 @@ def test_register_with_json_data(client):
 
 def test_register_with_form_data(client):
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-    data = {'email': 'test@example.com', 'first_name': 'John', 'last_name': 'Doe'}
+    data = {'email': 'test@example.com', 'first_name': 'Eren', 'last_name': 'Ywegar'}
     response = client.post('/register', headers=headers, data=data)
     assert response.status_code == 200
     assert response.content_type == 'application/json'
