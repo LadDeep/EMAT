@@ -155,7 +155,7 @@ def updateExpense():
         if user_id_verified:
             try:
                 json_data = request.json
-                updatable_fields = ['description','amount','date']
+                updatable_fields = ['description','amount','created_at']
                 required_fields = ['expense_id','group_id']
                 json_keys = list(json_data.keys())
                 required_fields_exist = set(required_fields).issubset(json_keys)
