@@ -20,7 +20,7 @@ const OverallOutstandingsDisplay = ({
                   label={item.user_name}
                   isDisabled={item.isDisabled}
                   onValueChange={(value) =>
-                    handleCheckboxChange(item.id, value)
+                    handleCheckboxChange(item._id, value)
                   }
                 />
                 <View centerV>

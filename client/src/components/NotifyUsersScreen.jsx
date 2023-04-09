@@ -31,16 +31,14 @@ const NotifyUsersScreen = ({route}) => {
     );
   }
   const handleChange = (id, value)=>{
-    let userDetail = userStandingDetails.filter((user) => user.id === id);
+    let userDetail = userStandingDetails.filter((user) => user._id === id);
     userDetail[0]["isChecked"] = value;
-    console.log("userDetail", userDetail);
     const userDetails = userStandingDetails.map((user) =>
-      user.id === id ? userDetail[0] : user
+      user._id === id ? userDetail[0] : user
     );
     setUserStandingDetails(userDetails);
   }
 
-  console.log("userStandingDetails: ",userStandingDetails)
   useEffect(() => {
     OverallGroupStandings(
       groupId,
