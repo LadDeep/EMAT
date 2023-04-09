@@ -1,10 +1,8 @@
 import datetime
 import uuid
 import json
-from smtplib import SMTPAuthenticationError, SMTPServerDisconnected, SMTPException
-from flask import request, jsonify, Blueprint, current_app, session
+from flask import request, jsonify, Blueprint, session
 from flask_jwt_extended import create_access_token, decode_token, unset_jwt_cookies
-from flask_mail import Message
 from werkzeug.security import generate_password_hash
 from modules.models.User import User
 from mongoengine.errors import FieldDoesNotExist, DoesNotExist
@@ -14,27 +12,6 @@ import traceback
 auth = Blueprint('auth', __name__)
 
 
-# class CustError(Exception):
-#     status_code = 400
-#
-#     def __init__(self, message, status_code=None, payload=None):
-#         Exception.__init__(self)
-#         self.message = message
-#         if status_code is not None:
-#             self.status_code = status_code
-#         self.payload = payload
-#
-#     def dict_make(self):
-#         resp = dict(self.payload or ())
-#         resp["message"] = self.message
-#         return resp
-
-
-# @auth.errorhandler(CustError)
-# def handle_error(e):
-#     response = jsonify(e.dict_make())
-#     response.status_code = e.status_code
-#     return response
 
 
 @auth.route("/register", methods=["GET", "POST"])
@@ -110,7 +87,7 @@ def login():
 
             # check the user and password
             db_user = User.objects.get(email=email)
-            result = authenticateUser(db_user,password)
+            result = authenticate_user(db_user,password)
             return result
         except DoesNotExist:
             status = False
@@ -135,7 +112,7 @@ def logout():
 
 
 @auth.route("/reset", methods=["POST"])
-def resetPasswordWithToken():
+def reset_password_with_token():
     try:
         data = request.get_json()
         email = data["email"]
@@ -157,7 +134,7 @@ def resetPasswordWithToken():
 
 
 @auth.route("/reset/<reset_token>", methods=["POST"])
-def resetPassword(reset_token):
+def reset_password(reset_token):
     if request.method == "POST":
         try:
             data = request.get_json()
@@ -186,7 +163,7 @@ def resetPassword(reset_token):
             return jsonify({"error": str(e)}), 500
 
 @auth.route('/verify-user',methods=["GET"])
-def verifyUser():
+def verify_user():
     user_id = request.args.get("user_id")
     verification_token = request.args.get("verification_code")
     result = {"status": False}
@@ -220,7 +197,7 @@ def verifyUser():
     return result
 
 
-def authenticateUser(db_user,password):
+def authenticate_user(db_user,password):
     result = {"status": True,"user_id": db_user.user_id,}
     if db_user.check_password(password):
         if db_user.isEmailVerified is True:
