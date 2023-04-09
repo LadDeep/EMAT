@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useContext, useState } from "react";
 import { Button, TextField, View, Text, Toast } from "react-native-ui-lib";
 import { DateTimePicker } from "react-native-ui-lib/src/components/dateTimePicker";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -6,15 +6,19 @@ import { Alert, StyleSheet } from "react-native";
 import { UpdateExpenseInfo } from "../api/api";
 import { useNavigation } from "@react-navigation/native";
 import MONTHS from "../constants/constants";
+import GroupContext from "../Context/GroupContext";
 
 const UpdateExpense = ({ route }) => {
-  const {groupId, activity} = route.params;
+  const { groupId, activity, userId } = route.params;
   const [description, setDescription] = useState(activity.description);
   const [date, setDate] = useState(new Date(parseInt(activity.created_at["$date"])));
   const [amount, setAmount] = useState(activity.amount)
   const navigation = useNavigation();
+  console.log("This is Activity", activity)
+  const { setGroupState, groupState } = useContext(GroupContext)
 
-  const handleEditExpense = ()=>{
+
+  const handleEditExpense = () => {
     if (description !== "" && amount !== undefined) {
       let creationDate =
         date.getDate() +
@@ -44,22 +48,34 @@ const UpdateExpense = ({ route }) => {
                 console.log(res.data.status);
                 if (res.data.status) {
                   // TODO: Show toast for successfull creation
-                  navigation.goBack();
+                  console.log("response of Update List Page", res)
+                  let updatedActivity = {
+                    ...activity,
+                    description: description,
+                    amount: parseFloat(amount),
+                    created_at: {
+                      '$date': date.getTime(),
+                    },
+                  }
+                  setGroupState(!groupState)
+                  console.log("OLD ACTIVITY", activity)
+                  console.log("UPDATED ACTIVITY+++++++++++++++++++++++++++", updatedActivity)
+
+                  navigation.navigate("Expense", { groupId, activity: updatedActivity, userId });
                 }
               },
-              (err) => {}
+              (err) => { console.log("err", err) }
             );
           },
         },
       ]);
     }
   }
-  console.log(groupId)
   return (
     <View flex >
       <View center margin-24>
         <View row center>
-          <Icon style={styles.icon} name="receipt" size={24}/>
+          <Icon style={styles.icon} name="receipt" size={24} />
           <TextField
             style={styles.input}
             value={description}
@@ -71,7 +87,7 @@ const UpdateExpense = ({ route }) => {
           />
         </View>
         <View row center>
-          <Icon style={styles.icon} name="attach-money" size={24}/>
+          <Icon style={styles.icon} name="attach-money" size={24} />
           <TextField
             style={styles.input}
             value={amount}
@@ -87,15 +103,15 @@ const UpdateExpense = ({ route }) => {
         <View row center>
           <Icon style={styles.icon} name="calendar-today" size={24} />
           <DateTimePicker
-          style={styles.input}
+            style={styles.input}
             title={"Select date"}
             mode="date"
             value={date}
             onChange={(date) => setDate(date)}
           />
         </View>
-        <Text style={{marginBottom: 16}}>Paid by You and splitted equally</Text>
-        <Button label="Save" onPress={handleEditExpense}/>
+        <Text style={{ marginBottom: 16 }}>Paid by You and splitted equally</Text>
+        <Button label="Save" onPress={handleEditExpense} />
       </View>
     </View>
   );
@@ -105,9 +121,9 @@ const styles = StyleSheet.create({
   input: {
     width: "80%",
     marginHorizontal: 8,
-    marginVertical:0,
+    marginVertical: 0,
   },
-  icon:{
+  icon: {
     paddingHorizontal: 16
   }
 });
