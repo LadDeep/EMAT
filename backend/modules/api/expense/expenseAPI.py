@@ -73,32 +73,27 @@ def createExpense():
                 if required_fields_exist:
                     group_id = json_data['group_id']
                     group = Group.objects.get_or_404(group_id=group_id)
-                    groups_dict = json.loads(group.to_json())
+                    amount = json_data['amount']
+                    date = datetime.datetime.strptime(json_data['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
+                    flag = True
+                    unique_expense_id = None
+                    while flag:
+                        expense_id=uuid.uuid4()
+                        expense_obj = group.expenses.filter(expense_id=expense_id)
+                        if not expense_obj:
+                            unique_expense_id = expense_id
+                            flag = False
                     
-                    if user_id_verified in groups_dict['participants']:
-                        amount = json_data['amount']
-                        date = datetime.datetime.strptime(json_data['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
-                        flag = True
-                        unique_expense_id = None
-                        while flag:
-                            expense_id=uuid.uuid4()
-                            expense_obj = group.expenses.filter(expense_id=expense_id)
-                            if not expense_obj:
-                                unique_user_id = expense_id
-                                flag = False
-                        
-                        expense = Expense(expense_id=expense_id,group_id=group_id,spent_by=user_id_verified,amount=amount,created_at=date)
-                        if 'description' in json_keys:
-                            expense.description = json_data['description']
-                        group.expenses.append(expense)
-                        group.save()
-                        result['status'] = True
-                        expense_id = json.loads(expense.to_json())['expense_id']
-                        result['response'] = f'Expense {expense_id} Created'
-                        status = 201
-                    else:
-                        result['error']= f'User ID {user_id_verified} does not exist as a participant in Group {group_id}'
-                        status = 404
+                    expense = Expense(expense_id=unique_expense_id,group_id=group_id,spent_by=user_id_verified,amount=amount,created_at=date)
+                    if 'description' in json_keys:
+                        expense.description = json_data['description']
+                    group.expenses.append(expense)
+                    group.save()
+                    result['status'] = True
+                    expense_id = json.loads(expense.to_json())['expense_id']
+                    result['response'] = f'Expense {expense_id} Created'
+                    status = 201
+                
                 else:
                     fields_not_exist = [i for i in required_fields if i not in json_keys]
                     fields_ne_string = ", ".join(fields_not_exist)
