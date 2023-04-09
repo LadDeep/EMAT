@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from mongoengine.errors import ValidationError, OperationError
 import traceback
 import json
-from modules.utils.utilFunctions import sendEmail
+from modules.utils.utilFunctions import send_email
 import datetime
 
 settleUp = Blueprint('settleUp', __name__)
@@ -96,7 +96,7 @@ def notify():
                     index = notify_user_ids.index(notify_user_obj.get("user_id"))
                     obj = notify_users[index]
                     mail_object["message"] = f'You owe amount {obj.get("amount","undefined")} {notify_user_obj.get("currency","undefined")} to {user.first_name} in {group.get("group_name","undefined")}'
-                    sendEmail(mail_object,notify_user_obj.get("email"))
+                    send_email(mail_object,notify_user_obj.get("email"))
             
             result["status"] = True
             result["response"] = "Users notified"

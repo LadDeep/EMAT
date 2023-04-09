@@ -2,7 +2,7 @@ from flask import Blueprint,request,abort,current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from modules.models.Group import Group
 from modules.models.User import User
-from modules.utils.utilFunctions import createObjectWithRequiredFields,generate_verification_code,sendEmail
+from modules.utils.utilFunctions import create_object_with_required_fields,generate_verification_code,send_email
 import json
 import traceback
 import uuid
@@ -57,7 +57,7 @@ def register_group():
                     participants = list(set(participants))
                     group.participants = participants
                 
-                result = createObjectWithRequiredFields(group,required_fields,json_data,result) 
+                result = create_object_with_required_fields(group,required_fields,json_data,result) 
                 status = 201
             except Exception as e:
                 traceback_message = traceback.format_exc()
@@ -285,11 +285,11 @@ def invite_users_to_join_group(users,participants,user_id_verified,json_data):
             registered_email_object = {"subject": f"{created_email} invited you to {json_data.get('group_name','Group')} on EMAT","message":f"Group Verification Code: {joiningToken}"}
             for email in emails_registered:
                 print(registered_email_object)                    
-                sendEmail(registered_email_object,email)
+                send_email(registered_email_object,email)
             
             for email in email_not_registered:
                 print(registered_email_object)                    
-                sendEmail(registered_email_object,email)
+                send_email(registered_email_object,email)
 
 def set_user_details_in_group_stats(user_ids,group_stats_json):
     users = User.objects.filter(user_id__in=user_ids)

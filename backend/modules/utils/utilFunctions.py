@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 import random
 import string
 
-def createObjectWithRequiredFields(modelInstance,required_fields,request_data,result):
+def create_object_with_required_fields(modelInstance,required_fields,request_data,result):
     for field in required_fields:
         field_value = request_data.get(field,None)
         if field_value is not None:
@@ -20,7 +20,7 @@ def createObjectWithRequiredFields(modelInstance,required_fields,request_data,re
     
     return result
 
-def sendEmail(mail_object, receiver_address):
+def send_email(mail_object, receiver_address):
     result = False
     sender_address = 'emat.asdc.g4@gmail.com'
     sender_pass = 'nkgvrglfwuuwsoxb'

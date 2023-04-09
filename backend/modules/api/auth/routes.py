@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash
 from modules.models.User import User
 from mongoengine.errors import FieldDoesNotExist, DoesNotExist
 from jwt.exceptions import ExpiredSignatureError, DecodeError, InvalidTokenError
-from modules.utils.utilFunctions import sendEmail,generate_verification_code
+from modules.utils.utilFunctions import send_email,generate_verification_code
 import traceback
 auth = Blueprint('auth', __name__)
 
@@ -50,7 +50,7 @@ def register():
                     flag = False
             
             mail_object = {'subject': 'EMAT - Registration', 'message': f'Verification Code: "{verification_code}"'}
-            sendEmail(mail_object,email)
+            send_email(mail_object,email)
 
             newUser = User(user_id=unique_user_id, first_name=first_name,
                            last_name=last_name, email=email, currency = currency,verificationToken=verification_code,monthly_budget_amount=monthly_budget_amount,warning_budget_amount=warning_budget_amount)
@@ -124,7 +124,7 @@ def reset_password_with_token():
         #     raise CustError("User with the email not found", 404)
 
         reset_token = create_access_token(identity=str(db_user.user_id), expires_delta=datetime.timedelta(hours=12))
-        sendEmail({"subject":"EMAT - password reset","message":f"RESET_TOKEN -{reset_token}"},email)
+        send_email({"subject":"EMAT - password reset","message":f"RESET_TOKEN -{reset_token}"},email)
         return {"status": True, "message": "email has been sent", "reset_token": reset_token}, 200
 
     except DoesNotExist:
