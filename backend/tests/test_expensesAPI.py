@@ -4,10 +4,10 @@ from app import app
 
 # Test cases for expenses API
 
-@pytest.fixture
-def client():
-    with app.test_client() as client:
-        yield client
+# @pytest.fixture
+# def client():
+#     with app.test_client() as client:
+#         yield client
 
 
 def test_create_expense(client):
@@ -100,5 +100,42 @@ def test_expense_list_with_missing_group_id(client):
     response = client.get('/expense/list', headers={
         'Authorization': 'Bearer access_token'
     })
-    assert response.status_code == 200
+    assert response.status_code == 400
     assert 'Incomplete Query Parameters' in response.json['response']
+
+def test_expense_update(client):
+    response = client.put('/expense/update?group_id=1&expense_id=1', headers={
+        'Authorization': 'Bearer access_token'}, json={
+        'description': 'update the expense',
+        'amount': 150.0,
+        'date': '2022-04-09T12:30:00.000Z'
+    })
+    assert response.status_code == 200
+    assert response.json['status'] == True
+    assert "Expense: 1 updated" in response.json['response']
+
+def test_expense_update_with_invalid_content_type(client):
+    response = client.put('/expense/update?group_id=1&expense_id=1', headers={
+        'Authorization': 'Bearer access_token',
+        'Content-Type': 'text/plain'
+    }, json={
+        'description': 'update the expense',
+        'amount': 150.0,
+        'date': '2022-04-09T12:30:00.000Z'
+    })
+    assert response.status_code == 415
+    assert response.json['status'] == False
+    assert 'Unsupported Header Content-Type' in response.json['error']
+
+def test_expense_update_with_missing_group_id(client):
+    response = client.put('/expense/update?expense_id=1', headers={
+        'Authorization': 'Bearer access_token',
+        'Content-Type': 'text/plain'
+    }, json={
+        'description': 'update the expense',
+        'amount': 150.0,
+        'date': '2022-04-09T12:30:00.000Z'
+    })
+    assert response.status_code == 400
+    assert response.json['status'] == False
+    assert 'Fields: group_id not in request' in response.json['error']

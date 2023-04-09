@@ -1,8 +1,9 @@
 import pytest
 
-@pytest.fixture
-def calculator():
-    return Calculator()
+
+# @pytest.fixture
+# def calculator():
+#     return Calculator()
 
 def test_add(calculator):
     assert calculator.add(2, 3) == 5
