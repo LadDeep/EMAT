@@ -1,11 +1,11 @@
 from flask import Blueprint, jsonify
-from modules.models.CurrencyList import CurrencyList;
+from modules.models.CurrencyList import CurrencyList
 from mongoengine.errors import FieldDoesNotExist, InvalidQueryError
 
 currency = Blueprint('currency', __name__)
 
 @currency.route("/list", methods=["GET"])
-def getCurrencyList():
+def get_currency_list():
 
     try:
 
@@ -18,7 +18,7 @@ def getCurrencyList():
     
 
 @currency.route("/details", methods=["GET"])
-def getCurrency():
+def get_currency():
 
     try:
 
