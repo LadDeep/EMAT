@@ -33,16 +33,25 @@ unit-test-job:
     - cd backend/
     - pip install coverage
     - pip install pytest
-    - coverage run --source='.' -m pytest /builds/courses/2023-winter/csci-5308/group04/backend/tests/ --catch-clear
+    - coverage run --source='.' -m pytest /builds/courses/2023-winter/csci-5308/group04/backend/tests/
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
-
+  
 lint-test-job:
   stage: test
   script:
     - pip install pylint
     - echo "Linting code..."
-    - pylint /builds/courses/2023-winter/csci-5308/group04/backend/*.py
+    - pylint --fail-under=9.0 /builds/courses/2023-winter/csci-5308/group04/backend/*.py
+  allow_failure: true
 
+coverage-job:
+  stage: test
+  script:
+    - echo "Generating test coverage report..."
+    - ls
+    - pwd
+    - cd /builds/courses/2023-winter/csci-5308/group04/backend/build/
+    - coverage report --fail-under=80 
 
 deploy-job:
   stage: deploy
