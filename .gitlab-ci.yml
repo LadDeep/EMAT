@@ -55,14 +55,12 @@ coverage-job:
   stage: test
   script:
     - echo "Generating test coverage report..."
-    - cd backend/
-    - pip install coverage 
-    - coverage html
-    - coverage xml
-    - coverage report
+    - pip install coverage
+    - pytest --cov=src tests/
+    - coverage xml --include="src/**" -o reports/coverage.xml
   artifacts:
     paths:
-      - backend/htmlcov/
+      - reports/coverage.xml
 
 # Define the deploy job
 deploy-job:
