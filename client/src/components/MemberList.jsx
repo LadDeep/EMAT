@@ -16,11 +16,11 @@ const MemberList = (props) => {
     <GridList
       horizontal={false}
       data={members}
-      style={{marginHorizontal:32}}
+      style={{ marginHorizontal: 32 }}
       renderItem={({ item }) => (
         <ListItem>
           <View row center>
-            <View >
+            <View>
               <Text style={styles.titleSmall}>{item.full_name}</Text>
               <Text>{item.email}</Text>
             </View>

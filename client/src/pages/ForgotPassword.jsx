@@ -21,10 +21,8 @@ function PasswordRecovery() {
     // Code to send password recovery email
     Alert.alert("", 'Email sent Successfully');
     let payload = { email: email }
-    console.log("PAYLOAD", payload)
     ForgotPassword(payload,
       (res) => {
-        console.log("Response of Forgot Password", res.data.reset_token)
         navigation.navigate("EnterToken", { token: res.data.reset_token })
       }
       ,

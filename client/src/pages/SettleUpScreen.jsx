@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { DateTimePicker, Text, View} from 'react-native-ui-lib';
+import { DateTimePicker, Text, View, Button } from 'react-native-ui-lib';
 import { OverallGroupStandings, SettleUpExpenses } from '../api/api';
-import { Button } from 'react-native-ui-lib';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
 import OverallOutstandingsDisplay from '../components/OverallOutstandingsDisplay';
@@ -16,12 +15,10 @@ const SettleUpScreen = ({route}) => {
 ;
   const handleSettleUp = ()=>{
     let transactions = userStandingDetails.map((userDetails)=>({group_id: groupId, user_id:userDetails._id, amount:userDetails.amount, last_settled_at:date }))
-    console.log("transactions",transactions)
     //Call SettleUp API
     SettleUpExpenses(
       { transactions },
       (res) => {
-        console.log(res);
         if (res.data.status) {
           navigation.goBack();
         } else {
@@ -41,7 +38,6 @@ const SettleUpScreen = ({route}) => {
     setUserStandingDetails(userDetails);
   }
 
-  console.log("userStandingDetails: ",userStandingDetails)
   useEffect(() => {
     OverallGroupStandings(
       groupId,
@@ -54,7 +50,6 @@ const SettleUpScreen = ({route}) => {
               amount: overallExpense.total,
             }
           });
-        console.log("details",details)
         setUserStandingDetails(details)
         setIsLoading(false)
       }},
@@ -62,7 +57,6 @@ const SettleUpScreen = ({route}) => {
     );
   }, [])
   
-  console.log("userStandingDetails", userStandingDetails)
   if(isLoading){
    return (
      <View flex center>

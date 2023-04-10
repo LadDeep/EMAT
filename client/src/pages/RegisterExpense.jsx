@@ -5,15 +5,15 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { Alert, StyleSheet } from "react-native";
 import { CreateExpense } from "../api/api";
 import { useNavigation } from "@react-navigation/native";
-import {MONTHS} from "../constants/constants";
+import { MONTHS } from "../constants/constants";
 import GroupContext from "../Context/GroupContext";
 
 const RegisterExpense = ({ route }) => {
   const [description, setDescription] = useState();
   const [date, setDate] = useState(new Date());
-  const [amount, setAmount] = useState()
+  const [amount, setAmount] = useState();
   const { groupId } = route.params;
-  const { setGroupState, groupState } = useContext(GroupContext)
+  const { setGroupState, groupState } = useContext(GroupContext);
   const navigation = useNavigation();
 
   const handleExpense = () => {
@@ -26,7 +26,8 @@ const RegisterExpense = ({ route }) => {
         date.getFullYear();
 
       let alertTitle = "Are you sure?";
-      let alertMessage = "You paid $" + amount + " for " + description + " on " + creationDate;
+      let alertMessage =
+        "You paid $" + amount + " for " + description + " on " + creationDate;
       Alert.alert(alertTitle, alertMessage, [
         {
           text: "Cancel",
@@ -42,22 +43,21 @@ const RegisterExpense = ({ route }) => {
                 date,
               },
               (res) => {
-                console.log(res.data.status);
                 if (res.data.status) {
                   // TODO: Show toast for successfull creation
-                  setGroupState(!groupState)
+                  setGroupState(!groupState);
                   navigation.goBack();
                 }
               },
-              (err) => { console.log(err) }
+              (err) => {
+                console.log(err);
+              }
             );
-
           },
         },
       ]);
     }
-  }
-  console.log(groupId)
+  };
   return (
     <View flex marginV-12>
       <View center margin-24>
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     marginVertical: 0,
   },
   icon: {
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   button: {
     backgroundColor: "blue",
@@ -124,15 +124,15 @@ const styles = StyleSheet.create({
     width: "50%",
   },
   fontTitle: { fontWeight: "bold", fontSize: 24, marginVertical: 12 },
-  body:{
+  body: {
     fontSize: 18,
     marginVertical: 8,
   },
-  bodyBold:{
+  bodyBold: {
     fontWeight: "bold",
     fontSize: 18,
     marginVertical: 8,
-  }
+  },
 });
 
 export default RegisterExpense;

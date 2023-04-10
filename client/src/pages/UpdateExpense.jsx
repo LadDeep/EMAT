@@ -6,16 +6,17 @@ import { Alert, StyleSheet } from "react-native";
 import { UpdateExpenseInfo } from "../api/api";
 import { useNavigation } from "@react-navigation/native";
 import GroupContext from "../Context/GroupContext";
-import {MONTHS} from "../constants/constants";
+import { MONTHS } from "../constants/constants";
 
 const UpdateExpense = ({ route }) => {
   const { groupId, activity, userId } = route.params;
   const [description, setDescription] = useState(activity.description);
-  const [date, setDate] = useState(new Date(parseInt(activity.created_at["$date"])));
-  const [amount, setAmount] = useState(activity.amount)
-  const { setGroupState, groupState } = useContext(GroupContext)
+  const [date, setDate] = useState(
+    new Date(parseInt(activity.created_at["$date"]))
+  );
+  const [amount, setAmount] = useState(activity.amount);
+  const { setGroupState, groupState } = useContext(GroupContext);
   const navigation = useNavigation();
-  console.log("This is Activity", activity)
 
   const handleEditExpense = () => {
     if (description !== "" && amount !== undefined) {
@@ -27,7 +28,8 @@ const UpdateExpense = ({ route }) => {
         date.getFullYear();
 
       let alertTitle = "Are you sure?";
-      let alertMessage = "You paid $" + amount + " for " + description + " on " + creationDate;
+      let alertMessage =
+        "You paid $" + amount + " for " + description + " on " + creationDate;
       Alert.alert(alertTitle, alertMessage, [
         {
           text: "Cancel",
@@ -44,32 +46,33 @@ const UpdateExpense = ({ route }) => {
                 created_at: date,
               },
               (res) => {
-                console.log(res.data);
                 if (res.data.status) {
                   // TODO: Show toast for successfull creation
-                  console.log("response of Update List Page", res)
                   let updatedActivity = {
                     ...activity,
                     description: description,
                     amount: parseFloat(amount),
                     created_at: {
-                      '$date': date.getTime(),
+                      $date: date.getTime(),
                     },
-                  }
-                  setGroupState(!groupState)
-                  console.log("OLD ACTIVITY", activity)
-                  console.log("UPDATED ACTIVITY+++++++++++++++++++++++++++", updatedActivity)
-
-                  navigation.navigate("Expense", { groupId, activity: updatedActivity, userId });
+                  };
+                  setGroupState(!groupState);
+                  navigation.navigate("Expense", {
+                    groupId,
+                    activity: updatedActivity,
+                    userId,
+                  });
                 }
               },
-              (err) => { console.log("err", err) }
+              (err) => {
+                console.log("err", err);
+              }
             );
           },
         },
       ]);
     }
-  }
+  };
   return (
     <View flex>
       <View center margin-24>
@@ -134,7 +137,7 @@ const styles = StyleSheet.create({
     marginVertical: 0,
   },
   icon: {
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   button: {
     backgroundColor: "blue",
@@ -142,15 +145,15 @@ const styles = StyleSheet.create({
     width: "50%",
   },
   fontTitle: { fontWeight: "bold", fontSize: 24, marginVertical: 12 },
-  body:{
+  body: {
     fontSize: 18,
     marginVertical: 8,
   },
-  bodyBold:{
+  bodyBold: {
     fontWeight: "bold",
     fontSize: 18,
     marginVertical: 8,
-  }
+  },
 });
 
 export default UpdateExpense;

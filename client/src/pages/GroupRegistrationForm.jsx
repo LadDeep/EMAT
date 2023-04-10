@@ -1,24 +1,26 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
-  TextInput, StyleSheet, ScrollView, TouchableOpacity, Text,ActivityIndicator
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
 } from "react-native";
-// import ReactChipsInput from 'react-native-chips';
 import {
   Avatar,
   Button,
   Picker,
   Checkbox,
   DateTimePicker,
-  View
+  View,
 } from "react-native-ui-lib";
-import { RegisterGroup, UserDetails } from "../api/api";
-import { FetchDetailedCurrencyList } from "../api/api";
+import { RegisterGroup, FetchDetailedCurrencyList } from "../api/api";
 import GroupContext from "../Context/GroupContext";
 export const GroupRegistrationForm = () => {
   const [emails, setEmails] = useState([]);
-  const [emailInput, setEmailInput] = useState('');
-  const [membersList, setMembersList] = useState();
+  const [emailInput, setEmailInput] = useState("");
   const [groupName, setGroupName] = useState("");
   const [baseCurrency, setBaseCurrency] = useState("USD");
   const [isTemporary, setIsTemporary] = useState(false);
@@ -28,11 +30,9 @@ export const GroupRegistrationForm = () => {
   const { setGroupState } = useContext(GroupContext);
   const navigation = useNavigation();
   useEffect(() => {
-
     FetchDetailedCurrencyList(
       (res) => {
-        console.log(res.data.message)
-        setCurrencyList(res.data.message)
+        setCurrencyList(res.data.message);
         setIsLoading(false);
       },
       (err) => {
@@ -42,9 +42,9 @@ export const GroupRegistrationForm = () => {
   }, []);
 
   const handleAddEmail = () => {
-    if (emailInput.trim() !== '' && validateEmail(emailInput)) {
+    if (emailInput.trim() !== "" && validateEmail(emailInput)) {
       setEmails([...emails, emailInput.trim()]);
-      setEmailInput('');
+      setEmailInput("");
     }
   };
 
@@ -59,10 +59,8 @@ export const GroupRegistrationForm = () => {
     return emailRegex.test(email);
   };
 
-
-
   const handleRegistration = () => {
-    setGroupState(true)
+    setGroupState(true);
     if (groupName.length === 0) {
       alert("Group Name cannot be empty");
     } else if (emails.length === 0) {
@@ -70,17 +68,15 @@ export const GroupRegistrationForm = () => {
     } else {
       let payload = {
         group_name: groupName,
-        group_currency: baseCurrency && baseCurrency.value ? baseCurrency.value : "USD",
-        participants: emails
-      }
-      console.log("EMAILS", emails)
-      console.log("This is the payload of group Registration", payload)
+        group_currency:
+          baseCurrency && baseCurrency.value ? baseCurrency.value : "USD",
+        participants: emails,
+      };
       RegisterGroup(
         payload,
         (response) => {
-          alert("Registration successfull")
-          console.log(response);
-          navigation.navigate("GroupsTab")
+          alert("Registration successfull");
+          navigation.navigate("GroupsTab");
         },
         (error) => {
           console.log(error);
@@ -89,14 +85,13 @@ export const GroupRegistrationForm = () => {
       );
     }
   };
-  console.log("baseCurrency", baseCurrency)
 
-  if(isLoading){
+  if (isLoading) {
     return (
       <View flex center>
-        <ActivityIndicator size="large" color="blue"/>
+        <ActivityIndicator size="large" color="blue" />
       </View>
-    )
+    );
   }
 
   return (
@@ -129,16 +124,6 @@ export const GroupRegistrationForm = () => {
             activeUnderlineColor="blue"
           />
         </View>
-        {/* ???? */}
-        {/* <ReactChipsInput
-            label="Enter Email" initialChips={membersList}
-
-            onChangeChips={(chips) => setMembersList(chips)}
-            alertRequired={true}
-            chipStyle={{ borderColor: 'blue', backgroundColor: 'grey' }}
-            inputStyle={{ fontSize: 17 }}
-            labelStyle={{ color: 'blue' }}
-            labelOnBlur={{ color: '#666' }} /> */}
         <View style={styles.container}>
           <View style={styles.chipsContainer}>
             {emails?.map((email, index) => (
@@ -214,13 +199,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginTop: 16,
     marginBottom: 16,
-    textAlign: "center"
+    textAlign: "center",
   },
 
   button: {
     backgroundColor: "blue",
     padding: 12,
-    // width: "80%",
   },
   buttonText: {
     color: "white",
@@ -232,45 +216,39 @@ const styles = StyleSheet.create({
     height: 44,
     marginBottom: 4,
   },
-  container: {
-    flex: 1,
-    padding: 10,
-    marginTop: 30,
-  },
   chipsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
     marginBottom: 10,
   },
   chip: {
-    backgroundColor: '#e1e1e1',
+    backgroundColor: "#e1e1e1",
     borderRadius: 20,
     padding: 10,
     margin: 5,
   },
   chipText: {
-    color: '#333',
+    color: "#333",
   },
   inputContainer: {
-    flexDirection: 'row',
-    justifyContent: "space-between"
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
     borderRadius: 20,
     padding: 10,
-    // marginBottom: 16,
   },
   addButton: {
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
   },
   addButtonText: {
-    color: '#fff',
+    color: "#fff",
   },
 });

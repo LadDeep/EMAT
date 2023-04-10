@@ -1,6 +1,13 @@
 import { useState, useCallback, React, useContext, useEffect } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
-import { View, Button, Colors, Modal, Text, TouchableOpacity } from "react-native-ui-lib";
+import {
+  View,
+  Button,
+  Colors,
+  Modal,
+  Text,
+  TouchableOpacity,
+} from "react-native-ui-lib";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { GroupList } from "../components/GroupList";
 import { FetchGroups } from "../api/api";
@@ -13,7 +20,6 @@ export const GroupsTab = () => {
   const { groupState } = useContext(GroupContext);
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
-  console.log("Group State in GroupTab Value", groupState)
 
   const handlePress = () => {
     setShowModal(true);
@@ -23,27 +29,25 @@ export const GroupsTab = () => {
     setShowModal(false);
   };
 
-
-  console.log("showModal", showModal)
-  useFocusEffect(useCallback(() => {
-    FetchGroups(
-      (res) => {
-        if (res.data.status) {
-          console.log("------------------------------------------", res.data.response);
-          setGroups(res.data.response);
-          setIsLoading(false);
+  useFocusEffect(
+    useCallback(() => {
+      FetchGroups(
+        (res) => {
+          if (res.data.status) {
+            setGroups(res.data.response);
+            setIsLoading(false);
+          }
+        },
+        (err) => {
+          console.log(err);
         }
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
-  }, []));
+      );
+    }, [])
+  );
   useEffect(() => {
     FetchGroups(
       (res) => {
         if (res.data.status) {
-          console.log("++++++++++++++++++++++++++++++++++++++++", res.data.response);
           setGroups(res.data.response);
           setIsLoading(false);
         }
@@ -52,7 +56,7 @@ export const GroupsTab = () => {
         console.log(err);
       }
     );
-  }, [groupState])
+  }, [groupState]);
 
   const handleGroupRegistration = () => {
     handleCloseModal();
@@ -66,7 +70,7 @@ export const GroupsTab = () => {
     setShowModal(false);
   };
 
-  if(isLoading){
+  if (isLoading) {
     return (
       <View flex center>
         <ActivityIndicator size="large" color="blue" />

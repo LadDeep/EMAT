@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   StyleSheet,
   Image,
   ActivityIndicator,
@@ -15,32 +14,30 @@ import { Button } from "react-native-ui-lib";
 const SignIn = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { handleLogin } = route.params
+  const { handleLogin } = route.params;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSignIn = () => {
     let payload = {
       email: email,
-      password: password
-    }
-    console.log("This is my payload", payload);
-    setError(null)
+      password: password,
+    };
+    setError(null);
     LoginUser(
       payload,
       async (res) => {
-        console.log("This is response of registered user", res)
         if (res.data.status) {
-          await save("ACCESS_TOKEN", res.data.access_token)
-          await save("USER_ID", res.data.user_id)
-          handleLogin()
+          await save("ACCESS_TOKEN", res.data.access_token);
+          await save("USER_ID", res.data.user_id);
+          handleLogin();
         } else {
-          setError(res.data.message)
+          setError(res.data.message);
         }
       },
       (err) => {
         console.log(err);
-        setError(err.response.data.error)
+        setError(err.response.data.error);
       }
     );
     setIsLoading(false);
@@ -48,7 +45,10 @@ const SignIn = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.img} source={require('../../assets/pict--expenses-calculation-management.png')} />
+      <Image
+        style={styles.img}
+        source={require("../../assets/pict--expenses-calculation-management.png")}
+      />
       <Text style={styles.title}>Sign In to E-Mat</Text>
       <TextInput
         style={styles.input}
@@ -68,10 +68,14 @@ const SignIn = ({ navigation, route }) => {
         value={password}
         secureTextEntry
       />
-        <Button label="Login" style={styles.button} onPress={() => {
+      <Button
+        label="Login"
+        style={styles.button}
+        onPress={() => {
           setIsLoading(true);
           handleSignIn();
-        }}/>
+        }}
+      />
       <Text onPress={() => navigation.push("PasswordRecovery")}>
         Forgot Password?
       </Text>
@@ -86,7 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: 'F7F7F2',
+    backgroundColor: "F7F7F2",
   },
   img: {
     width: 90,
@@ -112,14 +116,9 @@ const styles = StyleSheet.create({
     padding: 12,
     width: "50%",
   },
-  // buttonText: {
-  //   color: "white",
-  //   fontSize: 18,
-  //   textAlign: "center",
-  // },
   error: {
     color: "red",
-  }
+  },
 });
 
 export default SignIn;

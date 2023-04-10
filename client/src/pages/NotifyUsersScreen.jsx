@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react'
-import { DateTimePicker, Text, View, Button } from 'react-native-ui-lib';
-import { NotifyUsers, OverallGroupStandings } from '../api/api';
+import React, { useState, useEffect } from "react";
+import { DateTimePicker, Text, View, Button } from "react-native-ui-lib";
+import { NotifyUsers, OverallGroupStandings } from "../api/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { useNavigation } from '@react-navigation/native';
-import OverallOutstandingsDisplay from '../components/OverallOutstandingsDisplay';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import OverallOutstandingsDisplay from "../components/OverallOutstandingsDisplay";
+import { ActivityIndicator, StyleSheet } from "react-native";
 
-const NotifyUsersScreen = ({route}) => {
+const NotifyUsersScreen = ({ route }) => {
   const { groupId } = route.params;
   const [userStandingDetails, setUserStandingDetails] = useState();
   const [date, setDate] = useState(new Date());
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(true)
-;
-  const handleNotify = ()=>{
+  const [isLoading, setIsLoading] = useState(true);
+  const handleNotify = () => {
     // Notify users
     let userDetails = userStandingDetails.filter((user) => user.isChecked);
-    let userList = userDetails.map((user) => ({user_id:user._id, amount: Math.abs(user.amount)}));
+    let userList = userDetails.map((user) => ({
+      user_id: user._id,
+      amount: Math.abs(user.amount),
+    }));
 
     NotifyUsers(
       { group_id: groupId, notify_users: userList },
@@ -28,40 +30,38 @@ const NotifyUsersScreen = ({route}) => {
       },
       (err) => {}
     );
-  }
-  const handleChange = (id, value)=>{
+  };
+  const handleChange = (id, value) => {
     let userDetail = userStandingDetails.filter((user) => user._id === id);
     userDetail[0]["isChecked"] = value;
     const userDetails = userStandingDetails.map((user) =>
       user._id === id ? userDetail[0] : user
     );
     setUserStandingDetails(userDetails);
-  }
+  };
 
   useEffect(() => {
     OverallGroupStandings(
       groupId,
-      (res) => { if(res.data.status){
-        console.log("Overall Group standing",res.data.response)
-
-        const details = res.data.response.map((overallExpense) => {
+      (res) => {
+        if (res.data.status) {
+          const details = res.data.response.map((overallExpense) => {
             return {
               ...overallExpense,
               isChecked: true,
               isDisabled: overallExpense.total === 0,
               amount: overallExpense.total,
-            }
+            };
           });
-        console.log("details",details)
-        setUserStandingDetails(details)
-        setIsLoading(false)
-      }},
+          setUserStandingDetails(details);
+          setIsLoading(false);
+        }
+      },
       (err) => {}
     );
-  }, [])
-  
-  console.log("userStandingDetails", userStandingDetails)
-  if(isLoading){
+  }, []);
+
+  if (isLoading) {
     return (
       <View flex center>
         <ActivityIndicator size="large" color="blue" />
@@ -92,16 +92,16 @@ const NotifyUsersScreen = ({route}) => {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   input: {
     width: "70%",
     marginHorizontal: 8,
-    marginVertical:0,
+    marginVertical: 0,
   },
-  icon:{
-    paddingHorizontal: 16
+  icon: {
+    paddingHorizontal: 16,
   },
   button: {
     backgroundColor: "blue",
@@ -110,4 +110,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotifyUsersScreen
+export default NotifyUsersScreen;

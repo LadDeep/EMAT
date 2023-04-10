@@ -15,12 +15,9 @@ function PasswordReset({ route }) {
     }
 
     // Code to reset password
-    console.log("TOKEN++++++", token);
-    console.log("PASWORD", password)
     let payload = { password: password }
     UpdatePassword(token, payload,
       (res) => {
-        console.log("Response From Updated Paassword", res.data)
         navigation.navigate("SignIn")
 
       }, (err) => {

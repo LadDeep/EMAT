@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Text, TextInput, StyleSheet, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { CreateUser, FetchDetailedCurrencyList } from '../api/api'
+import { CreateUser, FetchDetailedCurrencyList } from "../api/api";
 import { View, Slider, Image, Button } from "react-native-ui-lib";
 import { useNavigation } from "@react-navigation/native";
 
@@ -14,14 +14,13 @@ const SignUp = () => {
   const [baseCurrency, setBaseCurrency] = useState("USD");
   const [monthlyBudget, setMonthlyBudget] = useState(10);
   const [alertValue, setAlertValue] = useState(0);
-  const [currencyList, setCurrencyList] = useState()
+  const [currencyList, setCurrencyList] = useState();
   const navigation = useNavigation();
 
   useEffect(() => {
     FetchDetailedCurrencyList(
       (res) => {
-        console.log(res.data.message)
-        setCurrencyList(res.data.message)
+        setCurrencyList(res.data.message);
       },
       (err) => {
         console.log(err);
@@ -38,13 +37,11 @@ const SignUp = () => {
       monthly_budget_amount: monthlyBudget,
       warning_budget_amount: alertValue,
     };
-    console.log("This is payload", payload)
     CreateUser(
       payload,
       (res) => {
-        console.log("This is response of registered user", res)
-        alert("Registered Successfully")
-        navigation.navigate("validateUser", { response: res.data.user_id })
+        alert("Registered Successfully");
+        navigation.navigate("validateUser", { response: res.data.user_id });
       },
       (err) => {
         console.log(JSON.stringify(err, null, 4));
@@ -52,16 +49,14 @@ const SignUp = () => {
     );
   };
 
-
   const handleMonthlyBudgetChange = (value) => {
     setMonthlyBudget(value);
     setAlertValue(value / 2);
-  }
+  };
 
   const handleAlertValueChange = (val) => {
-    setAlertValue(parseInt(val))
-    console.log(parseInt(val))
-  }
+    setAlertValue(parseInt(val));
+  };
 
   return (
     <ScrollView style={{ flex: 1 }}>
@@ -150,7 +145,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    // width: 200,
     width: "70%",
     height: 44,
     padding: 10,
@@ -176,7 +170,7 @@ const styles = StyleSheet.create({
     backgroundColor: "blue",
     padding: 12,
     width: "50%",
-    marginVertical: 24
+    marginVertical: 24,
   },
 });
 

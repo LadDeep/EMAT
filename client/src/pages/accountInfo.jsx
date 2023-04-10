@@ -1,41 +1,35 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
-import { Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { Text, StyleSheet, Image, ActivityIndicator } from "react-native";
 import { UserDetails } from "../api/api";
 import { Button, View } from "react-native-ui-lib";
 
-
 const accountDetails = ({ route }) => {
-  const [userDetail, setUserDetail] = useState()
+  const [userDetail, setUserDetail] = useState();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
-  const { handleLogout } = route.params
+  const { handleLogout } = route.params;
 
   const editAccountDetails = () => {
     navigation.push("AccountEdit");
   };
   useEffect(() => {
-
     UserDetails(
       (res) => {
         if (res.data.status) {
-          setUserDetail(res.data.message)
-          console.log(res.data.message)
+          setUserDetail(res.data.message);
           setIsLoading(false);
         }
       },
       (err) => {
-        console.log(err)
-      })
-
-
-
-  }, [])
+        console.log(err);
+      }
+    );
+  }, []);
   const handleUserLogout = () => {
-    console.log("LOGOUT BUTTON is triggered")
-    handleLogout()
-  }
-  if(isLoading){
+    handleLogout();
+  };
+  if (isLoading) {
     return (
       <View flex center>
         <ActivityIndicator size="large" color="blue" />
@@ -55,57 +49,12 @@ const accountDetails = ({ route }) => {
           </Text>
           <Text style={styles.value}>{userDetail?.email}</Text>
         </View>
-        {/* <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.editButtonText} onPress={editAccountDetails}>
-            Edit
-          </Text>
-        </TouchableOpacity> */}
-        <Button label="Edit" style={styles.editButton} onPress={editAccountDetails}/>
+        <Button
+          label="Edit"
+          style={styles.editButton}
+          onPress={editAccountDetails}
+        />
       </View>
-      {/* <View style={styles.details}>
-        <View style={styles.heading}>
-          <Text style={styles.headingText}>Expense Tracking</Text>
-        </View>
-
-        <View style={styles.row}>
-          <Image
-            style={styles.smallLogo}
-            source={require('../../../assets/download.jpeg')}
-          />
-          <Text style={styles.value1}>Preference</Text>
-        </View>
-        <View style={styles.row}>
-          <Image
-            style={styles.smallLogo}
-            source={require('../../../assets/download.jpeg')}
-          />
-          <Text style={styles.value1}>Expense Summary</Text>
-        </View>
-
-      </View>
-      <View style={styles.details}>
-        <View style={styles.heading}>
-          <Text style={styles.headingText}>General</Text>
-        </View>
-
-        <View style={styles.row}>
-          <Image
-            style={styles.smallLogo}
-            source={require('../../../assets/download.jpeg')}
-          />
-          <Text style={styles.value1}>Contact E-Mat</Text>
-        </View>
-        <View style={styles.row}>
-          <Image
-            style={styles.smallLogo}
-            source={require('../../../assets/download.jpeg')}
-          />
-          <Text style={styles.value1}>Rate Us</Text>
-        </View>
-      </View> */}
-      {/* <TouchableOpacity style={styles.logoutButton} onPress={handleUserLogout}>
-        <Text style={styles.logoutButtonText}  >Logout</Text>
-      </TouchableOpacity> */}
       <View center>
         <Button
           label="Logout"
@@ -120,17 +69,16 @@ const accountDetails = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     paddingTop: 40,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 30,
     padding: 6,
   },
-
 
   avatar: {
     width: 80,
@@ -144,9 +92,8 @@ const styles = StyleSheet.create({
 
   name: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     flex: 1,
-
   },
   editButton: {
     backgroundColor: "darkgray",
@@ -160,29 +107,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   userDetails: {
-    flexDirection: 'column',
-
+    flexDirection: "column",
   },
   details: {
     marginBottom: 30,
-
   },
 
   heading: {
-    marginBottom: 15
+    marginBottom: 15,
   },
   headingText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 25,
   },
   label: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     width: 80,
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 10,
-    alignItems: 'center'
+    alignItems: "center",
   },
   smallLogo: {
     width: 40,
@@ -194,18 +139,6 @@ const styles = StyleSheet.create({
   value1: {
     fontSize: 17,
   },
-  // logoutButton: {
-  //   backgroundColor: "blue",
-  //   paddingVertical: 10,
-  //   paddingHorizontal: 20,
-  //   borderRadius: 5,
-  //   alignItems: 'center',
-  // },
-  // logoutButtonText: {
-  //   color: '#fff',
-  //   fontSize: 18,
-  //   fontWeight: 'bold',
-  // },
   button: {
     backgroundColor: "blue",
     padding: 12,

@@ -1,16 +1,16 @@
-import { useNavigation } from '@react-navigation/native'
-import React from 'react'
-import { Text, Button, View } from 'react-native-ui-lib'
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { Text, Button, View } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import {MONTHS} from '../constants/constants';
-import { StyleSheet } from 'react-native';
+import { MONTHS } from "../constants/constants";
+import { StyleSheet } from "react-native";
 
 const ExpenseDisplay = ({ route }) => {
   const navigation = useNavigation();
   const { groupId, userId, activity } = route.params;
   const handleEdit = () => {
-    navigation.push("Edit Expense", { groupId, userId, activity })
-  }
+    navigation.push("Edit Expense", { groupId, userId, activity });
+  };
   const date = new Date(parseInt(activity?.created_at["$date"]));
   return (
     <View flex>
@@ -46,26 +46,26 @@ const ExpenseDisplay = ({ route }) => {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   icon: {
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   button: {
     backgroundColor: "blue",
     padding: 12,
     width: "50%",
   },
-  body:{
+  body: {
     fontSize: 18,
     marginVertical: 8,
   },
-  bodyBold:{
+  bodyBold: {
     fontWeight: "bold",
     fontSize: 18,
     marginVertical: 8,
-  }
+  },
 });
 
-export default ExpenseDisplay
+export default ExpenseDisplay;

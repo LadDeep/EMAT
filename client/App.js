@@ -12,18 +12,15 @@ export default function App() {
   const [token, setToken] = useState(null);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(token !== null);
   const handleLogin = async () => {
-    let token = await getValueFor("ACCESS_TOKEN")
-    console.log("token", token, Date.now())
+    let token = await getValueFor("ACCESS_TOKEN");
     setToken(token);
     instance.defaults.headers.common["Authorization"] = "Bearer " + token;
     setIsUserLoggedIn(true);
   };
   const handleLogout = async () => {
-    await deleteKey("ACCESS_TOKEN")
-    await deleteKey("USER_ID")
-    let token = await getValueFor("ACCESS_TOKEN")
-
-    console.log(" getValueFor", token)
+    await deleteKey("ACCESS_TOKEN");
+    await deleteKey("USER_ID");
+    let token = await getValueFor("ACCESS_TOKEN");
     setToken(null);
     instance.defaults.headers.common["Authorization"] = null;
     setIsUserLoggedIn(false);
@@ -39,7 +36,11 @@ export default function App() {
               initialParams={{ handleLogin }}
             />
           ) : (
-            <RootStack.Screen name="Root" initialParams={{ handleLogout }} component={TabNavigation} />
+            <RootStack.Screen
+              name="Root"
+              initialParams={{ handleLogout }}
+              component={TabNavigation}
+            />
           )}
         </RootStack.Navigator>
       </GroupProvider>
