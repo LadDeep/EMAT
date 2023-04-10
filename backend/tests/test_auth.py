@@ -39,7 +39,7 @@ from modules.models.User import User
 def test_register(test_client, user):
     # Test registration of a new user
     data = {
-        "email": "new_user2@example.com",
+        "email": "new_user3@example.com",
         "password": "TestPassword123",
         "first_name": "New",
         "last_name": "User",
@@ -104,7 +104,7 @@ def test_logout(test_client, user):
 
 def test_register_user(test_client):
     user_data = {
-        "email": "test2@example.com",
+        "email": "test3@example.com",
         "password": "password123",
         "first_name": "Eren",
         "last_name": "Yeager",
