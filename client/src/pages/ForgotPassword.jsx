@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet } from 'react-native';
-import { ForgotPassword } from '../../api/api';
+import { ForgotPassword } from '../api/api';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from 'react-native-ui-lib';
 

@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
-import { UserDetails } from "../../api/api";
+import { UserDetails } from "../api/api";
 import { Button, View } from "react-native-ui-lib";
 
 
@@ -47,7 +47,7 @@ const accountDetails = ({ route }) => {
       <View style={styles.header}>
         <Image
           style={styles.avatar}
-          source={require("../../../assets/group/1.png")}
+          source={require("../../assets/group/1.png")}
         />
         <View style={styles.userDetails}>
           <Text style={styles.name}>

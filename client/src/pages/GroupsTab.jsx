@@ -2,10 +2,10 @@ import { useState, useCallback, React, useContext, useEffect } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import { View, Button, Colors, Modal, Text, TouchableOpacity } from "react-native-ui-lib";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { GroupList } from "../GroupList";
-import { FetchGroups } from "../../api/api";
+import { GroupList } from "../components/GroupList";
+import { FetchGroups } from "../api/api";
 import { FAB } from "@rneui/base";
-import GroupContext from "../../Context/GroupContext";
+import GroupContext from "../Context/GroupContext";
 
 export const GroupsTab = () => {
   const [groups, setGroups] = useState(null);

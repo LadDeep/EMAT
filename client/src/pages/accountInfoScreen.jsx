@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, Image, TextInput, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { View, Button, Slider } from "react-native-ui-lib";
-import { UpdateUser, UserDetails } from '../../api/api';
+import { UpdateUser, UserDetails } from '../api/api';
 
 const AccountInfoScreen = () => {
   const [firstName, setFirstName] = useState('');
@@ -65,7 +65,7 @@ const AccountInfoScreen = () => {
 
     <View margin-24 style={styles.container}>
       <Image
-        source={require('../../../assets/group/1.png')}
+        source={require('../../assets/group/1.png')}
         style={styles.profileImage}
       />
       <Text style={styles.title}>Account Information</Text>

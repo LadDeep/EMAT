@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Text, TextInput, StyleSheet, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { CreateUser, FetchDetailedCurrencyList } from '../../api/api'
+import { CreateUser, FetchDetailedCurrencyList } from '../api/api'
 import { View, Slider, Image, Button } from "react-native-ui-lib";
 import { useNavigation } from "@react-navigation/native";
 
@@ -68,7 +68,7 @@ const SignUp = () => {
       <View flex center marginV-24>
         <Image
           style={styles.img}
-          source={require("../../../assets/pict--expenses-calculation-management.png")}
+          source={require("../../assets/pict--expenses-calculation-management.png")}
         />
         <Text style={styles.title}>Register to EMAT</Text>
         <TextInput

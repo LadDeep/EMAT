@@ -1,10 +1,10 @@
-import EnterToken from "../components/pages/EnterToken";
-import PasswordRecovery from "../components/pages/ForgotPassword";
-import LaunchPage from "../components/pages/LaunchPage";
-import SignIn from "../components/pages/SignIn";
-import SignUp from "../components/pages/SignUp";
-import PasswordReset from "../components/pages/RecoverPassword";
-import valdateUser from "../components/pages/validateUser";
+import EnterToken from "../pages/EnterToken";
+import PasswordRecovery from "../pages/ForgotPassword";
+import LaunchPage from "../pages/LaunchPage";
+import SignIn from "../pages/SignIn";
+import SignUp from "../pages/SignUp";
+import PasswordReset from "../pages/RecoverPassword";
+import valdateUser from "../pages/validateUser";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const AuthStack = createNativeStackNavigator();

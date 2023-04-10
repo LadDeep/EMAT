@@ -5,7 +5,7 @@ import {View, Button } from 'react-native-ui-lib';
 function LaunchPage({ navigation }) {
   return (
     <View flex center>
-        <Image source={require('../../../assets/pict--expenses-calculation-management.png')} style={styles.logo} />
+        <Image source={require('../../assets/pict--expenses-calculation-management.png')} style={styles.logo} />
       <Text style={styles.title}>Welcome to E-MAT</Text>
         <Button
           label="Login"

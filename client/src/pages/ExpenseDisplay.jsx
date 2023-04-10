@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { Text, Button, View } from 'react-native-ui-lib'
 import Icon from "react-native-vector-icons/MaterialIcons";
-import {MONTHS} from '../../constants/constants';
+import {MONTHS} from '../constants/constants';
 import { StyleSheet } from 'react-native';
 
 const ExpenseDisplay = ({ route }) => {

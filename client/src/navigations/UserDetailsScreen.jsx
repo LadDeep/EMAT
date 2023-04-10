@@ -1,5 +1,5 @@
-import accountDetails from "../components/pages/accountInfo";
-import AccountInfoScreen from "../components/pages/accountInfoScreen";
+import accountDetails from "../pages/accountInfo";
+import AccountInfoScreen from "../pages/accountInfoScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const UserDetailsStack = createNativeStackNavigator();

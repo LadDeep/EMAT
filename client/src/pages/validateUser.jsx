@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
-import { ValidateUserRegistration } from '../../api/api';
+import { ValidateUserRegistration } from '../api/api';
 import { Button } from 'react-native-ui-lib';
 function valdateUser({ route }) {
     const [token, setToken] = useState('');

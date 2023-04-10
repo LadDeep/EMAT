@@ -1,5 +1,5 @@
-import Activities from "../../ActivitiesTab";
-import ChartDisplay from "../components/pages/ChartDisplay";
+import Activities from "../pages/ActivitiesTab";
+import ChartDisplay from "../pages/ChartDisplay";
 import GroupScreen from "./GroupScreen";
 import UserDetailsScreen from "./UserDetailsScreen";
 import Icon from "react-native-vector-icons/MaterialIcons";

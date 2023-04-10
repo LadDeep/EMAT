@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LoginUser } from "../../api/api";
+import { LoginUser } from "../api/api";
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import { save } from "../../secureStore";
+import { save } from "../secureStore";
 import { Button } from "react-native-ui-lib";
 
 const SignIn = ({ navigation, route }) => {
@@ -48,7 +48,7 @@ const SignIn = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.img} source={require('../../../assets/pict--expenses-calculation-management.png')} />
+      <Image style={styles.img} source={require('../../assets/pict--expenses-calculation-management.png')} />
       <Text style={styles.title}>Sign In to E-Mat</Text>
       <TextInput
         style={styles.input}

@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Image } from 'react-native';
-import { UpdatePassword } from '../../api/api';
+import { UpdatePassword } from '../api/api';
 
 function PasswordReset({ route }) {
   const [password, setPassword] = useState('');
@@ -32,7 +32,7 @@ function PasswordReset({ route }) {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={require('../../../assets/pict--expenses-calculation-management.png')} style={styles.logo} />
+        <Image source={require('../../assets/pict--expenses-calculation-management.png')} style={styles.logo} />
       </View>
       <Text style={styles.title}>Password Reset</Text>
       <TextInput

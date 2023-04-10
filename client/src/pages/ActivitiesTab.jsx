@@ -1,7 +1,9 @@
 import {React,useEffect,useState} from 'react';
-import { StyleSheet, ScrollView, Text, View,Image } from 'react-native';
-import {FetchActivitiesList, FetchOtherUserProfile} from './src/api/api';
-import { getValueFor } from './src/secureStore';
+import { StyleSheet, ScrollView, Text, Image, ActivityIndicator } from 'react-native';
+import { View } from 'react-native-ui-lib';
+import {FetchActivitiesList, FetchOtherUserProfile} from '../api/api';
+import { getValueFor } from '../secureStore';
+
 // const activities = [
 //   { id: 1, title: 'Dinner with friends', date: '3/10/23', amount: -40 },
 //   { id: 2, title: 'Uber ride', date: '3/11/23', amount: 15 },
@@ -23,6 +25,7 @@ import { getValueFor } from './src/secureStore';
 const Activities = () => {
   const [activities, setActivities] = useState([]);
   const [ownUserID,setOwnUserID] = useState(undefined);
+  const [isLoading, setIsLoading] = useState(true);
   
   async function fetchUserIdFromSecureStore(){
     let ownUser = await getValueFor("USER_ID");
@@ -74,6 +77,7 @@ const Activities = () => {
                   setActivities(allResponseData);
                   
                 }
+                setIsLoading(false);
               }
             },(userError)=>{
               console.log(userError);
@@ -123,7 +127,13 @@ const Activities = () => {
     });
   };
 
-  
+  if(isLoading){
+    return (
+      <View flex center>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
