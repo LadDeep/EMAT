@@ -23,14 +23,9 @@ coverage-job:
     - echo "Generating test coverage report..."
     - pip install coverage
     - cd builds/courses/2023-winter/csci-5308/group04/backend/
-    - pytest --cov=src tests/
-    - coverage xml --include="src/**" -o reports/coverage.xml
-  artifacts:
-    paths:
-      - reports/coverage.xml
-    reports:
-      cobertura:
-        - reports/coverage.xml
+    - python -m pytest -vvv  src --cov=src tests/
+    - coverage xml -o coverage.xml
+  
 
 
 # Define the deploy job
