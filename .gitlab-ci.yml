@@ -21,13 +21,17 @@ coverage-job:
   stage: test
   script:
     - echo "Generating test coverage report..."
-    - cd backend/
-    - pip install coverage 
-    - coverage xml
-    - coverage report
+    - pip install coverage
+    - cd builds/courses/2023-winter/csci-5308/group04/backend/
+    - pytest --cov=src tests/
+    - coverage xml --include="src/**" -o reports/coverage.xml
   artifacts:
     paths:
-      - backend/htmlcov/
+      - reports/coverage.xml
+    reports:
+      cobertura:
+        - reports/coverage.xml
+
 
 # Define the deploy job
 deploy-job:
