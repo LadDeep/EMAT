@@ -1,4 +1,4 @@
-import instance from '../axios'
+import instance from './axios'
 
 const CreateUser = async (data, onSuccess, onError) => {
   try {
