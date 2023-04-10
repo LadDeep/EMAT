@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 
 from modules.models.User import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -10,12 +10,18 @@ profile = Blueprint('profile', __name__)
 # get user profile
 @profile.route("/user", methods=["GET"])
 @jwt_required()
-def getProfile():
+def get_profile():
+    """
+    Gets the user Profile (user object) from mongoDB
+    
+    Returns:
+        A python dictionary containing status & a message key-value pair on a successful response
+    """
 
     try:
 
-        userId = get_jwt_identity()
-        user = User.objects.get_or_404(user_id = userId)
+        user_id = get_jwt_identity()
+        user = User.objects.get_or_404(user_id = user_id)
         if not user:
             return jsonify({"status": False, "error": "the user does not exist"}), 404
     
@@ -30,17 +36,25 @@ def getProfile():
 @profile.route("/update", methods=["PUT"])
 @jwt_required()
 def update_user():
+    """
+    Updates the user profile (user object) and stores the updated values to mongoDB
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
     result = {"status": False}
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
         if user_id_verified:
             try:
                 user = User.objects.get_or_404(user_id = user_id_verified)
+                # following fields are updatable
                 updatable_fields = ['first_name','last_name','currency','monthly_budget_amount','warning_budget_amount']
                 json_data = request.json
                 json_list_keys = list(json_data.keys())
 
+                # filters all keys that are present in updatable_fields and in the request body
                 keys_to_update = [x for x in json_list_keys if x in updatable_fields]
 
                 for key in keys_to_update:
@@ -65,8 +79,13 @@ def update_user():
 # delete user
 @profile.route("/delete_user")
 @jwt_required()
-def deleteUser():
-
+def delete_user():
+    """
+    Deletes the user profile (user object) from mongoDB
+    
+    Returns:
+        A python dictionary containing status & a message key-value pair on a successful response
+    """
     try:
         user = User.objects(user_id=get_jwt_identity())
 
@@ -84,22 +103,33 @@ def deleteUser():
 
 
 @profile.route("/email", methods=["GET"])
-def getUserEmail():
-
+def get_user_email():
+    """
+    Sends the User Email back to the app given user_id
+    
+    Returns:
+        A python dictionary containing status & a message key-value pair on a successful response
+    """
     try:
         data = request.get_json()
-        userId = data["user_id"]
-        user = User.objects(user_id=userId)
+        user_id = data["user_id"]
+        user = User.objects(user_id=user_id)
 
         return jsonify({"status": True, "message": user.email}), 200
     except Exception as e:
         return jsonify({"status": False, "error": str(e)}), 500
 
 @profile.route("/other_user_details", methods=["POST"])
-def getOtherUserDetails():
+def get_other_user_details():
+    """
+    Sends the details of all users whose ids are mentioned in the user_id (key) of type list in the request body
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     result = {"status":False}
     content_type = request.headers.get('Content-Type')
-    if content_type == 'application/json':
+    if content_type == current_app.config["JSON-CONTENT-TYPE"]:
         json_body = request.json
         user_ids = json_body.get('user_id',None)
     if user_ids is not None:

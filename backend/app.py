@@ -1,5 +1,4 @@
 from flask import Flask
-from modules.api.users.usersAPI import users
 from database.database import db
 from modules.api.auth.routes import auth
 from modules.api.groups.groupsAPI import group
@@ -22,20 +21,15 @@ def create_app():
     app.secret_key = "secret-key"
     db.init_app(app)
 
-    # need to change this key and export in the env
-    app.config["JWT_SECRET_KEY"] = "secret-key"
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
-    app.config["SMTP_SERVER"] = "smtp.gmail.com"
-    app.config["SMTP_USERNAME"] = "username@google.com"
-    app.config["SMTP_PASSWORD"] = "temppassword"
+    app.config["JWT_SECRET_KEY"] = "secret-key"  # need to change this key and export in the env
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False # ensures that the token expiry length is unlimited
+    
+    app.config["JSON-CONTENT-TYPE"] = "application/json"
     app.config["SMTP_PORT"] = 587
-    app.config["SMTP_TLS"] = True
 
-    jwt = JWTManager(app)
-    mail = Mail(app)
-    app.mail = mail
+    JWTManager(app)
+   
 
-    app.register_blueprint(users, url_prefix='/users')
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(profile, url_prefix='/profile')
     app.register_blueprint(currency, url_prefix='/currency')
@@ -45,8 +39,6 @@ def create_app():
     app.register_blueprint(settleUp, url_prefix='/settleUp')
 
     return app
-# def ping():
-#     return {"status": True, "response": 'pong'}
 
 
 if __name__ == '__main__':
