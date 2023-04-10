@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from 'react'
 import { DateTimePicker, Text, View} from 'react-native-ui-lib';
-import { NotifyUsers, OverallGroupStandings } from '../api/api';
+import { OverallGroupStandings, SettleUpExpenses } from '../../api/api';
 import { Button } from 'react-native-ui-lib';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
-import OverallOutstandingsDisplay from './OverallOutstandingsDisplay';
+import OverallOutstandingsDisplay from '../OverallOutstandingsDisplay';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 
-const NotifyUsersScreen = ({route}) => {
+const SettleUpScreen = ({route}) => {
   const { groupId } = route.params;
   const [userStandingDetails, setUserStandingDetails] = useState();
   const [date, setDate] = useState(new Date());
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true)
 ;
-  const handleNotify = ()=>{
-    // Notify users
-    let userDetails = userStandingDetails.filter((user) => user.isChecked);
-    let userList = userDetails.map((user) => ({user_id:user._id, amount: Math.abs(user.amount)}));
-
-    NotifyUsers(
-      { group_id: groupId, notify_users: userList },
+  const handleSettleUp = ()=>{
+    let transactions = userStandingDetails.map((userDetails)=>({group_id: groupId, user_id:userDetails._id, amount:userDetails.amount, last_settled_at:date }))
+    console.log("transactions",transactions)
+    //Call SettleUp API
+    SettleUpExpenses(
+      { transactions },
       (res) => {
         console.log(res);
         if (res.data.status) {
           navigation.goBack();
+        } else {
+          // TODO: Toast for some server error
         }
       },
       (err) => {}
-    );
+
+      );
   }
   const handleChange = (id, value)=>{
     let userDetail = userStandingDetails.filter((user) => user._id === id);
@@ -39,12 +41,11 @@ const NotifyUsersScreen = ({route}) => {
     setUserStandingDetails(userDetails);
   }
 
+  console.log("userStandingDetails: ",userStandingDetails)
   useEffect(() => {
     OverallGroupStandings(
       groupId,
       (res) => { if(res.data.status){
-        console.log("Overall Group standing",res.data.response)
-
         const details = res.data.response.map((overallExpense) => {
             return {
               ...overallExpense,
@@ -63,16 +64,16 @@ const NotifyUsersScreen = ({route}) => {
   
   console.log("userStandingDetails", userStandingDetails)
   if(isLoading){
-    return (
-      <View flex center>
-        <ActivityIndicator size="large" color="blue" />
-      </View>
-    );
+   return (
+     <View flex center>
+       <ActivityIndicator size="large" color="blue"/>
+     </View>
+   );
   }
   return (
     <View flex marginH-48>
       <Text style={{ fonWeight: "bold", fontSize: 24 }}>
-        Select members to notify
+        Select members to record transcation
       </Text>
       <OverallOutstandingsDisplay
         userStandingDetails={userStandingDetails}
@@ -89,7 +90,11 @@ const NotifyUsersScreen = ({route}) => {
         />
       </View>
       <View center>
-        <Button label="Notify" style={styles.button} onPress={handleNotify} />
+        <Button
+          label="Settle"
+          style={styles.button}
+          onPress={handleSettleUp}
+        />
       </View>
     </View>
   );
@@ -111,4 +116,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotifyUsersScreen
+export default SettleUpScreen

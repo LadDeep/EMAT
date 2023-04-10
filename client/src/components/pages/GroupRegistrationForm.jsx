@@ -12,9 +12,9 @@ import {
   DateTimePicker,
   View
 } from "react-native-ui-lib";
-import { RegisterGroup, UserDetails } from "../api/api";
-import { FetchDetailedCurrencyList } from "../api/api";
-import GroupContext from "../Context/GroupContext";
+import { RegisterGroup, UserDetails } from "../../api/api";
+import { FetchDetailedCurrencyList } from "../../api/api";
+import GroupContext from "../../Context/GroupContext";
 export const GroupRegistrationForm = () => {
   const [emails, setEmails] = useState([]);
   const [emailInput, setEmailInput] = useState('');

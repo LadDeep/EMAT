@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert,StyleSheet } from 'react-native';
-import {JoinGroupApi} from '../api/api';
+import {JoinGroupApi} from '../../api/api';
 import { useNavigation } from "@react-navigation/native";
 function JoinGroup() {
   const [code, setCode] = useState('');

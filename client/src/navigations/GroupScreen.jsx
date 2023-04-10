@@ -1,13 +1,13 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ExpenseDisplay from "../components/ExpenseDisplay";
+import ExpenseDisplay from "../components/pages/ExpenseDisplay";
 import { GroupDetailsComponent } from "../components/GroupDetailsComponent";
-import { GroupRegistrationForm } from "../components/GroupRegistrationForm";
-import JoinGroup from "../components/JoinGroup";
-import NotifyUsersScreen from "../components/NotifyUsersScreen";
+import { GroupRegistrationForm } from "../components/pages/GroupRegistrationForm";
+import JoinGroup from "../components/pages/JoinGroup";
+import NotifyUsersScreen from "../components/pages/NotifyUsersScreen";
 import { GroupsTab } from "../components/pages/GroupsTab";
-import RegisterExpense from "../components/RegisterExpense";
-import SettleUpScreen from "../components/SettleUpScreen";
-import UpdateExpense from "../components/UpdateExpense";
+import RegisterExpense from "../components/pages/RegisterExpense";
+import SettleUpScreen from "../components/pages/SettleUpScreen";
+import UpdateExpense from "../components/pages/UpdateExpense";
 
 const GroupStack = createNativeStackNavigator();
 const GroupScreen = () => {

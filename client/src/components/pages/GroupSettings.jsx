@@ -2,7 +2,7 @@ import React from "react";
 import { View, Avatar, Text, TouchableOpacity } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { StyleSheet } from "react-native";
-import MemberList from "./MemberList";
+import MemberList from "../MemberList";
 import { useNavigation } from "@react-navigation/native";
 
 const GroupSettings = ({route}) => {
