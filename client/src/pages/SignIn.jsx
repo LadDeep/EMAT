@@ -9,7 +9,7 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import { save } from "../secureStore";
+import { save } from "../utils/secureStore";
 import { Button } from "react-native-ui-lib";
 
 const SignIn = ({ navigation, route }) => {

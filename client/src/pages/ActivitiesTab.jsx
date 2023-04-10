@@ -2,7 +2,7 @@ import {React,useEffect,useState} from 'react';
 import { StyleSheet, ScrollView, Text, Image, ActivityIndicator } from 'react-native';
 import { View } from 'react-native-ui-lib';
 import {FetchActivitiesList, FetchOtherUserProfile} from '../api/api';
-import { getValueFor } from '../secureStore';
+import { getValueFor } from '../utils/secureStore';
 
 // const activities = [
 //   { id: 1, title: 'Dinner with friends', date: '3/10/23', amount: -40 },

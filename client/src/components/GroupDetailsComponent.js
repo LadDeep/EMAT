@@ -5,7 +5,7 @@ import { ActivityIndicator, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { FAB } from "@rneui/themed";
-import { getValueFor } from "../secureStore";
+import { getValueFor } from "../utils/secureStore";
 import { GroupStatsApi, UpdatedExpenseList } from '../api/api'
 import GroupContext from "../Context/GroupContext";
 

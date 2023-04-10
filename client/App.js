@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useState } from "react";
 import instance from "./src/api/axios";
-import { deleteKey, getValueFor } from "./src/secureStore";
+import { deleteKey, getValueFor } from "./src/utils/secureStore";
 import GroupProvider from "./src/Context/GroupProvider";
 import AuthenticationScreen from "./src/navigations/AuthenticationScreen";
 import TabNavigation from "./src/navigations/TabNavigation";
