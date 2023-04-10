@@ -16,20 +16,6 @@ before_script:
   - pip install -r requirements.txt
   - cd ..
 
-# Define the build job
-build-job:
-  stage: build
-  script:
-    - echo "Building the app..."
-    - cd backend/
-    - mkdir build/
-    - cp app.py build/
-    - cd build/
-    - echo "Build complete."
-  artifacts:
-    paths:
-      - build/
-
 # Define the unit test job
 unit-test-job:
   stage: test
@@ -42,13 +28,6 @@ unit-test-job:
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
 
 # Define the lint job
-lint-job:
-  stage: test
-  script:
-    - pip install pylint
-    - echo "Linting code..."
-    - pylint --exit-zero --fail-under=8.0 /builds/courses/2023-winter/csci-5308/group04/backend/*.py
-  allow_failure: true
 
 # Define the coverage report job
 coverage-job:
@@ -58,6 +37,8 @@ coverage-job:
     - cd backend/
     - pip install coverage 
     - coverage html
+    - coverage xml
+    - coverage report
   artifacts:
     paths:
       - backend/htmlcov/
