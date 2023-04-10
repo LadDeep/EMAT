@@ -58,11 +58,9 @@ export const GroupDetailsComponent = ({ route }) => {
           setMostSpender(mostSpender);
           setLeastSpender(leastSpender);
         }
-      },
-      (error) => {
+      }, error => {
         console.log(error);
-      }
-    );
+      })
 
     UpdatedExpenseList(
       selectedGroup.group_id,

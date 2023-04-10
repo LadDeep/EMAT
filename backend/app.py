@@ -8,8 +8,8 @@ from modules.api.activities.activitiesAPI import activities_bp
 from modules.api.profile.profile import profile
 from modules.api.currency.currency import currency
 from modules.api.settleUp.settleUpApi import settleUp
-from flask_jwt_extended import JWTManager
 from flask_mail import Mail
+from flask_jwt_extended import JWTManager
 
 
 def create_app():
@@ -22,7 +22,8 @@ def create_app():
     app.secret_key = "secret-key"
     db.init_app(app)
 
-    app.config["JWT_SECRET_KEY"] = "secret-key"  # need to change this key and export in the env
+    # need to change this key and export in the env
+    app.config["JWT_SECRET_KEY"] = "secret-key"
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
     app.config["SMTP_SERVER"] = "smtp.gmail.com"
     app.config["SMTP_USERNAME"] = "username@google.com"
@@ -34,22 +35,22 @@ def create_app():
     mail = Mail(app)
     app.mail = mail
 
-    app.register_blueprint(users,url_prefix='/users')
+    app.register_blueprint(users, url_prefix='/users')
     app.register_blueprint(auth, url_prefix='/auth')
-    app.register_blueprint(profile,url_prefix='/profile')
+    app.register_blueprint(profile, url_prefix='/profile')
     app.register_blueprint(currency, url_prefix='/currency')
-    app.register_blueprint(group,url_prefix='/group')
-    app.register_blueprint(expense,url_prefix='/expense')
-    app.register_blueprint(activities_bp,url_prefix='/activities')
-    app.register_blueprint(settleUp,url_prefix='/settleUp')
+    app.register_blueprint(group, url_prefix='/group')
+    app.register_blueprint(expense, url_prefix='/expense')
+    app.register_blueprint(activities_bp, url_prefix='/activities')
+    app.register_blueprint(settleUp, url_prefix='/settleUp')
 
     return app
 # def ping():
 #     return {"status": True, "response": 'pong'}
+
 
 if __name__ == '__main__':
     app = create_app()
     app.run(port=5004)
 else:
     app = create_app()
-    

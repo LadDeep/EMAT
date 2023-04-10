@@ -56,7 +56,7 @@ coverage-job:
   script:
     - echo "Generating test coverage report..."
     - cd backend/
-    - pip install coverage
+    - pip install coverage 
     - coverage html
   artifacts:
     paths:
