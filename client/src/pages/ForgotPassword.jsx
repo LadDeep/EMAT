@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Alert, StyleSheet } from 'react-native';
 import { ForgotPassword } from '../api/api';
 import { useNavigation } from '@react-navigation/native';
+import { Button } from 'react-native-ui-lib';
 
 function PasswordRecovery() {
   const [email, setEmail] = useState('');
@@ -20,10 +21,8 @@ function PasswordRecovery() {
     // Code to send password recovery email
     Alert.alert("", 'Email sent Successfully');
     let payload = { email: email }
-    console.log("PAYLOAD", payload)
     ForgotPassword(payload,
       (res) => {
-        console.log("Response of Forgot Password", res.data.reset_token)
         navigation.navigate("EnterToken", { token: res.data.reset_token })
       }
       ,
@@ -41,7 +40,8 @@ function PasswordRecovery() {
         keyboardType="email-address"
       />
       <Button
-        title="Submit"
+        label="Submit"
+        style={styles.button}
         onPress={handleValidation}
       />
     </View>
@@ -53,6 +53,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 12,
+    width: "50%",
   },
 });
 

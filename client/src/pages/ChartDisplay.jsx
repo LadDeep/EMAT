@@ -1,14 +1,14 @@
-import React from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
-import { BarChart, ProgressChart } from 'react-native-chart-kit';
-import { Text, Card } from 'react-native-ui-lib';
+import React from "react";
+import { Dimensions, StyleSheet, View } from "react-native";
+import { BarChart, ProgressChart } from "react-native-chart-kit";
+import { Text, Card } from "react-native-ui-lib";
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = Dimensions.get("window").width;
 
 const chartConfig = {
-  backgroundGradientFrom: '#1E1E1E',
+  backgroundGradientFrom: "#1E1E1E",
   backgroundGradientFromOpacity: 1,
-  backgroundGradientTo: '#1E1E1E',
+  backgroundGradientTo: "#1E1E1E",
   backgroundGradientToOpacity: 1,
   color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
   strokeWidth: 2,
@@ -16,12 +16,25 @@ const chartConfig = {
   useShadowColorFromDataset: false,
 };
 
-const primaryColor = '#E44343';
-const secondaryColor = '#27AE60';
+const primaryColor = "#E44343";
+const secondaryColor = "#27AE60";
 
 const ChartDisplay = () => {
   const data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
     datasets: [
       {
         data: [50, 45, 28, 80, 99, 43, 89, 55, 67, 87, 23, 34],
@@ -30,7 +43,7 @@ const ChartDisplay = () => {
   };
   const data1 = {
     labels: ["Monthly Spending", "Monthly Budget", "Monthly Lending"],
-    data: [0.4, 0.6, 0.8]
+    data: [0.4, 0.6, 0.8],
   };
 
   return (
@@ -46,7 +59,6 @@ const ChartDisplay = () => {
         </Card>
       </View>
       <View style={styles.pieChartContainer}>
-
         <ProgressChart
           data={data1}
           width={screenWidth}
@@ -77,34 +89,33 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 45,
     flex: 1,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: "#1E1E1E",
   },
   cardContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingTop: 20,
   },
   card: {
-    width: '47%',
+    width: "47%",
     height: 80,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   pieChartContainer: {
     marginTop: 20,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     paddingRight: 15,
-
   },
   chartContainer: {
     marginTop: 20,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     paddingRight: 15,
   },
 });

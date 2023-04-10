@@ -1,6 +1,6 @@
 import React from "react";
 import { ListItem, Text, View } from "react-native-ui-lib";
-import Date from "./Date";
+import ExpenseDate from "./Date";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -13,7 +13,7 @@ const GroupActivitiesItem = ({groupId, userId, activity }) => {
     <ListItem style={styles.listItem} onPress={handleExpenseDescription}>
       <View flex row spread centerV>
         <View row centerV>
-          <Date createdOn={activity?.created_at["$date"]} />
+          <ExpenseDate createdOn={activity?.created_at["$date"]} />
           <View paddingL-18 paddingV-0>
             <Text style={styles.expenseDescription}>
               {activity.description}

@@ -15,12 +15,9 @@ function PasswordReset({ route }) {
     }
 
     // Code to reset password
-    console.log("TOKEN++++++", token);
-    console.log("PASWORD", password)
     let payload = { password: password }
     UpdatePassword(token, payload,
       (res) => {
-        console.log("Response From Updated Paassword", res.data)
         navigation.navigate("SignIn")
 
       }, (err) => {
@@ -32,7 +29,7 @@ function PasswordReset({ route }) {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={require('../../assets/download.jpeg')} style={styles.logo} />
+        <Image source={require('../../assets/pict--expenses-calculation-management.png')} style={styles.logo} />
       </View>
       <Text style={styles.title}>Password Reset</Text>
       <TextInput
@@ -83,6 +80,7 @@ const styles = StyleSheet.create({
     width: '80%',
     margin: 10,
     paddingHorizontal: 10,
+    borderRadius: 16,
   },
 });
 

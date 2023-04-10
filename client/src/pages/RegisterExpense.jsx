@@ -3,22 +3,20 @@ import { Button, TextField, View, Text, Toast } from "react-native-ui-lib";
 import { DateTimePicker } from "react-native-ui-lib/src/components/dateTimePicker";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Alert, StyleSheet } from "react-native";
-import { UpdateExpenseInfo } from "../api/api";
+import { CreateExpense } from "../api/api";
 import { useNavigation } from "@react-navigation/native";
-import MONTHS from "../constants/constants";
+import { MONTHS } from "../constants/constants";
 import GroupContext from "../Context/GroupContext";
 
-const UpdateExpense = ({ route }) => {
-  const { groupId, activity, userId } = route.params;
-  const [description, setDescription] = useState(activity.description);
-  const [date, setDate] = useState(new Date(parseInt(activity.created_at["$date"])));
-  const [amount, setAmount] = useState(activity.amount)
+const RegisterExpense = ({ route }) => {
+  const [description, setDescription] = useState();
+  const [date, setDate] = useState(new Date());
+  const [amount, setAmount] = useState();
+  const { groupId } = route.params;
+  const { setGroupState, groupState } = useContext(GroupContext);
   const navigation = useNavigation();
-  console.log("This is Activity", activity)
-  const { setGroupState, groupState } = useContext(GroupContext)
 
-
-  const handleEditExpense = () => {
+  const handleExpense = () => {
     if (description !== "" && amount !== undefined) {
       let creationDate =
         date.getDate() +
@@ -28,52 +26,42 @@ const UpdateExpense = ({ route }) => {
         date.getFullYear();
 
       let alertTitle = "Are you sure?";
-      let alertMessage = "You paid $" + amount + " for " + description + " on " + creationDate;
+      let alertMessage =
+        "You paid $" + amount + " for " + description + " on " + creationDate;
       Alert.alert(alertTitle, alertMessage, [
         {
           text: "Cancel",
         },
         {
-          text: "Save",
+          text: "Add",
           onPress: () => {
-            UpdateExpenseInfo(
+            CreateExpense(
               {
-                expense_id: activity.expense_id,
-                group_id: groupId,
                 description: description,
                 amount: parseFloat(amount),
-                created_at: date,
+                group_id: groupId,
+                date,
               },
               (res) => {
-                console.log(res.data.status);
                 if (res.data.status) {
                   // TODO: Show toast for successfull creation
-                  console.log("response of Update List Page", res)
-                  let updatedActivity = {
-                    ...activity,
-                    description: description,
-                    amount: parseFloat(amount),
-                    created_at: {
-                      '$date': date.getTime(),
-                    },
-                  }
-                  setGroupState(!groupState)
-                  console.log("OLD ACTIVITY", activity)
-                  console.log("UPDATED ACTIVITY+++++++++++++++++++++++++++", updatedActivity)
-
-                  navigation.navigate("Expense", { groupId, activity: updatedActivity, userId });
+                  setGroupState(!groupState);
+                  navigation.goBack();
                 }
               },
-              (err) => { console.log("err", err) }
+              (err) => {
+                console.log(err);
+              }
             );
           },
         },
       ]);
     }
-  }
+  };
   return (
-    <View flex >
+    <View flex marginV-12>
       <View center margin-24>
+        <Text style={styles.fontTitle}>Add Expense</Text>
         <View row center>
           <Icon style={styles.icon} name="receipt" size={24} />
           <TextField
@@ -110,8 +98,12 @@ const UpdateExpense = ({ route }) => {
             onChange={(date) => setDate(date)}
           />
         </View>
-        <Text style={{ marginBottom: 16 }}>Paid by You and splitted equally</Text>
-        <Button label="Save" onPress={handleEditExpense} />
+        <View row center>
+          <Text style={styles.body}>Paid by </Text>
+          <Text style={styles.bodyBold}>You </Text>
+          <Text style={styles.body}> and splitted equally</Text>
+        </View>
+        <Button label="Add" style={styles.button} onPress={handleExpense} />
       </View>
     </View>
   );
@@ -124,8 +116,23 @@ const styles = StyleSheet.create({
     marginVertical: 0,
   },
   icon: {
-    paddingHorizontal: 16
-  }
+    paddingHorizontal: 16,
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 12,
+    width: "50%",
+  },
+  fontTitle: { fontWeight: "bold", fontSize: 24, marginVertical: 12 },
+  body: {
+    fontSize: 18,
+    marginVertical: 8,
+  },
+  bodyBold: {
+    fontWeight: "bold",
+    fontSize: 18,
+    marginVertical: 8,
+  },
 });
 
-export default UpdateExpense;
+export default RegisterExpense;

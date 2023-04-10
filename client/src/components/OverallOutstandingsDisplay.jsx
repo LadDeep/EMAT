@@ -5,7 +5,6 @@ const OverallOutstandingsDisplay = ({
   userStandingDetails,
   handleCheckboxChange,
 }) => {
-  console.log("disp", userStandingDetails);
   return (
     <>
       {userStandingDetails && (

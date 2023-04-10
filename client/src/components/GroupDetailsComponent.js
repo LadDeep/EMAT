@@ -5,36 +5,36 @@ import { ActivityIndicator, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { FAB } from "@rneui/themed";
-import { getValueFor } from "../secureStore";
-import { GroupStatsApi, UpdatedExpenseList } from '../api/api'
+import { getValueFor } from "../utils/secureStore";
+import { GroupStatsApi, UpdatedExpenseList } from "../api/api";
 import GroupContext from "../Context/GroupContext";
 
 export const GroupDetailsComponent = ({ route }) => {
   const navigation = useNavigation();
   const { selectedGroup, setExpense } = route.params;
-  
+
   const [expenses, setExpenses] = useState();
   const [userId, setUserId] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [mostSpender, setMostSpender] = useState()
-  const [leastSpender, setLeastSpender] = useState()
-  const { groupState } = useContext(GroupContext)
-  console.log("THIS IS GROUPSTATE CHANGED IN GROUPDETAILCOMPONENT", groupState)
+  const [mostSpender, setMostSpender] = useState();
+  const [leastSpender, setLeastSpender] = useState();
+  const { groupState } = useContext(GroupContext);
   const handleAddExpense = () => {
     // navigate to Add Expense page
-    navigation.push("AddExpense", { groupId: selectedGroup.group_id, userId: userId });
+    navigation.push("AddExpense", {
+      groupId: selectedGroup.group_id,
+      userId: userId,
+    });
+  };
+  const primaryColor = "#E44343";
+  const secondaryColor = "#27AE60";
 
-
-  }
-  const primaryColor = '#E44343';
-  const secondaryColor = '#27AE60';
-
-  const handleSettleUp = ()=>{
-    navigation.push("SettleUp", {groupId: selectedGroup.group_id, userId})
-  }
-  const handleNotify = ()=>{
-    navigation.push("Notify", {groupId: selectedGroup.group_id, userId})
-  }
+  const handleSettleUp = () => {
+    navigation.push("SettleUp", { groupId: selectedGroup.group_id, userId });
+  };
+  const handleNotify = () => {
+    navigation.push("Notify", { groupId: selectedGroup.group_id, userId });
+  };
   const fetchUserIdFromSecureStore = async () => {
     let ownUser = await getValueFor("USER_ID");
     setUserId(ownUser);
@@ -43,34 +43,37 @@ export const GroupDetailsComponent = ({ route }) => {
   useEffect(() => {
     //TODO: api call for fetching overall expense list here
     fetchUserIdFromSecureStore();
-    GroupStatsApi(selectedGroup.group_id
-      , (response) => {
+    GroupStatsApi(
+      selectedGroup.group_id,
+      (response) => {
         if (response.data.status) {
-          console.log("Group Stats", response.data.response);
-          console.log("Group Stats", response.data.response);
-          console.log("Group Max", response.data.response.max.total);
-          let mostSpender = response.data.response.max.first_name+" "+response.data.response.max.last_name;
-          let leastSpender = response.data.response.min.first_name+" "+response.data.response.min.last_name
-          setMostSpender(mostSpender)
-          setLeastSpender(leastSpender)
-          console.log("Group Max", response.data.response.min.total);
+          let mostSpender =
+            response.data.response.max.first_name +
+            " " +
+            response.data.response.max.last_name;
+          let leastSpender =
+            response.data.response.min.first_name +
+            " " +
+            response.data.response.min.last_name;
+          setMostSpender(mostSpender);
+          setLeastSpender(leastSpender);
         }
       }, error => {
         console.log(error);
       })
 
-    UpdatedExpenseList(selectedGroup.group_id,
+    UpdatedExpenseList(
+      selectedGroup.group_id,
       (res) => {
-        console.log("This is response of updated Expenses", res.data.response)
         let expenseList = res.data.response;
-        expenseList.sort((a, b)=>(b.created_at["$date"] - a.created_at["$date"]))
-        setExpenses(expenseList)
-        setIsLoading(false)
+        expenseList.sort((a, b)=>(b.created_at["$date"] - a.created_at["$date"]));
+        setExpenses(expenseList);
+        setIsLoading(false);
       },
-      (err) => { console.log("err", err) })
-
-      setIsLoading(false)
-
+      (err) => {
+        console.log("err", err);
+      }
+    );
   }, [groupState]);
 
   useLayoutEffect(() => {
@@ -97,7 +100,6 @@ export const GroupDetailsComponent = ({ route }) => {
   return (
     <>
       <View style={styles.container}>
-
         <View flex row centerV spread>
           <Text style={styles.fontTitle}>{selectedGroup.group_name}</Text>
           <Avatar size={76} source={require("../../assets/group/3.png")} />
@@ -106,23 +108,40 @@ export const GroupDetailsComponent = ({ route }) => {
         <View style={styles.cardContainer}>
           <Card style={[styles.card, { backgroundColor: primaryColor }]}>
             <Text white>Least Spending</Text>
-            <Text white style={styles.boldText}>{leastSpender}</Text>
+            <Text white style={styles.boldText}>
+              {leastSpender}
+            </Text>
           </Card>
           <Card style={[styles.card, { backgroundColor: secondaryColor }]}>
             <Text white>Most Spending</Text>
-            <Text white style={styles.boldText}>{mostSpender}</Text>
+            <Text white style={styles.boldText}>
+              {mostSpender}
+            </Text>
           </Card>
         </View>
 
-
-        <View flex row center>
-          <Button label={"Settle Up"} style={{ margin: 12 }} onPress={handleSettleUp}></Button>
-          <Button label={"Notify"} style={{ margin: 12 }}  onPress={handleNotify}></Button>
+        <View flex row center style={{ justifyContent: "space-around" }}>
+          <Button
+            label={"Settle Up"}
+            style={styles.button}
+            onPress={handleSettleUp}
+          ></Button>
+          <Button
+            label={"Notify"}
+            style={styles.button}
+            onPress={handleNotify}
+          ></Button>
         </View>
       </View>
       <View flex center>
+        <Text style={styles.fontTitle}>Activities</Text>
         {expenses && expenses.length !== 0 ? (
-          <GroupActivitiesList groupId={selectedGroup.group_id} noOfParticipants={selectedGroup.participants.length} userId={userId} activities={expenses} />
+          <GroupActivitiesList
+            groupId={selectedGroup.group_id}
+            noOfParticipants={selectedGroup.participants.length}
+            userId={userId}
+            activities={expenses}
+          />
         ) : (
           <Text>No expenses</Text>
         )}
@@ -140,26 +159,31 @@ export const GroupDetailsComponent = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "F7F7F2",
-    marginHorizontal: 24,
+    backgroundColor: "#E1E1E1",
+    paddingHorizontal: 24,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
   detailsContainer: { flexDirection: "row", marginVertical: 16 },
   buttonGroup: { flexDirection: "row", justifyContent: "center" },
-  fontTitle: { fontWeight: "bold", fontSize: 24 },
+  fontTitle: { fontWeight: "bold", fontSize: 24, marginVertical: 12 },
   cardContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // paddingHorizontal: 20,
-    // paddingTop: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   card: {
-    width: '47%',
+    width: "47%",
     height: 80,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   boldText: {
-    fontWeight:"bold"
-  }
+    fontWeight: "bold",
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 12,
+    width: "40%",
+  },
 });

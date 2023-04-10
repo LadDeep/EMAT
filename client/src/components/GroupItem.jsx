@@ -3,12 +3,11 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { ListItem, Text, Avatar, View } from "react-native-ui-lib";
 
-export const GroupItem = ({item}) => {
+export const GroupItem = ({ item }) => {
   const navigation = useNavigation();
-  console.log(item);
   const handleGroupItemClick = () => {
     //TODO: handle navigation to group details page
-    navigation.push("GroupDetails", {selectedGroup: item})
+    navigation.push("GroupDetails", { selectedGroup: item });
   };
 
   return (
@@ -29,7 +28,7 @@ export const GroupItem = ({item}) => {
           text24
           style={{
             paddingRight: 24,
-          color: `${item.standing_amount > 0 ? "green" : "red"}`,
+            color: `${item.standing_amount > 0 ? "green" : "red"}`,
           }}
         >
           ${parseFloat(item.standing_amount).toFixed(2)}
