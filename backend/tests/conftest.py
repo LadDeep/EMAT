@@ -58,7 +58,13 @@ def group():
     baseCurrency = "CAD"
     participants = ["new_user2@example.com", "new_user@example.com", "test_user1@example.com"]
 
-    group = Group()
+    group = Group(
+        id = id,
+        name = name,
+        desciption = desciption,
+        baseCurrency = baseCurrency,
+        participants = participants
+    )
     group.save()
     yield group
     group.delete()
