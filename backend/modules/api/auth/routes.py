@@ -176,34 +176,34 @@ def resetPasswordWithToken():
         return jsonify({"error": str(e)}), 500
 
 
-@auth.route("/reset/<reset_token>", methods=["POST"])
-def resetPassword(reset_token):
-    if request.method == "POST":
-        try:
-            data = request.get_json()
-            newPassword = data["password"]
-            if not newPassword or not reset_token:
-                return jsonify({"message": "The reset password and token are not provided"}), 400
+# @auth.route("/reset/<reset_token>", methods=["POST"])
+# def resetPassword(reset_token):
+#     if request.method == "POST":
+#         try:
+#             data = request.get_json()
+#             newPassword = data["password"]
+#             if not newPassword or not reset_token:
+#                 return jsonify({"message": "The reset password and token are not provided"}), 400
 
-            user_id = decode_token(reset_token)["sub"]
-            user = User.objects.get(user_id=user_id)
+#             user_id = decode_token(reset_token)["sub"]
+#             user = User.objects.get(user_id=user_id)
 
-            if user:
-                user.update(password=generate_password_hash(newPassword))
-                user.save()
-                return {"status": True, "message": "password reset successfully"}, 200
+#             if user:
+#                 user.update(password=generate_password_hash(newPassword))
+#                 user.save()
+#                 return {"status": True, "message": "password reset successfully"}, 200
 
-            else:
-                return jsonify("message", "the reset token is not valid"), 400
+#             else:
+#                 return jsonify("message", "the reset token is not valid"), 400
 
-        except DoesNotExist:
-            return jsonify({"error": "User with the email not found"}), 404
-        except ExpiredSignatureError:
-            return jsonify({"error": "Token has expired"}), 403
-        except (DecodeError, InvalidTokenError):
-            return jsonify({"error": "Bad token"}), 403
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+#         except DoesNotExist:
+#             return jsonify({"error": "User with the email not found"}), 404
+#         except ExpiredSignatureError:
+#             return jsonify({"error": "Token has expired"}), 403
+#         except (DecodeError, InvalidTokenError):
+#             return jsonify({"error": "Bad token"}), 403
+#         except Exception as e:
+#             return jsonify({"error": str(e)}), 500
 
 @auth.route('/verify-user',methods=["GET"])
 def verifyUser():
