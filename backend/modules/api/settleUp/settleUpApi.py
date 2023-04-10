@@ -16,6 +16,12 @@ settleUp = Blueprint('settleUp', __name__)
 @settleUp.route("", methods=["GET"])
 @jwt_required()
 def who_owes_what():
+    """
+    Gets the Settlement information for a user with respect to other users (who owes what) for a group
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     result = {"status": False}
     user_id_verified = get_jwt_identity()
     group_id = request.args.get("group_id")
@@ -23,16 +29,20 @@ def who_owes_what():
     if group_id:
         try:
             pipeline.insert(0,{ "$match": { "group_id": group_id } })
+            # runs an aggregate pipeline that unwinds the expenses sub array as root and
+            # then for each spent_by (user_id) key all expense amounts are summed
             group_stats = Group.objects.aggregate(*pipeline)
             group_stats_json = [dict(doc) for doc in group_stats]
             group_data = Group.objects.get_or_404(group_id=group_id)
             participants = group_data.participants
             user_names = User.objects.filter(user_id__in=participants)
             user_names = [json.loads(x.to_json()) for x in user_names]
+            # filter the aggregation result, on what is spent by the user that makes the API call and other users
             user_spent = [x for x in group_stats_json if x["_id"] == user_id_verified]
             other_spent = [x for x in group_stats_json if x["_id"] != user_id_verified]
             other_participants = [x for x in participants if x != user_id_verified]
             
+            # ensures that all users have a total sum of expenses object
             for user in other_participants:
                 other_spent_obj = next(filter(lambda item: item['_id'] == user, other_spent), None)
                 if other_spent_obj is None:
@@ -44,10 +54,12 @@ def who_owes_what():
             else:
                 user_spent  = {"user_id": user_id_verified, "total": 0}
 
+            # calculates the owing
             for other_expense in other_spent:
                 other_expense["total"] = (user_spent["total"]/len(participants)) - (other_expense["total"]/len(participants))
             
-            # when some users have settled up #
+            # when some users have settled up 
+            # removes the settle up amount for all other users
             user_object = User.objects.get_or_404(user_id=user_id_verified)
             for expense in other_spent:
                 expense_user_id = expense['_id']
@@ -75,6 +87,12 @@ def who_owes_what():
 @settleUp.route("/notify",methods=["POST"])
 @jwt_required()
 def notify():
+    """
+    Sends the notification via email intimating all the users in the request body for sending back the money
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     result = {"status": False}
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
@@ -90,6 +108,7 @@ def notify():
                 group = json.loads(group.to_json())
                 notify_user_ids = [x["user_id"] for x in notify_users]
                 notify_user_objects = User.objects.filter(user_id__in=notify_user_ids)
+                # sends the email for notification
                 mail_object = {'subject': 'EMAT - Notify User for payment'}
                 for notify_user_obj in notify_user_objects:
                     notify_user_obj = json.loads(notify_user_obj.to_json())
@@ -122,6 +141,12 @@ def notify():
 @settleUp.route("/settle",methods=['POST'])
 @jwt_required()
 def settle():
+    """
+    Allow users to settle among themselves
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     result = {"status": False}
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
@@ -138,7 +163,7 @@ def settle():
                 last_settled_at = datetime.datetime.strptime(last_settled_at_as_string, "%Y-%m-%dT%H:%M:%S.%fZ")
                 user_settling = User.objects.get_or_404(user_id=user_id_settling)
                 user_called_settled = User.objects.get_or_404(user_id=user_id_verified)
-                
+                # settle Up sub documents are saved for both the users (settler & settling)
                 try:            
                     settling_object = SettleUp(user_id=user_id_verified,group_id=group_id,last_settled_at=last_settled_at,amount=0-amount,settling=True)
                     user_settling.settleUp.append(settling_object)
@@ -155,7 +180,7 @@ def settle():
                     print(traceback_message)
                     result['error'] = f"{e.__class__.__name__} occured"
                     result['traceback'] = traceback_message
-                # storing settle up data in
+               
             else:
                 json_body_keys_list = list(transaction.keys())
                 unavailable_keys = [x for x in required_fields if x not in json_body_keys_list]

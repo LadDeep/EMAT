@@ -11,6 +11,12 @@ profile = Blueprint('profile', __name__)
 @profile.route("/user", methods=["GET"])
 @jwt_required()
 def get_profile():
+    """
+    Gets the user Profile (user object) from mongoDB
+    
+    Returns:
+        A python dictionary containing status & a message key-value pair on a successful response
+    """
 
     try:
 
@@ -30,6 +36,12 @@ def get_profile():
 @profile.route("/update", methods=["PUT"])
 @jwt_required()
 def update_user():
+    """
+    Updates the user profile (user object) and stores the updated values to mongoDB
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
     result = {"status": False}
@@ -37,10 +49,12 @@ def update_user():
         if user_id_verified:
             try:
                 user = User.objects.get_or_404(user_id = user_id_verified)
+                # following fields are updatable
                 updatable_fields = ['first_name','last_name','currency','monthly_budget_amount','warning_budget_amount']
                 json_data = request.json
                 json_list_keys = list(json_data.keys())
 
+                # filters all keys that are present in updatable_fields and in the request body
                 keys_to_update = [x for x in json_list_keys if x in updatable_fields]
 
                 for key in keys_to_update:
@@ -66,7 +80,12 @@ def update_user():
 @profile.route("/delete_user")
 @jwt_required()
 def delete_user():
-
+    """
+    Deletes the user profile (user object) from mongoDB
+    
+    Returns:
+        A python dictionary containing status & a message key-value pair on a successful response
+    """
     try:
         user = User.objects(user_id=get_jwt_identity())
 
@@ -85,7 +104,12 @@ def delete_user():
 
 @profile.route("/email", methods=["GET"])
 def get_user_email():
-
+    """
+    Sends the User Email back to the app given user_id
+    
+    Returns:
+        A python dictionary containing status & a message key-value pair on a successful response
+    """
     try:
         data = request.get_json()
         user_id = data["user_id"]
@@ -97,6 +121,12 @@ def get_user_email():
 
 @profile.route("/other_user_details", methods=["POST"])
 def get_other_user_details():
+    """
+    Sends the details of all users whose ids are mentioned in the user_id (key) of type list in the request body
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     result = {"status":False}
     content_type = request.headers.get('Content-Type')
     if content_type == current_app.config["JSON-CONTENT-TYPE"]:

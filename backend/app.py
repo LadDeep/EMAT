@@ -22,7 +22,7 @@ def create_app():
     db.init_app(app)
 
     app.config["JWT_SECRET_KEY"] = "secret-key"  # need to change this key and export in the env
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False # ensures that the token expiry length is unlimited
     
     app.config["JSON-CONTENT-TYPE"] = "application/json"
     app.config["SMTP_PORT"] = 587

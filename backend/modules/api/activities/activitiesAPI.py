@@ -10,19 +10,28 @@ activities_bp = Blueprint('activities',__name__)
 @activities_bp.route('/list',methods=['GET'])
 @jwt_required()
 def list_user_activities():
+    """
+    Retreives the list of activities across all groups from the database
+
+    Returns:
+        A JSON object representing the group activities and settleUp activities is sent back on successful response
+    """
     user_id_verified = get_jwt_identity()
     result = {"status": False}
     status = None
 
     if user_id_verified:
         try:
+            # gets all groups a user is a part of
             groups = Group.objects.filter(participants__in=[user_id_verified])
             groups = [json.loads(group.to_json()) for group in groups]
             user_object = User.objects.get_or_404(user_id=user_id_verified)
             response = create_group_activity_response(groups)
             
             settle_up_list = [json.loads(x.to_json()) for x in user_object.settleUp]
+            
             for settle_up_obj in settle_up_list:
+                # for each settle up object, we find the group object based on comparison between group_id
                 group_object = next(filter(lambda item: item['group_id'] == settle_up_obj['group_id'], groups), None)
                 
                 if group_object is not None:
@@ -44,6 +53,15 @@ def list_user_activities():
 
 
 def create_group_activity_response(groups):
+    """
+    Creates the group activities object for a user
+
+    Args:
+        groups: a list of dictionaries where each element is a group document in MongoDB
+
+    Returns:
+        A list of dictionaries where each element represents a group activity
+    """
     response = []
     for group in groups:
         for expense in group["expenses"]:

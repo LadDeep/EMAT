@@ -16,6 +16,12 @@ auth = Blueprint('auth', __name__)
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
+    """
+    Registers a User to EMAT along with sending an email to a user for email verification
+
+    Returns:
+        A JSON Object containing user_id, status & a message key-value pair on a successful response
+    """
     status = True
     if request.method == "POST":
         try:
@@ -34,7 +40,13 @@ def register():
                 status = False
                 return jsonify({"status": status, "error": "User with the email has already existed"}), 409
             
+            # generates the user verification code that should be sent to the user
             verification_code = generate_verification_code()
+
+            # Below While Loop is needed to ensure uuids are unique 
+            # tried with uuid1 and uuid4, since uuid1 is based on machine time, 
+            # went ahead with uuid4 as characters in it are random
+            
             flag = True
             unique_user_id = None
             while flag:
@@ -71,6 +83,12 @@ def register():
 
 @auth.route("/login", methods=["POST", "GET"])
 def login():
+    """
+    Logs the user into the App
+
+    Returns:
+        A JSON Object containing access_token, user_id, status & a message key-value pair on a successful response
+    """
     status = True
     if request.method == 'POST':
         try:
@@ -80,6 +98,8 @@ def login():
 
             # check the user and password
             db_user = User.objects.get(email=email)
+
+            # below logic is executed for user authentication
             result = authenticate_user(db_user,password)
             return result
         except DoesNotExist:
@@ -93,10 +113,18 @@ def login():
 
 @auth.route("/logout", methods=["POST"])
 def logout():
+    """
+    Logs the user out of the App
+    
+    Returns:
+        A python dictionary containing status & a message key-value pair on a successful response
+    """
     status = True
     resp = jsonify({"status": status, "message": "logout successfully"})
     try:
+        # unsets the JWT cookies
         unset_jwt_cookies(resp)
+        # removes the user_id key from session
         session.pop("user_id", None)
         return resp, 200
     except Exception as e:
@@ -106,6 +134,12 @@ def logout():
 
 @auth.route("/reset", methods=["POST"])
 def reset_password_with_token():
+    """
+    Sends the JWT token on user's email
+    
+    Returns:
+        A python dictionary containing status, reset_token & a message key-value pair on a successful response
+    """
     try:
         data = request.get_json()
         email = data["email"]
@@ -126,6 +160,15 @@ def reset_password_with_token():
 
 @auth.route("/reset/<reset_token>", methods=["POST"])
 def reset_password(reset_token):
+    """
+    Resets the User Password after JWT token is received on user's email
+
+    Args:
+        reset_token: the JWT token that is sent to a user on email
+    
+    Returns:
+        A python dictionary containing status & a message key-value pair on a successful response
+    """
     if request.method == "POST":
         try:
             data = request.get_json()
@@ -133,6 +176,7 @@ def reset_password(reset_token):
             if not new_password or not reset_token:
                 return jsonify({"message": "The reset password and token are not provided"}), 400
 
+            # JWT token is decoded to get the user_id
             user_id = decode_token(reset_token)["sub"]
             user = User.objects.get(user_id=user_id)
 
@@ -155,11 +199,18 @@ def reset_password(reset_token):
 
 @auth.route('/verify-user',methods=["GET"])
 def verify_user():
+    """
+    Verifies the User Email
+    
+    Returns:
+        A python dictionary containing verified, status & a message key-value pair on a successful response
+    """
     user_id = request.args.get("user_id")
     verification_token = request.args.get("verification_code")
     result = {"status": False}
     if user_id is not None and verification_token is not None:
         try:
+            # gets the user object from DB, if not present, calls the native abort(404) function in flask
             db_user = User.objects.get_or_404(user_id=user_id)
             user_dict = json.loads(db_user.to_json())
             if user_dict.get("verificationToken",None) == verification_token:
@@ -189,16 +240,27 @@ def verify_user():
 
 
 def authenticate_user(db_user,password):
+    """
+    Logs the user into the App
+    
+    Args:
+        db_user: the User object (document) from mongoDB
+        password: string value
+    
+    Returns:
+        A python dictionary containing access_token, user_id, status & a message key-value pair on a successful response
+    """
     result = {"status": True,"user_id": db_user.user_id}
+    
+    #checks the password match
     if db_user.check_password(password):
-        if db_user.isEmailVerified is True:
-            session["user_id"] = db_user.user_id
-            access_token = create_access_token(identity=db_user.user_id)
-            if access_token:    
-                result["message"]= "login successfully"
-                result["access_token"] =  access_token
-        else:
-            result["message"] = "User is not Verified"
+        session["user_id"] = db_user.user_id
+        # creates JWT access token
+        access_token = create_access_token(identity=db_user.user_id)
+        if access_token:    
+            result["message"]= "login successfully"
+            result["access_token"] =  access_token
+       
     else:
         result["status"] = False
         result["message"] = "wrong password"

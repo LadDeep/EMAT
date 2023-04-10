@@ -13,6 +13,12 @@ expense = Blueprint('expense',__name__)
 @expense.route('/detail',methods=['GET'])
 @jwt_required()
 def detail_expense():
+    """
+    Gets the Expense Sub Document under the Group Collection from MongoDB
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     result = {"status": False}
     user_id_verified = get_jwt_identity()
     status = None
@@ -22,9 +28,10 @@ def detail_expense():
         group_id = request.args.get("group_id",None)
         try:
             if expense_id is not None and group_id is not None:
-                
+                    # gets the group document based on group_id
                     group = Group.objects.get_or_404(group_id = group_id)
                     print(expense_id)
+                    # gets the expense element from expenses array based on expense_id
                     expense = group.expenses.get(expense_id = expense_id)
                     result['status'] = True
                     if expense:
@@ -55,6 +62,12 @@ def detail_expense():
 @expense.route('/create',methods=['POST'])
 @jwt_required()
 def create_expense():
+    """
+    Creates the expense in a group
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
     result = {"status": False}
@@ -67,6 +80,7 @@ def create_expense():
                 json_data = request.json
                 required_fields = ['group_id','amount']
                 json_keys = list(json_data.keys())
+                # check if all the keys in the request body exist in fields required by this API
                 required_fields_exist = set(required_fields).issubset(json_keys)
 
                 if required_fields_exist:
@@ -76,6 +90,10 @@ def create_expense():
                     date = datetime.datetime.strptime(json_data['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
                     flag = True
                     unique_expense_id = None
+
+                    # Below While Loop is needed to ensure uuids are unique 
+                    # tried with uuid1 and uuid4, since uuid1 is based on machine time, 
+                    # went ahead with uuid4 as characters in it are random
                     while flag:
                         expense_id=uuid.uuid4()
                         expense_obj = group.expenses.filter(expense_id=expense_id)
@@ -86,6 +104,7 @@ def create_expense():
                     expense = Expense(expense_id=unique_expense_id,group_id=group_id,spent_by=user_id_verified,amount=amount,created_at=date)
                     if 'description' in json_keys:
                         expense.description = json_data['description']
+                    
                     group.expenses.append(expense)
                     group.save()
                     result['status'] = True
@@ -114,13 +133,22 @@ def create_expense():
 @expense.route('/list',methods=['GET'])
 @jwt_required()
 def expense_list():
+    """
+    Lists the Expenses in a group
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     group_id = request.args.get('group_id')
     result = {"status": False}
     if group_id is not None:
         try:
+            # fetches the group based on group_id from mongoDB
             group = Group.objects.get_or_404(group_id=group_id)
             group = json.loads(group.to_json())
 
+            # for each expense in group, the username is set which is brought in by querying the mongoDB
+            # user collection based on expense element key 'spent_by'
             for expense in group.get('expenses',[]):
                 user_object = User.objects.get_or_404(user_id=expense.get('spent_by'))
                 expense['user_name'] = f'{user_object.first_name} {user_object.last_name}'
@@ -141,6 +169,12 @@ def expense_list():
 @expense.route('/update',methods=['PUT'])
 @jwt_required()
 def update_expense():
+    """
+    Updates the expense in a group
+    
+    Returns:
+        A python dictionary containing status & a response key-value pair on a successful response
+    """
     content_type = request.headers.get('Content-Type')
     user_id_verified = get_jwt_identity()
     result = {"status": False}
@@ -149,18 +183,22 @@ def update_expense():
         if user_id_verified:
             try:
                 json_data = request.json
+                # fields that can be updated
                 updatable_fields = ['description','amount','created_at']
                 required_fields = ['expense_id','group_id']
                 json_keys = list(json_data.keys())
+                # checks if required fields exist in request body
                 required_fields_exist = set(required_fields).issubset(json_keys)
                 if required_fields_exist:
                     group_id = json_data['group_id']
                     expense_id = json_data['expense_id']
                     group = Group.objects.get_or_404(group_id=group_id)
                     expense = group.expenses.get(expense_id=expense_id)
+                    # checks if updatable fields exist in request body
                     updatable_fields_exist = set(updatable_fields).issubset(json_keys)
                     if updatable_fields_exist:
                         for key in updatable_fields:
+                            # since date value is a string, it is converted into a datetime object
                             if key == 'date':
                                 json_data[key] = datetime.datetime.strptime(json_data[key], "%Y-%m-%dT%H:%M:%S.%fZ")
                             expense[key] = json_data[key]
