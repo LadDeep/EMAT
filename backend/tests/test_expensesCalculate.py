@@ -17,12 +17,6 @@ class Calculator:
         return a / b
 
 
-
-# @pytest.fixture
-# def calculator():
-#     return Calculator()
-
-
 def test_add(calculator):
     assert calculator.add(2, 3) == 5
     assert calculator.add(-2, 3) == 1
