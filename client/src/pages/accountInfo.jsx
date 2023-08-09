@@ -41,7 +41,7 @@ const accountDetails = ({ route }) => {
       <View style={styles.header}>
         <Image
           style={styles.avatar}
-          source={require("../../assets/group/1.png")}
+          source={require("../../assets/group/4.png")}
         />
         <View style={styles.userDetails}>
           <Text style={styles.name}>

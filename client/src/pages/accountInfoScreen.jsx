@@ -59,7 +59,7 @@ const AccountInfoScreen = () => {
     <ScrollView>
       <View margin-24 style={styles.container}>
         <Image
-          source={require("../../assets/group/1.png")}
+          source={require("../../assets/group/4.png")}
           style={styles.profileImage}
         />
         <Text style={styles.title}>Account Information</Text>
