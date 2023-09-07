@@ -87,4 +87,37 @@ We have a total of 26 test cases and a total code coverage of around 80 - 85 %
 | Jiaye Tang | Backend-Authentication,User Profile,Test Cases. |
 | Nitesh Kumar | Backend-Pipeline,Test Cases,Expense Api |
 
+## Application Screenshots
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 49 34_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/9e43f3a0-36c4-4e73-a9ed-6f01f8f83b99)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 10 54 10_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/003bd8f5-d0cf-4b9d-996c-7c74a75f0abf)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 20 01_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/27fcb43b-923d-4808-84ad-a087244c7480)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 10 57 22_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/93cd3009-be4b-47f3-b705-006f360e6f21)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 14 33_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/602d2720-a458-4172-8021-52a7ad77cd9d)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 14 40_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/45b88d42-c26f-4eb3-97ae-dc9395ba3f98)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 00 41_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/ce522ba4-8a5e-4560-b44b-bc7fa3046b15)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 00 37_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/86935302-6fcd-4bf1-9090-79a9da08a301)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 10 57 45_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/663649ab-546e-44f3-8af3-f4a4b33079ca)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 19 42_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/9f58ec8e-a7dd-4877-af2e-6ff0a61dd0f3)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 13 13_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/84c28116-606c-4dd1-b24d-86f2b98b835f)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 03 11_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/624b1a86-3836-4e46-85bc-8d2416f2cfd8)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 02 15_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/579bb931-1de4-461f-9f46-02793b0f5a1a)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 02 03_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/a968ea5a-3508-499f-94be-9f8c03f439c7)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 01 39_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/a8fa15c1-b5d6-4d0a-96dd-24ee65159e3b)
+
+![Simulator Screenshot - iPhone 14 - 2023-09-07 at 11 01 05_iphone13blue_portrait](https://github.com/LadDeep/EMAT/assets/68908897/563ac5f6-f51b-4ef6-900f-7f631b769129)
 
